@@ -1,4 +1,7 @@
-He elegido la compañía de Health Care, porque realmente es la que me parece que tiene más valor real de trabajo, ofrece un caso real y muy interesante de las empresas hoy en día. Desorganización, problemas legales, ...
+# Proyecto HealthCore
+
+## Elección del proyecto
+He elegido la compañía de Health Core, porque realmente es la que me parece que tiene más valor real de trabajo, ofrece un caso real y muy interesante de las empresas hoy en día. Desorganización, problemas legales, ...
 Creo que pueda ser un caso de muy alto interés.
 Los casos que más interesantes me parecen para desarrollar:
 - Gestión del dato
@@ -7,4 +10,11 @@ Los casos que más interesantes me parecen para desarrollar:
   - comparación previa, 
   - gestión de la incidencia
   - presentación de evidencias
+- Sistema de reservas
+  - Predición de no-shows
+  - Gestión de citas
+- Sistema de contratación
+...
+
+## Mi idea de Agente de IA
 
