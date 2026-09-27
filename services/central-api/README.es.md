@@ -5,7 +5,7 @@ Aquí vive el servicio FastAPI compartido. El gestor de incidencias se implement
 ## Requisitos
 
 - Python 3.12 y `uv` para ejecución local.
-- Docker con Compose para ejecución en contenedor.
+- Docker o Podman con Compose para ejecución en contenedor.
 
 ## Arranque local
 
@@ -20,6 +20,7 @@ Desde la raíz del repositorio, arrancar el contenedor:
 
 ```sh
 docker compose up --build
+# Usuarios de Podman: podman compose up --build
 ```
 
 Comprobar `http://localhost:8000/health`: debe devolver `{"status":"ok"}`. Para cambiar el puerto publicado, copiar `services/central-api/env.example` a un `.env` en la raíz y definir `API_PORT`; Git ignora `.env`.
@@ -47,5 +48,18 @@ uv run --no-sync alembic current
 Sin `DATABASE_URL`, la API puede arrancar y responder `/health`, pero Alembic y las operaciones de base de datos fallarán explícitamente porque necesitan una conexión.
 
 Compose toma `DATABASE_URL` del `.env` de la raíz y la entrega al contenedor. No incluir credenciales reales en `env.example` ni en Git.
+
+Después de aplicar las migraciones, cargar los catálogos con:
+
+```sh
+uv run --no-sync seed-catalogs
+```
+
+La imagen instala la API como paquete y genera el ejecutable a partir de
+`[project.scripts]`. Con Podman puede ejecutarse dentro del contenedor:
+
+```sh
+podman exec 4geeks-aiengineering-api-1 uv run --no-sync seed-catalogs
+```
 
 Documentación en inglés: [README.md](./README.md).

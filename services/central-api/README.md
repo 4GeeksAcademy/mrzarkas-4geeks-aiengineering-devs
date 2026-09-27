@@ -5,7 +5,7 @@ The shared FastAPI service lives here. Operational incidents will be implemented
 ## Requirements
 
 - Python 3.12 and `uv` for running locally.
-- Docker with Compose for containerized runs.
+- Docker or Podman with Compose for containerized runs.
 
 ## Run locally
 
@@ -20,6 +20,7 @@ From the repository root, start the container:
 
 ```sh
 docker compose up --build
+# Podman users: podman compose up --build
 ```
 
 Check `http://localhost:8000/health` for `{"status":"ok"}`. For a different published port, copy `services/central-api/env.example` to a root `.env` and set `API_PORT`; Git ignores `.env`.
@@ -50,6 +51,14 @@ Seed the provisional catalogs after applying migrations:
 
 ```sh
 uv run --no-sync seed-catalogs
+```
+
+The API is installed as a package during the image build, so the
+`seed-catalogs` executable is generated from `[project.scripts]`. With Podman,
+run it inside the running service container:
+
+```sh
+podman exec 4geeks-aiengineering-api-1 uv run --no-sync seed-catalogs
 ```
 
 The seed is idempotent, uses the stable catalog keys, and does not create clinics,

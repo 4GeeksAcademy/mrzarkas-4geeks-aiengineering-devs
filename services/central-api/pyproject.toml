@@ -12,6 +12,13 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0,<3",
 ]
 
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
 [project.scripts]
 seed-catalogs = "app.catalogs.seed:main"
 
