@@ -1,6 +1,6 @@
 """Add incident status history and audit events.
 
-Revision ID: 0004_add_incident_history_and_audit
+Revision ID: 0004_history_audit
 Revises: 0003_create_operational_incident
 """
 
@@ -10,7 +10,9 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision: str = "0004_add_incident_history_and_audit"
+# Alembic's default version table uses VARCHAR(32). Keep revision IDs within
+# that limit so the version update succeeds on PostgreSQL.
+revision: str = "0004_history_audit"
 down_revision: Union[str, None] = "0003_create_operational_incident"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
