@@ -7,10 +7,31 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.catalog import Catalog, CatalogValue
 from app.db.session import get_session
+from app.incidents.history import AuditEvent, IncidentStatusHistory
 from app.incidents.models import OperationalIncident
-from app.incidents.schemas import IncidentCreate, IncidentListResponse, IncidentResponse
+from app.incidents.schemas import (
+    AuditEventResponse,
+    IncidentCreate,
+    IncidentListResponse,
+    IncidentResponse,
+    IncidentUpdate,
+    StatusHistoryResponse,
+    StatusTransitionRequest,
+)
 
 router = APIRouter(prefix="/incidents", tags=["incidents"])
+
+ALLOWED_STATUS_TRANSITIONS = {
+    "new": {"underAnalysis", "cancelled"},
+    "underAnalysis": {"assigned", "inResolution", "onHold", "cancelled"},
+    "assigned": {"inResolution", "onHold"},
+    "inResolution": {"resolved", "onHold"},
+    "resolved": {"reopened", "closed"},
+    "onHold": {"underAnalysis", "assigned", "cancelled"},
+    "reopened": {"underAnalysis"},
+    "closed": set(),
+    "cancelled": set(),
+}
 
 
 def make_incident_identifier() -> str:
@@ -53,7 +74,12 @@ async def create_incident(
         await session.execute(
             select(CatalogValue)
             .join(Catalog)
-            .where(Catalog.catalog_name == "incidentStatus", CatalogValue.key == "new")
+            .where(
+                Catalog.catalog_name == "incidentStatus",
+                CatalogValue.key == "new",
+                Catalog.is_active.is_(True),
+                CatalogValue.is_active.is_(True),
+            )
         )
     ).scalar_one_or_none()
     if new_status is None:
@@ -71,6 +97,24 @@ async def create_incident(
         updated_by=actor_id,
     )
     session.add(incident)
+    await session.flush()
+    session.add(IncidentStatusHistory(
+        incident_id=incident.id,
+        from_status_value_id=None,
+        to_status_value_id=new_status.id,
+        changed_by=actor_id,
+        reason="Incident created",
+        changed_at=now,
+    ))
+    session.add(AuditEvent(
+        entity_type="OperationalIncident",
+        entity_id=incident.id,
+        action="created",
+        actor_id=actor_id,
+        before_data=None,
+        after_data={"status_value_id": str(new_status.id)},
+        occurred_at=now,
+    ))
     await session.commit()
     await session.refresh(incident)
     return incident
@@ -114,3 +158,94 @@ async def get_incident(
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
     return incident
+
+
+@router.patch("/{incident_id}", response_model=IncidentResponse)
+async def update_incident(
+    incident_id: UUID,
+    payload: IncidentUpdate,
+    session: AsyncSession = Depends(get_session),
+) -> OperationalIncident:
+    incident = await session.get(OperationalIncident, incident_id)
+    if incident is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+
+    changes = payload.model_dump(exclude_unset=True)
+    if "severity_value_id" in changes:
+        await get_catalog_value(session, changes["severity_value_id"], "severity")
+    if not changes:
+        return incident
+
+    actor_id = changes.pop("actor_id", None) or incident.updated_by
+    before = {key: str(getattr(incident, key)) for key in changes}
+    for key, value in changes.items():
+        setattr(incident, key, value)
+    incident.updated_at = datetime.now(UTC)
+    incident.updated_by = actor_id
+    session.add(AuditEvent(
+        entity_type="OperationalIncident", entity_id=incident.id, action="updated",
+        actor_id=actor_id, before_data=before,
+        after_data={key: str(value) for key, value in changes.items()},
+        occurred_at=incident.updated_at,
+    ))
+    await session.commit()
+    await session.refresh(incident)
+    return incident
+
+
+@router.post("/{incident_id}/transitions", response_model=IncidentResponse)
+async def transition_incident(
+    incident_id: UUID,
+    payload: StatusTransitionRequest,
+    session: AsyncSession = Depends(get_session),
+) -> OperationalIncident:
+    incident = await session.get(OperationalIncident, incident_id)
+    if incident is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+    target = await get_catalog_value(session, payload.status_value_id, "incidentStatus")
+    current = await session.get(CatalogValue, incident.status_value_id)
+    if current is None:
+        raise HTTPException(status_code=500, detail="Current incident status is invalid")
+    if current.id == target.id:
+        raise HTTPException(status_code=409, detail="Incident is already in that status")
+    if target.key not in ALLOWED_STATUS_TRANSITIONS.get(current.key, set()):
+        raise HTTPException(
+            status_code=409,
+            detail=f"Transition from {current.key} to {target.key} is not allowed",
+        )
+
+    now = datetime.now(UTC)
+    session.add(IncidentStatusHistory(
+        incident_id=incident.id, from_status_value_id=current.id,
+        to_status_value_id=target.id, changed_by=payload.actor_id,
+        reason=payload.reason, changed_at=now,
+    ))
+    session.add(AuditEvent(
+        entity_type="OperationalIncident", entity_id=incident.id, action="status_changed",
+        actor_id=payload.actor_id, before_data={"status_value_id": str(current.id)},
+        after_data={"status_value_id": str(target.id)}, occurred_at=now,
+    ))
+    incident.status_value_id = target.id
+    incident.updated_at = now
+    incident.updated_by = payload.actor_id
+    await session.commit()
+    await session.refresh(incident)
+    return incident
+
+
+@router.get("/{incident_id}/history", response_model=list[StatusHistoryResponse])
+async def incident_history(incident_id: UUID, session: AsyncSession = Depends(get_session)) -> list[IncidentStatusHistory]:
+    if await session.get(OperationalIncident, incident_id) is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+    return list((await session.execute(
+        select(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == incident_id).order_by(IncidentStatusHistory.changed_at)
+    )).scalars().all())
+
+
+@router.get("/{incident_id}/audit", response_model=list[AuditEventResponse])
+async def incident_audit(incident_id: UUID, session: AsyncSession = Depends(get_session)) -> list[AuditEvent]:
+    if await session.get(OperationalIncident, incident_id) is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+    return list((await session.execute(
+        select(AuditEvent).where(AuditEvent.entity_type == "OperationalIncident", AuditEvent.entity_id == incident_id).order_by(AuditEvent.occurred_at)
+    )).scalars().all())
