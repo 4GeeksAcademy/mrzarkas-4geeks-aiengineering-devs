@@ -184,9 +184,18 @@ async def update_incident(
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("incident:update")),
 ) -> OperationalIncident:
+    # Dependencies are not evaluated when this handler is called directly
+    # from service/integration tests, so keep the authorization invariant in
+    # the handler as well as in FastAPI's dependency graph.
+    if not has_capability(actor.role, "incident:update"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Role '{actor.role}' lacks capability 'incident:update'",
+        )
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
+    ensure_area_scope(actor, "incident:update", incident.responsible_area_id)
 
     changes = payload.model_dump(exclude_unset=True)
     if "severity_value_id" in changes:
