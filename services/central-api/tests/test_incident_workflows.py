@@ -119,17 +119,18 @@ def test_invalid_transition_is_rejected():
                 responsible_area_id=uuid4(),
             )
             incident = await create_incident(payload, session)
+            created_incident_id = incident.id
             with pytest.raises(Exception) as error:
                 await transition_incident(
-                    incident.id,
+                    created_incident_id,
                     StatusTransitionRequest(status_value_id=ids["closed"], actor_id=payload.reporter_id),
                     session,
                 )
             assert getattr(error.value, "status_code", None) == 409
             await session.rollback()
-            await session.execute(delete(AuditEvent).where(AuditEvent.entity_id == incident.id))
-            await session.execute(delete(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == incident.id))
-            await session.execute(delete(OperationalIncident).where(OperationalIncident.id == incident.id))
+            await session.execute(delete(AuditEvent).where(AuditEvent.entity_id == created_incident_id))
+            await session.execute(delete(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == created_incident_id))
+            await session.execute(delete(OperationalIncident).where(OperationalIncident.id == created_incident_id))
             await session.commit()
 
         if engine is not None:
