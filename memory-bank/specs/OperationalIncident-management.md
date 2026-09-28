@@ -33,6 +33,12 @@ No se permitirá la eliminación física de un valor usado históricamente.
 La autorización se aplica en backend mediante capacidades. Hasta que se valide
 la matriz funcional, sólo `admin` puede modificar configuración.
 
+La propuesta completa de M0, con los cuatro roles principales y las áreas
+operativas con alcance propio, está en
+[`proposals.md`](../proposals.md#propuesta-m0-matriz-funcional-de-roles-y-capacidades).
+Es una propuesta pendiente: la tabla siguiente describe la implementación
+provisional actual, no una aprobación de producción.
+
 | Capacidad | admin | Tecnología | Cumplimiento | Dirección | Área responsable |
 |---|---:|---:|---:|---:|---:|
 | `catalog:read` | Sí | Sí | Sí | No | Sí, para formularios |

@@ -132,3 +132,78 @@ token inválido, emisor deshabilitado en producción, capability denegada,
 aislamiento de área y auditoría. Falta definir y cubrir el alcance de
 Dirección. Las pruebas usan `httpx.AsyncClient` con `ASGITransport`, sin
 depender de `TestClient`.
+
+## Propuesta M0: matriz funcional de roles y capacidades
+
+**Estado:** Pendiente de aprobación por Tecnología y Cumplimiento. No cambia
+los permisos vigentes ni autoriza datos reales, escritura en backoffice o
+producción.
+
+**Objetivo:** consolidar una única fuente de verdad para permisos de
+OperationalIncident y Management, aplicando mínimo privilegio y conservando
+`admin` como rol técnico con acceso total y auditado.
+
+### Estructura de roles
+
+Hay cuatro áreas principales y un grupo de áreas operativas:
+
+| Grupo | Rol JWT | Alcance |
+|---|---|---|
+| Administración técnica | `admin` | Acceso total; soporte y operación excepcional, siempre auditados. |
+| Tecnología | `technology` | Operación técnica de incidencias y, tras aprobación específica, sistemas/coberturas. |
+| Cumplimiento | `compliance` | Revisiones de Cumplimiento, auditoría y controles de conformidad. |
+| Dirección | `direction` | Sólo indicadores y listados resumidos, sin detalle sensible ni mutaciones. |
+| Áreas operativas | `responsibleArea` + `area_id` | Una misma capacidad base, restringida a la área responsable asignada. |
+
+Las áreas operativas (por ejemplo, Operaciones Clínicas, Acceso de Pacientes o
+Revenue Cycle) **no son roles JWT distintos**. Son registros maestros y se
+aplican mediante `area_id`; así se evita multiplicar roles por departamento.
+
+### Matriz propuesta
+
+| Capacidad o acción | Admin | Tecnología | Cumplimiento | Dirección | Área responsable |
+|---|---:|---:|---:|---:|---:|
+| Listar incidencias | Sí | Sí | Sí | Sólo resumen | Sólo su área |
+| Ver detalle, historial y estado | Sí | Sí | Sí | No | Sólo su área |
+| Crear o editar incidencia | Sí | Sí | No | No | Sólo su área, con límites actuales |
+| Transicionar o reasignar | Sí | Sí | No | No | Sólo cierre/cancelación de su área |
+| Métricas | Sí | Sí | Sí | Sí, agregadas | Sólo su área |
+| Leer catálogos y maestros | Sí | Sí | Sí | No | Sí, para formularios |
+| Gestionar catálogos | Sí | No | No | No | No |
+| Gestionar clínicas, jurisdicciones y áreas | Sí | No | No | No | No |
+| Gestionar sistemas y coberturas | Sí | Pendiente de aprobación específica | No | No | No |
+| Leer `ComplianceReview` | Sí | No, salvo excepción aprobada | Sí | No | No |
+| Crear o cambiar `ComplianceReview` | Sí | No | Sí | No | No |
+| Asociar `ComplianceReview` a una incidencia | Sí | No | Sí, con capacidad específica | No | No |
+| Consultar auditoría | Sí | No | Sí | No | No |
+
+`admin` recibe todas las capacidades, incluidas las futuras; no se usa como
+sustituto de los roles ordinarios. Toda mutación de `admin` debe conservar el
+actor y la correlación en la auditoría.
+
+### Capacidades a introducir tras la aprobación
+
+El código actual utiliza permisos amplios para Management. Antes de delegar
+escritura, se propone separar:
+
+- `referenceData:manageSystems`
+- `referenceData:manageClinics`
+- `referenceData:manageJurisdictions`
+- `referenceData:manageAreas`
+- `incident:associateComplianceReview`
+
+La última permite a Cumplimiento asociar o retirar una revisión compatible sin
+recibir `incident:update`, que da acceso a cambios operativos más amplios.
+
+### Condiciones de ejecución
+
+1. Tecnología y Cumplimiento aprueban la matriz, sus propietarios y las
+   excepciones temporales.
+2. Se actualizan `app/auth/roles.py`, políticas y pruebas de matriz por rol.
+3. Sólo se añade alcance por jurisdicción al JWT si existe una fuente de
+   verdad aprobada para esas asignaciones; mientras tanto, Cumplimiento tiene
+   alcance global y la compatibilidad se valida al asociar una revisión.
+4. El JWT propio vigente no se sustituye por esta propuesta; su sustitución
+   sigue la propuesta de autenticación existente y requiere validación aparte.
+5. Se actualizan las especificaciones y el backoffice antes de habilitar
+   escritura fuera de desarrollo.

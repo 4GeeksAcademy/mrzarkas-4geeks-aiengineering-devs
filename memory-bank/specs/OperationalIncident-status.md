@@ -210,6 +210,7 @@ La fase se considera **cerrada de forma condicionada**, no validada definitivame
 | 2026-09-28 | Se completó M4 de Management de forma provisional | Administración paginada de jurisdicciones, clínicas, sistemas y áreas; coberturas sistema–jurisdicción, activación auditada y protección contra cambios que invaliden el histórico. Pruebas Podman: 24 superadas | HealthCore Digital |
 | 2026-09-28 | Se completó M5 de Management de forma provisional | `ComplianceReview` tiene cambio de estado restringido, motivo de cierre, auditoría de creación/estado/asociación y validación de jurisdicción con incidencia. Pruebas Podman: 25 superadas | HealthCore Digital |
 | 2026-09-28 | Se completó M6 de Management de forma provisional | OpenAPI y tipos compartidos, consulta autorizada de auditoría, backoffice estático de lectura y guía de rollback/promoción. Instalación limpia y restauración de dump sintético: migración idempotente, seeds y 27 pruebas superadas | HealthCore Digital |
+| 2026-09-28 | Se documentó la propuesta M0 de permisos | `proposals.md`: cuatro roles principales, áreas operativas con `area_id`, matriz de mínimo privilegio y capacidades granulares futuras. Pendiente de aprobación por Tecnología y Cumplimiento | HealthCore Digital |
 
 ## 9. Regla de actualización
 

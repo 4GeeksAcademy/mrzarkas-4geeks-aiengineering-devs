@@ -18,6 +18,7 @@
 
 - Las incidencias validan clínica, jurisdicción, sistema y área contra maestros sintéticos estables US/UK; `reporter_id` deriva de la identidad autenticada y existen claves foráneas para las referencias contextuales. Antes de piloto deben sustituirse fixtures por datos aprobados.
 - Administración de catálogos y maestros según `specs/OperationalIncident-management.md` está técnicamente implementada. M0 sigue pendiente de aprobación externa: no se autoriza la promoción de datos reales, UI de escritura ni producción. El alcance de `ComplianceReview` por jurisdicción se valida al asociarlo a una incidencia; el JWT aún no representa alcance jurisdiccional individual.
+- La propuesta de matriz M0 está documentada en `proposals.md`: cuatro roles principales (`admin`, Tecnología, Cumplimiento y Dirección) y áreas operativas mediante `responsibleArea` + `area_id`; su adopción requiere aprobación antes de cambiar capacidades.
 - Backoffice en `uis/`.
 - Validación formal de Tecnología, Cumplimiento y áreas funcionales sobre catálogos, permisos, transiciones, no-PHI, retención y SLA.
 - Validación por Tecnología y Cumplimiento del JWT vigente o de una alternativa futura; no hay una sustitución comprometida. También faltan la decisión de PostgreSQL gestionado, backups y prueba de restauración.
