@@ -3,10 +3,6 @@ services:
     image: postgres:16-alpine
     env_file:
       - ./services/central-api/.env
-    environment:
-      POSTGRES_DB: "${POSTGRES_DB:-healthcore}"
-      POSTGRES_USER: "${POSTGRES_USER:-healthcore}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-healthcore_dev_password}"
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
