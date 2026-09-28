@@ -35,6 +35,20 @@ from app.incidents.schemas import (
 
 router = APIRouter(prefix="/incidents", tags=["incidents"])
 
+
+async def require_incident_update_capability(
+    actor: Actor = Depends(get_current_actor),
+) -> Actor:
+    """Allow the general update grant or the restricted own-area grant."""
+    if has_capability(actor.role, "incident:update") or has_capability(
+        actor.role, "incident:updateOwnArea"
+    ):
+        return actor
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail=f"Role '{actor.role}' lacks an incident update capability",
+    )
+
 ALLOWED_STATUS_TRANSITIONS = {
     "new": {"underAnalysis", "cancelled"},
     "underAnalysis": {"assigned", "inResolution", "onHold", "cancelled"},
@@ -250,22 +264,43 @@ async def update_incident(
     incident_id: UUID,
     payload: IncidentUpdate,
     session: AsyncSession = Depends(get_session),
-    actor: Actor = Depends(require_capability("incident:update")),
+    actor: Actor = Depends(require_incident_update_capability),
 ) -> OperationalIncident:
     # Dependencies are not evaluated when this handler is called directly
     # from service/integration tests, so keep the authorization invariant in
     # the handler as well as in FastAPI's dependency graph.
-    if not has_capability(actor.role, "incident:update"):
+    has_general_update = has_capability(actor.role, "incident:update")
+    has_own_area_update = has_capability(actor.role, "incident:updateOwnArea")
+    if not has_general_update and not has_own_area_update:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Role '{actor.role}' lacks capability 'incident:update'",
+            detail=f"Role '{actor.role}' lacks an incident update capability",
         )
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
-    require_incident_area_scope(actor, "incident:update", incident.responsible_area_id)
+    update_capability = (
+        "incident:update" if has_general_update else "incident:updateOwnArea"
+    )
+    require_incident_area_scope(actor, update_capability, incident.responsible_area_id)
 
     changes = payload.model_dump(exclude_unset=True)
+    if not has_general_update:
+        allowed_fields = {"title", "description"}
+        forbidden_fields = payload.model_fields_set - allowed_fields
+        if forbidden_fields:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=(
+                    "incident:updateOwnArea only permits title and description; "
+                    f"forbidden fields: {', '.join(sorted(forbidden_fields))}"
+                ),
+            )
+        if any(value is None for value in changes.values()):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Title and description cannot be null",
+            )
     if "severity_value_id" in changes:
         await get_catalog_value(session, changes["severity_value_id"], "severity")
     if "responsible_area_id" in changes:

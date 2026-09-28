@@ -135,9 +135,9 @@ depender de `TestClient`.
 
 ## Propuesta M0: matriz funcional de roles y capacidades
 
-**Estado:** Pendiente de aprobación por Tecnología y Cumplimiento. No cambia
-los permisos vigentes ni autoriza datos reales, escritura en backoffice o
-producción.
+**Estado:** Criterio funcional acordado para el proyecto; pendiente de
+validación formal por Tecnología y Cumplimiento. No autoriza datos reales,
+escritura en backoffice ni producción.
 
 **Objetivo:** consolidar una única fuente de verdad para permisos de
 OperationalIncident y Management, aplicando mínimo privilegio y conservando
@@ -165,7 +165,9 @@ aplican mediante `area_id`; así se evita multiplicar roles por departamento.
 |---|---:|---:|---:|---:|---:|
 | Listar incidencias | Sí | Sí | Sí | Sólo resumen | Sólo su área |
 | Ver detalle, historial y estado | Sí | Sí | Sí | No | Sólo su área |
-| Crear o editar incidencia | Sí | Sí | No | No | Sólo su área, con límites actuales |
+| Crear incidencia | Sí | Sí | No | No | Sí, sólo dentro del alcance de su `area_id` |
+| Editar incidencia (`incident:update`) | Sí | Sí | No | No | No; la edición propia usa la capacidad separada siguiente |
+| Actualizar campos operativos propios (`incident:updateOwnArea`) | Sí, incluido en acceso total | No | No | No | Sí, sólo su área; título y descripción |
 | Transicionar o reasignar | Sí | Sí | No | No | Sólo cierre/cancelación de su área |
 | Métricas | Sí | Sí | Sí | Sí, agregadas | Sólo su área |
 | Leer catálogos y maestros | Sí | Sí | Sí | No | Sí, para formularios |
@@ -180,6 +182,42 @@ aplican mediante `area_id`; así se evita multiplicar roles por departamento.
 `admin` recibe todas las capacidades, incluidas las futuras; no se usa como
 sustituto de los roles ordinarios. Toda mutación de `admin` debe conservar el
 actor y la correlación en la auditoría.
+
+### Criterio acordado para la revisión de capacidades
+
+Se mantienen para los roles y acciones restantes las capacidades descritas
+en esta matriz. `responsibleArea` no recibe `incident:update`, que permanece
+reservada a Tecnología y `admin`. En su lugar recibe la capacidad separada
+`incident:updateOwnArea`, limitada a incidencias cuyo `responsible_area_id`
+coincida con el `area_id` del actor. El alcance se determina por el área
+asignada, no por quién reportó o creó personalmente la incidencia.
+
+Con `incident:updateOwnArea` sólo se permite editar título y descripción,
+sujetos a validación y auditoría. No se permite modificar severidad,
+`responsible_area_id` ni `compliance_review_id`; la reasignación permanece en
+su flujo separado y no se concede. Los cambios de estado no forman parte de
+esta capacidad y siguen limitados a las transiciones autorizadas actualmente
+para el área (cierre/cancelación); cualquier ampliación requiere una decisión
+expresa.
+
+No se prevé una revisión proactiva de las demás capacidades. Se reconsiderarán
+sólo si las partes interesadas solicitan una revisión. La validación formal
+pendiente con Tecnología y Cumplimiento sigue siendo necesaria antes de
+habilitar escritura en backoffice, promover datos reales o autorizar producción.
+
+### Observaciones pendientes para retomar
+
+- El modelo `IncidentUpdate` no rechaza explícitamente campos PATCH
+   desconocidos; Pydantic puede ignorarlos silenciosamente y la API podría
+   responder sin aplicar ningún cambio. Revisar el contrato para que entradas
+   no reconocidas se rechacen explícitamente.
+- La especificación exige un motivo para cancelar, pero la API actualmente
+   acepta la transición a `cancelled` sin motivo. Alinear validación y pruebas
+   con la regla documentada.
+
+La capacidad `incident:updateOwnArea` y sus límites quedan confirmados como
+criterio funcional del proyecto. Estos dos detalles se retomarán más adelante;
+M0 sigue pendiente de validación formal por Tecnología y Cumplimiento.
 
 ### Capacidades a introducir tras la aprobación
 

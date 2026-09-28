@@ -188,7 +188,7 @@ def test_invalid_transition_is_rejected():
     _run(workflow())
 
 
-def test_responsible_area_actor_is_limited_to_own_area_create_and_close():
+def test_responsible_area_actor_is_limited_to_own_area_create_update_and_close():
     if not os.getenv("DATABASE_URL") or SessionLocal is None:
         pytest.skip("DATABASE_URL is required for integration tests")
 
@@ -221,14 +221,40 @@ def test_responsible_area_actor_is_limited_to_own_area_create_and_close():
                 )
             assert getattr(create_error.value, "status_code", None) == 403
 
-            with pytest.raises(Exception) as update_error:
+            updated = await update_incident(
+                incident.id,
+                IncidentUpdate(
+                    title="Updated by owning area",
+                    description="The area can update its operational details.",
+                ),
+                session,
+                area_actor,
+            )
+            assert updated.title == "Updated by owning area"
+            assert updated.description == "The area can update its operational details."
+
+            for forbidden_update in (
+                IncidentUpdate(responsible_area_id=other_area_id),
+                IncidentUpdate(compliance_review_id=uuid4()),
+                IncidentUpdate(severity_value_id=ids["critical"]),
+            ):
+                with pytest.raises(Exception) as update_error:
+                    await update_incident(
+                        incident.id,
+                        forbidden_update,
+                        session,
+                        area_actor,
+                    )
+                assert getattr(update_error.value, "status_code", None) == 403
+
+            with pytest.raises(Exception) as other_area_update_error:
                 await update_incident(
                     incident.id,
-                    IncidentUpdate(title="Attempted update"),
+                    IncidentUpdate(title="Out of scope"),
                     session,
-                    area_actor,
+                    Actor(id=uuid4(), role=RESPONSIBLE_AREA, area_id=other_area_id),
                 )
-            assert getattr(update_error.value, "status_code", None) == 403
+            assert getattr(other_area_update_error.value, "status_code", None) == 403
 
             closed = await transition_incident(
                 incident.id,

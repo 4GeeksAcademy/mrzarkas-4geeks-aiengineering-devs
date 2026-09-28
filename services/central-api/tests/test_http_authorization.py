@@ -111,6 +111,36 @@ def test_http_authorization_enforces_area_capability_and_audit_access() -> None:
             )
             assert other_area_read.status_code == 403
 
+            own_area_update = await client.patch(
+                f"/incidents/{incident_id}",
+                headers=_bearer(RESPONSIBLE_AREA, own_area_id),
+                json={
+                    "title": "Updated by responsible area",
+                    "description": "Updated operational details, no PHI.",
+                },
+            )
+            assert own_area_update.status_code == 200
+            assert own_area_update.json()["title"] == "Updated by responsible area"
+
+            for forbidden_patch in (
+                {"responsible_area_id": str(other_area_id)},
+                {"compliance_review_id": str(uuid4())},
+                {"severity_value_id": str(ids["critical"])},
+            ):
+                response = await client.patch(
+                    f"/incidents/{incident_id}",
+                    headers=_bearer(RESPONSIBLE_AREA, own_area_id),
+                    json=forbidden_patch,
+                )
+                assert response.status_code == 403
+
+            other_area_update = await client.patch(
+                f"/incidents/{incident_id}",
+                headers=_bearer(RESPONSIBLE_AREA, other_area_id),
+                json={"title": "Out of scope"},
+            )
+            assert other_area_update.status_code == 403
+
             area_audit = await client.get(
                 f"/incidents/{incident_id}/audit",
                 headers=_bearer(RESPONSIBLE_AREA, own_area_id),
@@ -122,7 +152,7 @@ def test_http_authorization_enforces_area_capability_and_audit_access() -> None:
                 headers=_bearer(COMPLIANCE),
             )
             assert compliance_audit.status_code == 200
-            assert {event["action"] for event in compliance_audit.json()} == {"created"}
+            assert {event["action"] for event in compliance_audit.json()} == {"created", "updated"}
 
             denied_assignment = await client.post(
                 f"/incidents/{incident_id}/assignments",

@@ -67,7 +67,8 @@ Los permisos se expresan como capacidades y deben mapearse al mecanismo de auten
 | `incident:create` | Sí | Sí | Sí | Pendiente |
 | `incident:list` | Sí | Sí, según alcance | Sí | Agregado |
 | `incident:read` | Sí | Sí, según alcance | Sí | Agregado |
-| `incident:update` | Sí | Propia o autorizada | Según caso | No por defecto |
+| `incident:update` | Sí | No | Según caso | No por defecto |
+| `incident:updateOwnArea` | No | Sí, sólo incidencias asignadas a su área; título y descripción | No | No |
 | `incident:changeSeverity` | Sí | Responsable/autorizado | Sí | No por defecto |
 | `incident:transition` | Sí | Responsable/autorizado | Sí | No por defecto |
 | `incident:assign` | Sí | No por defecto | Sí | No por defecto |
@@ -80,6 +81,11 @@ Los permisos se expresan como capacidades y deben mapearse al mecanismo de auten
 ### Reglas de autorización
 
 - La autorización se aplica en backend; ocultar un botón no es suficiente.
+- Para `responsibleArea`, `incident:update` no está permitido. La capacidad
+	separada `incident:updateOwnArea` sólo permite cambiar título y descripción
+	cuando `responsible_area_id` coincide con el `area_id` del actor. No permite
+	cambiar severidad, `responsible_area_id` ni `compliance_review_id`; las
+	transiciones siguen la política separada de cierre/cancelación.
 - El actor no puede asignar una incidencia fuera de su alcance sin permiso explícito.
 - Dirección recibe agregados por defecto, no descripciones completas.
 - Cumplimiento puede acceder a incidencias escaladas y a la trazabilidad necesaria.

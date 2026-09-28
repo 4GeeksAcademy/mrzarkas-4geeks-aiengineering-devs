@@ -5,7 +5,7 @@
 
 ## M0 — Decisiones y seguridad
 
-- [ ] Validar la matriz final de capacidades con Tecnología y Cumplimiento.
+- [ ] Validar con Tecnología y Cumplimiento la matriz funcional registrada en `proposals.md`. Criterio de proyecto: `responsibleArea` conserva `incident:update` denegada, y recibe `incident:updateOwnArea` limitada al título y descripción de incidencias dentro de su `area_id`; severidad, reasignación, `responsible_area_id` y `compliance_review_id` quedan excluidos. Las transiciones siguen limitadas a cierre/cancelación. No se prevé revisar proactivamente las demás capacidades; se reconsiderarán si las partes interesadas lo solicitan.
 - [ ] Confirmar que `admin` es el único gestor inicial de configuración.
 - [ ] Aprobar límites de texto y política no-PHI para descripciones administrativas.
 - [ ] Definir retención y acceso a auditoría de Management.

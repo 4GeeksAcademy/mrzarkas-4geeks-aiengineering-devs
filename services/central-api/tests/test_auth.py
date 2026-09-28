@@ -47,8 +47,9 @@ def test_admin_has_every_documented_capability() -> None:
         assert has_capability(ADMIN, capability)
 
 
-def test_responsible_area_is_limited_to_create_and_close() -> None:
+def test_responsible_area_has_scoped_update_but_not_general_update() -> None:
     assert has_capability(RESPONSIBLE_AREA, "incident:create")
+    assert has_capability(RESPONSIBLE_AREA, "incident:updateOwnArea")
     assert has_capability(RESPONSIBLE_AREA, "incident:close")
     assert not has_capability(RESPONSIBLE_AREA, "incident:update")
     assert not has_capability(RESPONSIBLE_AREA, "incident:transition")

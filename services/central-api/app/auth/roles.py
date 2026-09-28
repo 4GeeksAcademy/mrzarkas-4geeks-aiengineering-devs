@@ -62,14 +62,14 @@ CAPABILITIES: dict[str, set[str]] = {
     DIRECTION: {
         "incident:list",
     },
-    # A responsibleArea actor may only create incidents for its own area
-    # and close/cancel them (interpreted as the "borrado" action, since
-    # incidents are never hard-deleted). No update, assign, reopen or
-    # audit access by default.
+    # A responsibleArea actor may create and update limited fields on
+    # incidents in its own area, and close/cancel them. No general update,
+    # assign, reopen or audit access by default.
     RESPONSIBLE_AREA: {
         "incident:create",
         "incident:list",
         "incident:read",
+        "incident:updateOwnArea",
         "incident:close",
         "catalog:read",
         "referenceData:read",
@@ -78,7 +78,12 @@ CAPABILITIES: dict[str, set[str]] = {
 
 # Capabilities that, for the responsibleArea role, must be checked against
 # the incident's responsible_area_id matching the actor's area_id.
-AREA_SCOPED_CAPABILITIES = {"incident:create", "incident:read", "incident:close"}
+AREA_SCOPED_CAPABILITIES = {
+    "incident:create",
+    "incident:read",
+    "incident:updateOwnArea",
+    "incident:close",
+}
 
 
 def has_capability(role: str, capability: str) -> bool:

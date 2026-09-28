@@ -18,11 +18,12 @@
 
 - Las incidencias validan clínica, jurisdicción, sistema y área contra maestros sintéticos estables US/UK; `reporter_id` deriva de la identidad autenticada y existen claves foráneas para las referencias contextuales. Antes de piloto deben sustituirse fixtures por datos aprobados.
 - Administración de catálogos y maestros según `specs/OperationalIncident-management.md` está técnicamente implementada. M0 sigue pendiente de aprobación externa: no se autoriza la promoción de datos reales, UI de escritura ni producción. El alcance de `ComplianceReview` por jurisdicción se valida al asociarlo a una incidencia; el JWT aún no representa alcance jurisdiccional individual.
-- La propuesta de matriz M0 está documentada en `proposals.md`: cuatro roles principales (`admin`, Tecnología, Cumplimiento y Dirección) y áreas operativas mediante `responsibleArea` + `area_id`; su adopción requiere aprobación antes de cambiar capacidades.
+- El criterio funcional de la matriz M0 está documentado en `proposals.md`: `responsibleArea` no recibe el `incident:update` general, pero sí la capacidad separada `incident:updateOwnArea` para título y descripción de incidencias asignadas a su `area_id`; severidad, asignación y `ComplianceReview` quedan fuera. El código aplica esta separación. La validación formal de Tecnología y Cumplimiento sigue pendiente antes de habilitar escritura en backoffice, promover datos reales o autorizar producción.
+- Quedan anotados para retomar: los PATCH pueden ignorar campos desconocidos porque el esquema no los rechaza explícitamente, y la API permite cancelar sin motivo aunque la especificación lo exige. La capacidad y límites de `incident:updateOwnArea` quedan confirmados como criterio funcional, pero M0 continúa pendiente de validación formal por Tecnología y Cumplimiento.
 - Backoffice en `uis/`.
 - Validación formal de Tecnología, Cumplimiento y áreas funcionales sobre catálogos, permisos, transiciones, no-PHI, retención y SLA.
 - Validación por Tecnología y Cumplimiento del JWT vigente o de una alternativa futura; no hay una sustitución comprometida. También faltan la decisión de PostgreSQL gestionado, backups y prueba de restauración.
 
 ## Próximo paso
 
-Resolver M0 con Tecnología y Cumplimiento: matriz final de capacidades, política no-PHI, retención de auditoría y proceso de promoción de maestros aprobados. Después, validar el backoffice de escritura antes de piloto.
+Completar M0 con Tecnología y Cumplimiento: validar formalmente el criterio de matriz registrado en `proposals.md`, aprobar la política no-PHI, definir retención de auditoría y el proceso de promoción de maestros aprobados. Retomar también las dos observaciones técnicas anotadas en `proposals.md` (campos PATCH desconocidos y motivo obligatorio para cancelar). Después, validar el backoffice de escritura antes de piloto. Las demás capacidades sólo se revisarán si las partes interesadas lo solicitan.
