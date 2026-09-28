@@ -16,10 +16,22 @@ services:
   api:
     build:
       context: ./services/central-api
+      target: production
     env_file:
       - ./services/central-api/.env
     ports:
       - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  test:
+    profiles: ["test"]
+    build:
+      context: ./services/central-api
+      target: test
+    env_file:
+      - ./services/central-api/.env
     depends_on:
       postgres:
         condition: service_healthy

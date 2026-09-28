@@ -3,20 +3,30 @@ from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
+from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.dependencies import Actor, ensure_area_scope, get_current_actor, require_capability
-from app.auth.roles import RESPONSIBLE_AREA, has_capability
+from app.auth.dependencies import Actor, get_current_actor, require_capability
+from app.auth.policies import (
+    authorize_status_transition,
+    require_incident_area_scope,
+    visible_incident_area_id,
+)
+from app.auth.roles import has_capability
 from app.db.models.catalog import Catalog, CatalogValue
 from app.db.session import get_session
-from app.incidents.history import AuditEvent, IncidentStatusHistory
+from app.incidents.history import AuditEvent, IncidentAssignmentHistory, IncidentStatusHistory
 from app.incidents.models import OperationalIncident
+from app.reference_data.validation import validate_incident_references, validate_responsible_area
 from app.incidents.schemas import (
     AuditEventResponse,
+    AssignmentHistoryResponse,
+    IncidentAssignmentRequest,
     IncidentCreate,
     IncidentListResponse,
     IncidentResponse,
     IncidentUpdate,
+    OpenIncidentsBySeverityResponse,
     StatusHistoryResponse,
     StatusTransitionRequest,
 )
@@ -34,11 +44,6 @@ ALLOWED_STATUS_TRANSITIONS = {
     "closed": set(),
     "cancelled": set(),
 }
-
-# Statuses a responsibleArea actor may set via "incident:close" (the closest
-# equivalent to a delete action, since incidents are never hard-deleted).
-RESPONSIBLE_AREA_CLOSE_STATUSES = {"closed", "cancelled"}
-
 
 def make_incident_identifier() -> str:
     return f"HC-{datetime.now(UTC):%Y%m%d}-{uuid4().hex[:8].upper()}"
@@ -73,7 +78,8 @@ async def create_incident(
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("incident:create")),
 ) -> OperationalIncident:
-    ensure_area_scope(actor, "incident:create", payload.responsible_area_id)
+    require_incident_area_scope(actor, "incident:create", payload.responsible_area_id)
+    await validate_incident_references(session, payload.clinic_id, payload.jurisdiction_id, payload.affected_system_id, payload.responsible_area_id)
 
     entry_channel = await get_catalog_value(session, payload.entry_channel_value_id, "entryChannel")
     incident_type = await get_catalog_value(session, payload.incident_type_value_id, "incidentType")
@@ -96,7 +102,8 @@ async def create_incident(
 
     now = datetime.now(UTC)
     incident = OperationalIncident(
-        **payload.model_dump(),
+        **payload.model_dump(exclude={"reporter_id"}),
+        reporter_id=actor.id,
         incident_identifier=make_incident_identifier(),
         status_value_id=new_status.id,
         created_at=now,
@@ -146,8 +153,9 @@ async def list_incidents(
 
     # A responsibleArea actor can only ever see its own area, regardless of
     # what was requested in the query string.
-    if actor.role == RESPONSIBLE_AREA:
-        filters.append(OperationalIncident.responsible_area_id == actor.area_id)
+    scoped_area_id = visible_incident_area_id(actor)
+    if scoped_area_id is not None:
+        filters.append(OperationalIncident.responsible_area_id == scoped_area_id)
     elif responsible_area_id:
         filters.append(OperationalIncident.responsible_area_id == responsible_area_id)
 
@@ -164,6 +172,50 @@ async def list_incidents(
     return IncidentListResponse(items=items, total=total)
 
 
+@router.get("/metrics/open-by-severity", response_model=list[OpenIncidentsBySeverityResponse])
+async def open_incidents_by_severity(
+    session: AsyncSession = Depends(get_session),
+    actor: Actor = Depends(require_capability("incident:list")),
+) -> list[OpenIncidentsBySeverityResponse]:
+    severity_catalog = aliased(Catalog)
+    severity_value = aliased(CatalogValue)
+
+    rows = (await session.execute(
+        select(
+            severity_value.id,
+            severity_value.key,
+            severity_value.label,
+        )
+        .join(severity_catalog, severity_value.catalog_id == severity_catalog.id)
+        .where(
+            severity_catalog.catalog_name == "severity",
+            severity_catalog.is_active.is_(True),
+            severity_value.is_active.is_(True),
+        )
+        .group_by(severity_value.id, severity_value.key, severity_value.label)
+        .order_by(severity_value.key)
+    )).all()
+
+    # Count only open incidents. Keeping this calculation in the API avoids
+    # duplicating status semantics in future clients.
+    status_value = aliased(CatalogValue)
+    open_counts = dict((await session.execute(
+        select(OperationalIncident.severity_value_id, func.count(OperationalIncident.id))
+        .join(status_value, OperationalIncident.status_value_id == status_value.id)
+        .where(status_value.is_open.is_(True))
+        .group_by(OperationalIncident.severity_value_id)
+    )).all())
+    return [
+        OpenIncidentsBySeverityResponse(
+            severity_value_id=severity_id,
+            severity_key=severity_key,
+            severity_label=severity_label,
+            open_incident_count=open_counts.get(severity_id, 0),
+        )
+        for severity_id, severity_key, severity_label in rows
+    ]
+
+
 @router.get("/{incident_id}", response_model=IncidentResponse)
 async def get_incident(
     incident_id: UUID,
@@ -173,7 +225,7 @@ async def get_incident(
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
-    ensure_area_scope(actor, "incident:read", incident.responsible_area_id)
+    require_incident_area_scope(actor, "incident:read", incident.responsible_area_id)
     return incident
 
 
@@ -195,11 +247,13 @@ async def update_incident(
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
-    ensure_area_scope(actor, "incident:update", incident.responsible_area_id)
+    require_incident_area_scope(actor, "incident:update", incident.responsible_area_id)
 
     changes = payload.model_dump(exclude_unset=True)
     if "severity_value_id" in changes:
         await get_catalog_value(session, changes["severity_value_id"], "severity")
+    if "responsible_area_id" in changes:
+        await validate_responsible_area(session, changes["responsible_area_id"])
     if not changes:
         return incident
 
@@ -240,7 +294,7 @@ async def transition_incident(
             status_code=409,
             detail=f"Transition from {current.key} to {target.key} is not allowed",
         )
-    _authorize_transition(actor, incident, target.key)
+    authorize_status_transition(actor, incident.responsible_area_id, target.key)
 
     now = datetime.now(UTC)
     session.add(IncidentStatusHistory(
@@ -261,20 +315,45 @@ async def transition_incident(
     return incident
 
 
-def _authorize_transition(actor: Actor, incident: OperationalIncident, target_status_key: str) -> None:
-    if has_capability(actor.role, "incident:transition"):
-        return
-    if (
-        actor.role == RESPONSIBLE_AREA
-        and has_capability(actor.role, "incident:close")
-        and target_status_key in RESPONSIBLE_AREA_CLOSE_STATUSES
-        and actor.area_id == incident.responsible_area_id
-    ):
-        return
-    raise HTTPException(
-        status_code=status.HTTP_403_FORBIDDEN,
-        detail=f"Role '{actor.role}' cannot transition to '{target_status_key}'",
-    )
+@router.post("/{incident_id}/assignments", response_model=IncidentResponse)
+async def assign_incident(
+    incident_id: UUID,
+    payload: IncidentAssignmentRequest,
+    session: AsyncSession = Depends(get_session),
+    actor: Actor = Depends(require_capability("incident:assign")),
+) -> OperationalIncident:
+    incident = await session.get(OperationalIncident, incident_id)
+    if incident is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+    if incident.responsible_area_id == payload.responsible_area_id:
+        raise HTTPException(status_code=409, detail="Incident is already assigned to that area")
+    await validate_responsible_area(session, payload.responsible_area_id)
+
+    now = datetime.now(UTC)
+    previous_area_id = incident.responsible_area_id
+    session.add(IncidentAssignmentHistory(
+        incident_id=incident.id,
+        from_responsible_area_id=previous_area_id,
+        to_responsible_area_id=payload.responsible_area_id,
+        changed_by=actor.id,
+        reason=payload.reason,
+        changed_at=now,
+    ))
+    session.add(AuditEvent(
+        entity_type="OperationalIncident",
+        entity_id=incident.id,
+        action="assigned",
+        actor_id=actor.id,
+        before_data={"responsible_area_id": str(previous_area_id)},
+        after_data={"responsible_area_id": str(payload.responsible_area_id)},
+        occurred_at=now,
+    ))
+    incident.responsible_area_id = payload.responsible_area_id
+    incident.updated_at = now
+    incident.updated_by = actor.id
+    await session.commit()
+    await session.refresh(incident)
+    return incident
 
 
 @router.get("/{incident_id}/history", response_model=list[StatusHistoryResponse])
@@ -286,9 +365,26 @@ async def incident_history(
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
-    ensure_area_scope(actor, "incident:read", incident.responsible_area_id)
+    require_incident_area_scope(actor, "incident:read", incident.responsible_area_id)
     return list((await session.execute(
         select(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == incident_id).order_by(IncidentStatusHistory.changed_at)
+    )).scalars().all())
+
+
+@router.get("/{incident_id}/assignment-history", response_model=list[AssignmentHistoryResponse])
+async def incident_assignment_history(
+    incident_id: UUID,
+    session: AsyncSession = Depends(get_session),
+    actor: Actor = Depends(require_capability("incident:read")),
+) -> list[IncidentAssignmentHistory]:
+    incident = await session.get(OperationalIncident, incident_id)
+    if incident is None:
+        raise HTTPException(status_code=404, detail="Incident not found")
+    require_incident_area_scope(actor, "incident:read", incident.responsible_area_id)
+    return list((await session.execute(
+        select(IncidentAssignmentHistory)
+        .where(IncidentAssignmentHistory.incident_id == incident_id)
+        .order_by(IncidentAssignmentHistory.changed_at)
     )).scalars().all())
 
 

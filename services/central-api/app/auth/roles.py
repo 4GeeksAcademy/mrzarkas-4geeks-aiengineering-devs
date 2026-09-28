@@ -2,8 +2,8 @@
 
 Mirrors the capability matrix in
 memory-bank/specs/OperationalIncident-initial-decisions.md. `admin` is not
-defined in that matrix; it was added as a technical role (see
-memory-bank/discrepancies.md) and is not a functionally approved role.
+defined in that matrix; it is retained as the technical administration and
+support role (see memory-bank/discrepancies.md).
 """
 
 from __future__ import annotations

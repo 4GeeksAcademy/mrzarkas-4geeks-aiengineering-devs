@@ -9,10 +9,25 @@ from app.auth.dependencies import Actor
 from app.auth.roles import ADMIN, RESPONSIBLE_AREA
 from app.db.models.catalog import Catalog, CatalogValue
 from app.db.session import SessionLocal, engine
-from app.incidents.history import AuditEvent, IncidentStatusHistory
-from app.incidents.router import create_incident, incident_audit, incident_history, transition_incident, update_incident
-from app.incidents.schemas import IncidentCreate, IncidentUpdate, StatusTransitionRequest
+from app.incidents.history import AuditEvent, IncidentAssignmentHistory, IncidentStatusHistory
+from app.incidents.router import (
+    assign_incident,
+    create_incident,
+    incident_assignment_history,
+    incident_audit,
+    incident_history,
+    open_incidents_by_severity,
+    transition_incident,
+    update_incident,
+)
+from app.incidents.schemas import (
+    IncidentAssignmentRequest,
+    IncidentCreate,
+    IncidentUpdate,
+    StatusTransitionRequest,
+)
 from app.incidents.models import OperationalIncident
+from tests.reference_fixtures import reference_ids
 
 
 pytestmark = pytest.mark.integration
@@ -48,20 +63,21 @@ def test_incident_update_transition_history_and_audit():
         nonlocal incident_id
         async with SessionLocal() as session:
             ids = await _catalog_ids()
+            refs = await reference_ids()
             required = {"clinicPhone", "systemAvailability", "critical", "new", "underAnalysis"}
             if not ids or not required.issubset(ids):
                 pytest.skip("Catalog seed is required for integration tests")
 
-            area_id = uuid4()
+            area_id = refs["technology"]
             admin_actor = Actor(id=uuid4(), role=ADMIN)
 
             payload = IncidentCreate(
                 title="Integration test incident",
                 description="Incident workflow integration test",
                 reporter_id=uuid4(),
-                clinic_id=uuid4(),
-                jurisdiction_id=uuid4(),
-                affected_system_id=uuid4(),
+                clinic_id=refs["dev-us-clinic-01"],
+                jurisdiction_id=refs["US"],
+                affected_system_id=refs["usEhr"],
                 entry_channel_value_id=ids["clinicPhone"],
                 incident_type_value_id=ids["systemAvailability"],
                 severity_value_id=ids["critical"],
@@ -69,6 +85,12 @@ def test_incident_update_transition_history_and_audit():
             )
             incident = await create_incident(payload, session, admin_actor)
             incident_id = incident.id
+
+            severity_summary = await open_incidents_by_severity(session, admin_actor)
+            open_by_severity = {
+                item.severity_value_id: item.open_incident_count for item in severity_summary
+            }
+            assert open_by_severity[ids["critical"]] == 1
 
             updated = await update_incident(
                 incident.id,
@@ -89,13 +111,30 @@ def test_incident_update_transition_history_and_audit():
             )
             assert transitioned.status_value_id == ids["underAnalysis"]
 
+            assigned_area_id = refs["clinicalOperations"]
+            reassigned = await assign_incident(
+                incident.id,
+                IncidentAssignmentRequest(
+                    responsible_area_id=assigned_area_id,
+                    reason="Route to the owning area",
+                ),
+                session,
+                admin_actor,
+            )
+            assert reassigned.responsible_area_id == assigned_area_id
+
             history = await incident_history(incident.id, session, admin_actor)
+            assignment_history = await incident_assignment_history(incident.id, session, admin_actor)
             audit = await incident_audit(incident.id, session, admin_actor)
             assert len(history) == 2
             assert history[-1].to_status_value_id == ids["underAnalysis"]
-            assert {event.action for event in audit} == {"created", "updated", "status_changed"}
+            assert len(assignment_history) == 1
+            assert assignment_history[0].from_responsible_area_id == area_id
+            assert assignment_history[0].to_responsible_area_id == assigned_area_id
+            assert {event.action for event in audit} == {"created", "updated", "status_changed", "assigned"}
 
             await session.execute(delete(AuditEvent).where(AuditEvent.entity_id == incident.id))
+            await session.execute(delete(IncidentAssignmentHistory).where(IncidentAssignmentHistory.incident_id == incident.id))
             await session.execute(delete(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == incident.id))
             await session.execute(delete(OperationalIncident).where(OperationalIncident.id == incident.id))
             await session.commit()
@@ -113,6 +152,7 @@ def test_invalid_transition_is_rejected():
     async def workflow():
         async with SessionLocal() as session:
             ids = await _catalog_ids()
+            refs = await reference_ids()
             if not ids or not {"clinicPhone", "systemAvailability", "critical", "new", "closed"}.issubset(ids):
                 pytest.skip("Catalog seed is required for integration tests")
 
@@ -121,10 +161,10 @@ def test_invalid_transition_is_rejected():
             payload = IncidentCreate(
                 title="Invalid transition test",
                 description="Transition validation integration test",
-                reporter_id=uuid4(), clinic_id=uuid4(), jurisdiction_id=uuid4(),
-                affected_system_id=uuid4(), entry_channel_value_id=ids["clinicPhone"],
+                reporter_id=uuid4(), clinic_id=refs["dev-us-clinic-01"], jurisdiction_id=refs["US"],
+                affected_system_id=refs["usEhr"], entry_channel_value_id=ids["clinicPhone"],
                 incident_type_value_id=ids["systemAvailability"], severity_value_id=ids["critical"],
-                responsible_area_id=uuid4(),
+                responsible_area_id=refs["technology"],
             )
             incident = await create_incident(payload, session, admin_actor)
             created_incident_id = incident.id
@@ -155,18 +195,19 @@ def test_responsible_area_actor_is_limited_to_own_area_create_and_close():
     async def workflow():
         async with SessionLocal() as session:
             ids = await _catalog_ids()
+            refs = await reference_ids()
             if not ids or not {"clinicPhone", "systemAvailability", "critical", "new", "cancelled"}.issubset(ids):
                 pytest.skip("Catalog seed is required for integration tests")
 
-            own_area_id = uuid4()
-            other_area_id = uuid4()
+            own_area_id = refs["technology"]
+            other_area_id = refs["clinicalOperations"]
             area_actor = Actor(id=uuid4(), role=RESPONSIBLE_AREA, area_id=own_area_id)
 
             payload = IncidentCreate(
                 title="Area scoped incident",
                 description="Created by a responsibleArea actor",
-                reporter_id=uuid4(), clinic_id=uuid4(), jurisdiction_id=uuid4(),
-                affected_system_id=uuid4(), entry_channel_value_id=ids["clinicPhone"],
+                reporter_id=uuid4(), clinic_id=refs["dev-us-clinic-01"], jurisdiction_id=refs["US"],
+                affected_system_id=refs["usEhr"], entry_channel_value_id=ids["clinicPhone"],
                 incident_type_value_id=ids["systemAvailability"], severity_value_id=ids["critical"],
                 responsible_area_id=own_area_id,
             )

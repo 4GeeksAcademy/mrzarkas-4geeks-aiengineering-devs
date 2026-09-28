@@ -22,9 +22,11 @@ packages = ["app"]
 
 [project.scripts]
 seed-catalogs = "app.catalogs.seed:main"
+seed-reference-data = "app.reference_data.seed:main"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.27,<1",
     "pytest>=8.3,<9",
 ]
 

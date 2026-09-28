@@ -21,6 +21,20 @@ class IncidentStatusHistory(Base):
     changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
+class IncidentAssignmentHistory(Base):
+    __tablename__ = "incident_assignment_history"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    incident_id: Mapped[UUID] = mapped_column(
+        ForeignKey("operational_incident.id", ondelete="CASCADE"), nullable=False
+    )
+    from_responsible_area_id: Mapped[UUID | None] = mapped_column()
+    to_responsible_area_id: Mapped[UUID] = mapped_column(nullable=False)
+    changed_by: Mapped[UUID] = mapped_column(nullable=False)
+    reason: Mapped[str | None] = mapped_column(Text)
+    changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
 class AuditEvent(Base):
     __tablename__ = "audit_event"
 

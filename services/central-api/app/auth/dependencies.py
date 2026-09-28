@@ -66,14 +66,7 @@ def require_capability(capability: str):
 
 
 def ensure_area_scope(actor: Actor, capability: str, resource_area_id: UUID) -> None:
-    """Enforce that a responsibleArea actor only touches its own area."""
+    """Compatibility wrapper; policies are the source of contextual rules."""
+    from app.auth.policies import require_incident_area_scope
 
-    if actor.role != RESPONSIBLE_AREA:
-        return
-    if capability not in AREA_SCOPED_CAPABILITIES:
-        return
-    if actor.area_id != resource_area_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Actor is not authorized for this area",
-        )
+    require_incident_area_scope(actor, capability, resource_area_id)

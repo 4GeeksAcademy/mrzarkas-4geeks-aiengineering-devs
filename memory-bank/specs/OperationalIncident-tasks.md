@@ -67,10 +67,10 @@ Documento de consolidación de esta fase: [`OperationalIncident-initial-decision
 - [x] Preparar el diseño relacional inicial y los criterios de salida de Fase 1. Ver [`OperationalIncident-phase1-data-model.md`](./OperationalIncident-phase1-data-model.md).
 - [x] Crear la migración inicial de catálogos.
 - [x] Crear el seed provisional de los cuatro catálogos configurables.
-- [ ] Crear los catálogos contextuales de `Clinic`, `AffectedSystem`, `Jurisdiction` y áreas responsables.
+- [~] Crear los catálogos contextuales de `Clinic`, `AffectedSystem`, `Jurisdiction` y áreas responsables. Fundación compartida creada para jurisdicción, sistemas y áreas; clínicas aprobadas pendientes.
 - [x] Crear la tabla lógica de `OperationalIncident`.
 - [ ] Crear el historial de estados.
-- [ ] Crear el historial de asignaciones.
+- [x] Crear el historial de asignaciones.
 - [ ] Crear la auditoría de cambios.
 - [ ] Añadir claves foráneas, restricciones de nulabilidad y unicidad.
 - [ ] Añadir índices para estado, severidad, área responsable y fechas.
@@ -86,11 +86,11 @@ Documento de consolidación de esta fase: [`OperationalIncident-initial-decision
 - [x] Implementar listado paginado.
 - [x] Implementar consulta detallada.
 - [ ] Implementar cambio de estado con validación de transición.
-- [ ] Implementar asignación y reasignación.
+- [x] Implementar asignación y reasignación.
 - [ ] Implementar consulta de historial de estados.
-- [ ] Implementar consulta de historial de responsables.
+- [x] Implementar consulta de historial de responsables.
 - [ ] Implementar asociación con `ComplianceReview`, cuando corresponda.
-- [ ] Implementar resumen de incidencias abiertas por severidad.
+- [x] Implementar resumen de incidencias abiertas por severidad.
 - [ ] Implementar autorización en cada operación.
 - [ ] Definir errores seguros y no revelar contenido sensible.
 
@@ -120,11 +120,11 @@ Documento de consolidación de esta fase: [`OperationalIncident-initial-decision
 - [ ] Probar autor y marca temporal generados en servidor.
 - [ ] Probar auditoría e inmutabilidad funcional.
 - [ ] Probar filtros individualmente y combinados.
-- [ ] Probar la fórmula de incidencias abiertas por severidad.
+- [x] Probar la fórmula de incidencias abiertas por severidad.
 - [ ] Probar permisos y aislamiento por rol/área.
 - [ ] Probar ausencia de PHI en logs, errores y telemetría.
-- [ ] Probar migraciones hacia delante y rollback cuando sea viable.
-- [ ] Probar restauración de una copia en un entorno no productivo.
+- [~] Probar migraciones hacia delante y rollback cuando sea viable. Migración hacia delante validada desde base vacía; rollback pendiente.
+- [x] Probar restauración de una copia en un entorno no productivo.
 
 ### P2 — Piloto y operación
 

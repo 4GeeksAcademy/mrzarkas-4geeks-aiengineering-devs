@@ -30,8 +30,28 @@ class IncidentResponse(IncidentCreate):
     updated_by: UUID
 
 
+class IncidentListItem(BaseModel):
+    """Operational summary returned by the queue; excludes sensitive detail."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    incident_identifier: str
+    title: str
+    clinic_id: UUID
+    jurisdiction_id: UUID
+    affected_system_id: UUID
+    entry_channel_value_id: UUID
+    incident_type_value_id: UUID
+    severity_value_id: UUID
+    status_value_id: UUID
+    responsible_area_id: UUID
+    created_at: datetime
+    updated_at: datetime
+
+
 class IncidentListResponse(BaseModel):
-    items: list[IncidentResponse]
+    items: list[IncidentListItem]
     total: int
 
 
@@ -48,6 +68,11 @@ class StatusTransitionRequest(BaseModel):
     reason: str | None = Field(default=None, max_length=2000)
 
 
+class IncidentAssignmentRequest(BaseModel):
+    responsible_area_id: UUID
+    reason: str | None = Field(default=None, max_length=2000)
+
+
 class StatusHistoryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -57,6 +82,24 @@ class StatusHistoryResponse(BaseModel):
     changed_by: UUID
     reason: str | None
     changed_at: datetime
+
+
+class AssignmentHistoryResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    from_responsible_area_id: UUID | None
+    to_responsible_area_id: UUID
+    changed_by: UUID
+    reason: str | None
+    changed_at: datetime
+
+
+class OpenIncidentsBySeverityResponse(BaseModel):
+    severity_value_id: UUID
+    severity_key: str
+    severity_label: str
+    open_incident_count: int
 
 
 class AuditEventResponse(BaseModel):

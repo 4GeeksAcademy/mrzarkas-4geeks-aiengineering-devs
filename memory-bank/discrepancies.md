@@ -31,9 +31,10 @@ Ninguno de los documentos de `memory-bank/specs/` ni `product-context.md`
 define un rol `admin`. Los roles documentados son implícitos por área
 (Tecnología, Operaciones Clínicas, Experiencia del Paciente y Acceso, Ciclo
 de Ingresos y Facturación, Cumplimiento y Gobierno del Dato) más un rol
-agregado de "Dirección". Se añade `admin` como rol técnico nuevo, no
-aprobado funcionalmente, para administración de catálogos, permisos y
-soporte. Debe revisarse con el equipo de producto antes de producción.
+agregado de "Dirección". Por decisión de proyecto del 2026-09-28 se mantiene
+`admin` como rol técnico para administración de catálogos, permisos y
+soporte. Sus capacidades técnicas deben conservarse documentadas y sujetas a
+revisión de acceso antes de producción.
 
 ## Entidades contextuales sin implementar
 
