@@ -1,6 +1,8 @@
 services:
   postgres:
     image: postgres:16-alpine
+    env_file:
+      - ./services/central-api/.env
     environment:
       POSTGRES_DB: "${POSTGRES_DB:-healthcore}"
       POSTGRES_USER: "${POSTGRES_USER:-healthcore}"
@@ -18,6 +20,8 @@ services:
   api:
     build:
       context: ./services/central-api
+    env_file:
+      - ./services/central-api/.env
     ports:
       - "${API_PORT:-8000}:8000"
     environment:
