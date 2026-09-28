@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.catalogs.schemas import CatalogResponse, CatalogValueResponse
+from app.auth.dependencies import Actor, require_capability
 from app.db.models.catalog import Catalog, CatalogValue
 from app.db.session import get_session
 
@@ -15,6 +16,7 @@ router = APIRouter(prefix="/catalogs", tags=["catalogs"])
 async def get_catalog(
     catalog_name: str,
     session: AsyncSession = Depends(get_session),
+    actor: Actor = Depends(require_capability("catalog:read")),
 ) -> CatalogResponse:
     catalog = (
         await session.execute(

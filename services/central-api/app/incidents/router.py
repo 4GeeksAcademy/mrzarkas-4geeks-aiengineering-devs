@@ -18,6 +18,8 @@ from app.db.session import get_session
 from app.incidents.history import AuditEvent, IncidentAssignmentHistory, IncidentStatusHistory
 from app.incidents.models import OperationalIncident
 from app.reference_data.validation import validate_incident_references, validate_responsible_area
+from app.compliance.models import ComplianceReview
+from app.management.service import add_audit_event
 from app.incidents.schemas import (
     AuditEventResponse,
     AssignmentHistoryResponse,
@@ -80,6 +82,10 @@ async def create_incident(
 ) -> OperationalIncident:
     require_incident_area_scope(actor, "incident:create", payload.responsible_area_id)
     await validate_incident_references(session, payload.clinic_id, payload.jurisdiction_id, payload.affected_system_id, payload.responsible_area_id)
+    if payload.compliance_review_id:
+        review = await session.get(ComplianceReview, payload.compliance_review_id)
+        if review is None or review.jurisdiction_id != payload.jurisdiction_id:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Invalid compliance review for jurisdiction")
 
     entry_channel = await get_catalog_value(session, payload.entry_channel_value_id, "entryChannel")
     incident_type = await get_catalog_value(session, payload.incident_type_value_id, "incidentType")
@@ -130,6 +136,16 @@ async def create_incident(
         after_data={"status_value_id": str(new_status.id)},
         occurred_at=now,
     ))
+    if payload.compliance_review_id:
+        add_audit_event(
+            session,
+            resource_type="complianceReview",
+            resource_id=payload.compliance_review_id,
+            action="associated",
+            actor_id=actor.id,
+            before_data=None,
+            after_data={"incident_id": str(incident.id)},
+        )
     await session.commit()
     await session.refresh(incident)
     return incident
@@ -254,9 +270,14 @@ async def update_incident(
         await get_catalog_value(session, changes["severity_value_id"], "severity")
     if "responsible_area_id" in changes:
         await validate_responsible_area(session, changes["responsible_area_id"])
+    if "compliance_review_id" in changes and changes["compliance_review_id"]:
+        review = await session.get(ComplianceReview, changes["compliance_review_id"])
+        if review is None or review.jurisdiction_id != incident.jurisdiction_id:
+            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Invalid compliance review for jurisdiction")
     if not changes:
         return incident
 
+    previous_compliance_review_id = incident.compliance_review_id
     before = {key: str(getattr(incident, key)) for key in changes}
     for key, value in changes.items():
         setattr(incident, key, value)
@@ -268,6 +289,27 @@ async def update_incident(
         after_data={key: str(value) for key, value in changes.items()},
         occurred_at=incident.updated_at,
     ))
+    if "compliance_review_id" in changes and previous_compliance_review_id != incident.compliance_review_id:
+        if previous_compliance_review_id:
+            add_audit_event(
+                session,
+                resource_type="complianceReview",
+                resource_id=previous_compliance_review_id,
+                action="disassociated",
+                actor_id=actor.id,
+                before_data={"incident_id": str(incident.id)},
+                after_data=None,
+            )
+        if incident.compliance_review_id:
+            add_audit_event(
+                session,
+                resource_type="complianceReview",
+                resource_id=incident.compliance_review_id,
+                action="associated",
+                actor_id=actor.id,
+                before_data=None,
+                after_data={"incident_id": str(incident.id)},
+            )
     await session.commit()
     await session.refresh(incident)
     return incident

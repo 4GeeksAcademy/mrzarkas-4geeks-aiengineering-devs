@@ -10,7 +10,13 @@ from uuid import UUID
 from fastapi import HTTPException, status
 
 from app.auth.dependencies import Actor
-from app.auth.roles import AREA_SCOPED_CAPABILITIES, RESPONSIBLE_AREA, has_capability
+from app.auth.roles import (
+    ADMIN,
+    AREA_SCOPED_CAPABILITIES,
+    COMPLIANCE,
+    RESPONSIBLE_AREA,
+    has_capability,
+)
 
 
 RESPONSIBLE_AREA_CLOSE_STATUSES = {"closed", "cancelled"}
@@ -57,4 +63,20 @@ def authorize_status_transition(
     raise HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail=f"Role '{actor.role}' cannot transition to '{target_status_key}'",
+    )
+
+
+def authorize_compliance_review_read(actor: Actor) -> None:
+    """Apply the provisional visibility policy for ComplianceReview.
+
+    Current JWTs do not carry a jurisdiction scope. Until M0 approves a more
+    granular claim and its source of truth, only the global Compliance role
+    and the technical administrator may view a review. The route-level
+    capability check remains in place as a defence in depth measure.
+    """
+    if actor.role in {ADMIN, COMPLIANCE}:
+        return
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Actor is not authorized to view compliance reviews",
     )

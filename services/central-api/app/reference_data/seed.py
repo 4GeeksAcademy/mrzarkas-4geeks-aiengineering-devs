@@ -4,6 +4,7 @@ Never use these values as the production registry of HealthCore clinics.
 """
 
 import asyncio
+from datetime import UTC, datetime
 from uuid import UUID
 
 from sqlalchemy.dialects.postgresql import insert
@@ -17,6 +18,7 @@ US = UUID("00000000-0000-0000-0000-000000000001")
 UK = UUID("00000000-0000-0000-0000-000000000002")
 US_CLINIC = UUID("00000000-0000-0000-0000-000000000101")
 UK_CLINIC = UUID("00000000-0000-0000-0000-000000000102")
+SYSTEM_ACTOR_ID = UUID("00000000-0000-0000-0000-000000000900")
 AREAS = [
     (UUID("00000000-0000-0000-0000-000000000201"), "technology", "Technology"),
     (UUID("00000000-0000-0000-0000-000000000202"), "clinicalOperations", "Clinical Operations"),
@@ -38,15 +40,22 @@ async def seed_reference_data() -> None:
     if SessionLocal is None:
         raise RuntimeError("DATABASE_URL is required to seed reference data")
     async with SessionLocal() as session:
+        now = datetime.now(UTC)
+        audit = {
+            "created_at": now,
+            "created_by": SYSTEM_ACTOR_ID,
+            "updated_at": now,
+            "updated_by": SYSTEM_ACTOR_ID,
+        }
         for model, values in (
-            (Jurisdiction, [{"id": US, "key": "US", "label": "United States", "is_active": True}, {"id": UK, "key": "UK", "label": "United Kingdom", "is_active": True}]),
-            (ResponsibleArea, [{"id": id, "key": key, "label": label, "is_active": True} for id, key, label in AREAS]),
-            (AffectedSystem, [{"id": id, "key": key, "label": label, "is_active": True} for id, key, label, _ in SYSTEMS]),
+            (Jurisdiction, [{"id": US, "key": "US", "label": "United States", "is_active": True, **audit}, {"id": UK, "key": "UK", "label": "United Kingdom", "is_active": True, **audit}]),
+            (ResponsibleArea, [{"id": id, "key": key, "label": label, "is_active": True, **audit} for id, key, label in AREAS]),
+            (AffectedSystem, [{"id": id, "key": key, "label": label, "is_active": True, **audit} for id, key, label, _ in SYSTEMS]),
         ):
             await session.execute(insert(model).values(values).on_conflict_do_nothing(index_elements=[model.key]))
         await session.execute(insert(Clinic).values([
-            {"id": US_CLINIC, "key": "dev-us-clinic-01", "label": "Development US Clinic", "jurisdiction_id": US, "is_active": True},
-            {"id": UK_CLINIC, "key": "dev-uk-clinic-01", "label": "Development UK Clinic", "jurisdiction_id": UK, "is_active": True},
+            {"id": US_CLINIC, "key": "dev-us-clinic-01", "label": "Development US Clinic", "jurisdiction_id": US, "is_active": True, **audit},
+            {"id": UK_CLINIC, "key": "dev-uk-clinic-01", "label": "Development UK Clinic", "jurisdiction_id": UK, "is_active": True, **audit},
         ]).on_conflict_do_nothing(index_elements=[Clinic.key]))
         await session.commit()
 

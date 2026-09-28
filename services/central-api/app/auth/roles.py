@@ -16,8 +16,8 @@ ADMIN = "admin"
 
 ROLES = {TECHNOLOGY, RESPONSIBLE_AREA, COMPLIANCE, DIRECTION, ADMIN}
 
-# Capabilities granted to every role except responsibleArea, which is
-# restricted below to create/close on its own area only.
+# Capabilities granted to the technical administrator. Management writes stay
+# exclusive to this role until the M0 matrix is formally approved.
 _BROAD_CAPABILITIES = {
     "incident:create",
     "incident:list",
@@ -28,9 +28,13 @@ _BROAD_CAPABILITIES = {
     "incident:assign",
     "incident:close",
     "incident:reopen",
+    "catalog:read",
     "catalog:manage",
+    "referenceData:read",
+    "referenceData:manage",
     "audit:read",
     "complianceReview:read",
+    "complianceReview:manage",
 }
 
 CAPABILITIES: dict[str, set[str]] = {
@@ -43,12 +47,17 @@ CAPABILITIES: dict[str, set[str]] = {
         "incident:changeSeverity",
         "incident:transition",
         "incident:close",
+        "catalog:read",
+        "referenceData:read",
     },
     COMPLIANCE: {
         "incident:list",
         "incident:read",
         "audit:read",
+        "catalog:read",
+        "referenceData:read",
         "complianceReview:read",
+        "complianceReview:manage",
     },
     DIRECTION: {
         "incident:list",
@@ -62,6 +71,8 @@ CAPABILITIES: dict[str, set[str]] = {
         "incident:list",
         "incident:read",
         "incident:close",
+        "catalog:read",
+        "referenceData:read",
     },
 }
 

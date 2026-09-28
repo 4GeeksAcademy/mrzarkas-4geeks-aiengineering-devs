@@ -1,6 +1,7 @@
+from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import Boolean, ForeignKey, String, Table, Column
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -13,6 +14,10 @@ class ReferenceValue(Base):
     key: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     label: Mapped[str] = mapped_column(String(200), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_by: Mapped[UUID] = mapped_column(nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    updated_by: Mapped[UUID] = mapped_column(nullable=False)
 
 
 class Jurisdiction(ReferenceValue):

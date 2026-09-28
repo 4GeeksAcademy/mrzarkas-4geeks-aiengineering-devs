@@ -6,8 +6,16 @@ from fastapi import HTTPException
 from httpx import ASGITransport, AsyncClient, Response
 
 from app.auth.dependencies import Actor, ensure_area_scope
+from app.auth.policies import authorize_compliance_review_read
 from app.auth.router import TokenRequest, issue_token
-from app.auth.roles import ADMIN, COMPLIANCE, RESPONSIBLE_AREA, TECHNOLOGY, has_capability
+from app.auth.roles import (
+    ADMIN,
+    COMPLIANCE,
+    DIRECTION,
+    RESPONSIBLE_AREA,
+    TECHNOLOGY,
+    has_capability,
+)
 from app.auth.security import InvalidTokenError, create_access_token, decode_access_token
 from app.core.config import get_settings
 from app.main import app
@@ -28,8 +36,13 @@ def test_admin_has_every_documented_capability() -> None:
         "incident:update",
         "incident:transition",
         "incident:assign",
+        "catalog:read",
         "catalog:manage",
+        "referenceData:read",
+        "referenceData:manage",
         "audit:read",
+        "complianceReview:read",
+        "complianceReview:manage",
     ):
         assert has_capability(ADMIN, capability)
 
@@ -42,14 +55,36 @@ def test_responsible_area_is_limited_to_create_and_close() -> None:
     assert not has_capability(RESPONSIBLE_AREA, "audit:read")
 
 
-def test_compliance_can_read_audit_but_not_manage_catalogs() -> None:
+def test_compliance_can_manage_reviews_but_not_catalogs_or_reference_data() -> None:
     assert has_capability(COMPLIANCE, "audit:read")
+    assert has_capability(COMPLIANCE, "catalog:read")
+    assert has_capability(COMPLIANCE, "referenceData:read")
+    assert has_capability(COMPLIANCE, "complianceReview:manage")
     assert not has_capability(COMPLIANCE, "catalog:manage")
+    assert not has_capability(COMPLIANCE, "referenceData:manage")
 
 
 def test_technology_cannot_manage_catalogs_or_assign() -> None:
+    assert has_capability(TECHNOLOGY, "catalog:read")
+    assert has_capability(TECHNOLOGY, "referenceData:read")
     assert not has_capability(TECHNOLOGY, "catalog:manage")
+    assert not has_capability(TECHNOLOGY, "referenceData:manage")
     assert not has_capability(TECHNOLOGY, "incident:assign")
+
+
+def test_management_capability_matrix_is_explicit_for_every_role() -> None:
+    expected = {
+        ADMIN: {"catalog:read", "catalog:manage", "referenceData:read", "referenceData:manage", "complianceReview:read", "complianceReview:manage"},
+        TECHNOLOGY: {"catalog:read", "referenceData:read"},
+        COMPLIANCE: {"catalog:read", "referenceData:read", "complianceReview:read", "complianceReview:manage"},
+        RESPONSIBLE_AREA: {"catalog:read", "referenceData:read"},
+        DIRECTION: set(),
+    }
+    management_capabilities = {
+        "catalog:read", "catalog:manage", "referenceData:read", "referenceData:manage", "complianceReview:read", "complianceReview:manage",
+    }
+    for role, granted in expected.items():
+        assert {capability for capability in management_capabilities if has_capability(role, capability)} == granted
 
 
 def test_token_roundtrip_preserves_role_and_area() -> None:
@@ -87,6 +122,16 @@ def test_ensure_area_scope_is_a_no_op_for_non_area_roles() -> None:
     ensure_area_scope(actor, "incident:close", uuid4())
 
 
+def test_compliance_review_visibility_policy_is_restricted_by_role() -> None:
+    authorize_compliance_review_read(Actor(id=uuid4(), role=ADMIN))
+    authorize_compliance_review_read(Actor(id=uuid4(), role=COMPLIANCE))
+
+    for role in (TECHNOLOGY, RESPONSIBLE_AREA, DIRECTION):
+        with pytest.raises(HTTPException) as error:
+            authorize_compliance_review_read(Actor(id=uuid4(), role=role))
+        assert error.value.status_code == 403
+
+
 def test_self_issued_tokens_are_disabled_outside_development(monkeypatch) -> None:
     monkeypatch.setenv("APP_ENVIRONMENT", "production")
     get_settings.cache_clear()
@@ -117,3 +162,11 @@ def test_incident_routes_reject_missing_or_invalid_bearer_token() -> None:
     assert _request(
         "GET", "/incidents", headers={"Authorization": "Bearer invalid"}
     ).status_code == 401
+
+
+def test_management_openapi_contract_exposes_administration_routes() -> None:
+    paths = app.openapi()["paths"]
+    assert "/management/catalogs" in paths
+    assert "/management/reference-data/{resource}" in paths
+    assert "/management/audit-events" in paths
+    assert "/compliance-reviews/{review_id}/status" in paths

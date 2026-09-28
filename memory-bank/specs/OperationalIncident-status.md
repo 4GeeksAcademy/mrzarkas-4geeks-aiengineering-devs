@@ -9,8 +9,13 @@
 **Modelo de Fase 1:** [`OperationalIncident-phase1-data-model.md`](./OperationalIncident-phase1-data-model.md)  
 **Migraciones y seeds de Fase 1:** [`OperationalIncident-migrations-seeds.md`](./OperationalIncident-migrations-seeds.md)  
 **Maestros externos:** [`OperationalIncident-external-masters.md`](./OperationalIncident-external-masters.md)
+**Management:** [`OperationalIncident-management.md`](./OperationalIncident-management.md)
+**Tareas Management:** [`OperationalIncident-management-tasks.md`](./OperationalIncident-management-tasks.md)
+**Implementación Management:** [`OperationalIncident-management-implementation.md`](./OperationalIncident-management-implementation.md)
 **Última actualización:** 2026-09-28
 **Estado global:** Prototipo técnico pre-MVP. Fase inicial cerrada de forma condicionada; Fase 1 parcialmente implementada y pendiente de validación en PostgreSQL local; Fase 2 parcialmente implementada en API; Fases 3 a 5 no iniciadas.
+
+**Datos de desarrollo:** se usarán exclusivamente fixtures sintéticos durante desarrollo y pruebas; no se introducirán datos reales de clínicas, empleados, revisiones ni pacientes.
 
 ## 1. Decisión
 
@@ -27,9 +32,9 @@ No contiene requisitos nuevos. Si una decisión cambia el alcance o el comportam
 | Estados, permisos, datos y auditoría | Diseñados | Consolidado en `OperationalIncident-initial-decisions.md`; falta aprobación de responsables |
 | Persistencia PostgreSQL | Parcialmente validada localmente | Migraciones para catálogos, incidencia, historiales y fundación de maestros compartidos. Un PostgreSQL temporal vacío validó instalación limpia; otro entorno temporal validó restauración de un dump, migración idempotente y 18 pruebas. Faltan validación de referencias, servicio gestionado, backups operativos y RPO/RTO. |
 | Contratos Pydantic | Parcialmente implementados | Existen contratos de creación, edición, listado, detalle, transición, historial y auditoría; faltan contratos de asignación, métricas y referencias maestras. |
-| API FastAPI | Parcialmente implementada | Existen catálogos, alta validada contra maestros, listado resumido, detalle, edición, transición, asignación/reasignación, historiales, auditoría, métricas y JWT propio. Dirección sólo puede consultar listados resumidos y métricas. Faltan `ComplianceReview` y administración de catálogos. |
+| API FastAPI | Parcialmente implementada | Existen catálogos protegidos por capacidad, alta validada contra maestros, listado resumido, detalle, edición, transición, asignación/reasignación, historiales, auditoría, métricas, `ComplianceReview` y JWT propio. Dirección sólo puede consultar listados resumidos y métricas. Falta administración de catálogos. |
 | Backoffice | No iniciado | No existe UI del gestor |
-| Auditoría e historiales | Parcialmente implementados | Se persisten historiales de estado y asignación, y eventos de creación, edición, transición y asignación en la misma operación; falta revisar minimización/retención. |
+| Auditoría e historiales | Parcialmente implementados | Se persisten historiales de estado y asignación, eventos de incidencia y la base de auditoría append-only de Management; falta revisar minimización/retención y conectar las futuras mutaciones administrativas. |
 | Pruebas | Parcialmente validadas localmente | Hay pruebas de catálogos, JWT/roles, HTTP de autenticación/autorización y flujos de incidencias. El servicio reproducible `test` de Podman ejecuta 18 pruebas contra PostgreSQL local; la imagen de producción permanece sin dependencias de desarrollo. |
 | Piloto | No iniciado | Depende de implementación y revisión de seguridad |
 
@@ -197,6 +202,14 @@ La fase se considera **cerrada de forma condicionada**, no validada definitivame
 | 2026-09-28 | Se migraron pruebas de incidencias a maestros sintéticos | Creación, reasignación y autorización HTTP usan fixtures US/UK y áreas estables; `podman compose --profile test run --rm --build test`: 18 passed | HealthCore Digital |
 | 2026-09-28 | Se activó validación de maestros en incidencias | Creación valida clínica/jurisdicción/sistema/área; edición y asignación validan área activa; `reporter_id` deriva del actor JWT; migración `0007` añade FKs y suite: 18 passed | HealthCore Digital |
 | 2026-09-28 | Se cubrieron incompatibilidades US/UK | Clínica US con jurisdicción UK y sistema UK en incidencia US devuelven `422`; suite Podman: 18 passed sin advertencias | HealthCore Digital |
+| 2026-09-28 | Se integró ComplianceReview | Migración `0008_compliance_review`, API restringida de creación/lectura, FK y validación de jurisdicción al asociar una incidencia; 18 pruebas superadas | HealthCore Digital |
+| 2026-09-28 | Se definió Management | `OperationalIncident-management.md`: recursos, autorización, auditoría, ciclo de vida, contrato API, datos sintéticos y criterios de aceptación | HealthCore Digital |
+| 2026-09-28 | Se completó M1 de Management | Migración `0009_management_audit`: trazabilidad de maestros, tabla append-only e índices de auditoría. Instalación limpia (`0001`→`0009`), seeds sintéticos y suite Podman: 18 pruebas superadas | HealthCore Digital |
+| 2026-09-28 | Se completó M2 de Management de forma provisional | Capacidades de catálogo, maestros y `ComplianceReview`; lectura de catálogos autenticada; creación de revisiones limitada a `admin`/Cumplimiento y visibilidad explícita para esos roles. Matriz por rol y pruebas HTTP: 22 pruebas Podman superadas | HealthCore Digital |
+| 2026-09-28 | Se completó M3 de Management de forma provisional | `/management/catalogs`: listado paginado, alta, edición, activación/desactivación con motivo; `key` inmutable, sin borrado físico y eventos auditados en la misma transacción. Pruebas de roles, activo/inactivo e histórico: 23 pruebas Podman superadas | HealthCore Digital |
+| 2026-09-28 | Se completó M4 de Management de forma provisional | Administración paginada de jurisdicciones, clínicas, sistemas y áreas; coberturas sistema–jurisdicción, activación auditada y protección contra cambios que invaliden el histórico. Pruebas Podman: 24 superadas | HealthCore Digital |
+| 2026-09-28 | Se completó M5 de Management de forma provisional | `ComplianceReview` tiene cambio de estado restringido, motivo de cierre, auditoría de creación/estado/asociación y validación de jurisdicción con incidencia. Pruebas Podman: 25 superadas | HealthCore Digital |
+| 2026-09-28 | Se completó M6 de Management de forma provisional | OpenAPI y tipos compartidos, consulta autorizada de auditoría, backoffice estático de lectura y guía de rollback/promoción. Instalación limpia y restauración de dump sintético: migración idempotente, seeds y 27 pruebas superadas | HealthCore Digital |
 
 ## 9. Regla de actualización
 
