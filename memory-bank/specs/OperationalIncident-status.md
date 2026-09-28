@@ -13,7 +13,7 @@
 **Tareas Management:** [`OperationalIncident-management-tasks.md`](./OperationalIncident-management-tasks.md)
 **Implementación Management:** [`OperationalIncident-management-implementation.md`](./OperationalIncident-management-implementation.md)
 **Última actualización:** 2026-09-28
-**Estado global:** Prototipo técnico pre-MVP. Fase inicial cerrada de forma condicionada; Fase 1 parcialmente implementada y pendiente de validación en PostgreSQL local; Fase 2 parcialmente implementada en API; Fases 3 a 5 no iniciadas.
+**Estado global:** Prototipo técnico pre-MVP. Fase inicial cerrada de forma condicionada; Fases 1 y 2 implementadas de forma provisional y validadas localmente; backoffice de incidencias pendiente; piloto y producción no autorizados.
 
 **Datos de desarrollo:** se usarán exclusivamente fixtures sintéticos durante desarrollo y pruebas; no se introducirán datos reales de clínicas, empleados, revisiones ni pacientes.
 
@@ -33,9 +33,9 @@ No contiene requisitos nuevos. Si una decisión cambia el alcance o el comportam
 | Persistencia PostgreSQL | Parcialmente validada localmente | Migraciones para catálogos, incidencia, historiales y fundación de maestros compartidos. Un PostgreSQL temporal vacío validó instalación limpia; otro entorno temporal validó restauración de un dump, migración idempotente y 18 pruebas. Faltan validación de referencias, servicio gestionado, backups operativos y RPO/RTO. |
 | Contratos Pydantic | Parcialmente implementados | Existen contratos de creación, edición, listado, detalle, transición, historial y auditoría; faltan contratos de asignación, métricas y referencias maestras. |
 | API FastAPI | Parcialmente implementada | Existen catálogos protegidos por capacidad, alta validada contra maestros, listado resumido, detalle, edición, transición, asignación/reasignación, historiales, auditoría, métricas, `ComplianceReview` y JWT propio. Dirección sólo puede consultar listados resumidos y métricas. Falta administración de catálogos. |
-| Backoffice | No iniciado | No existe UI del gestor |
+| Backoffice de incidencias | Prototipo inicial implementado | `uis/backoffice/operational-incidents/` contiene cola paginada, filtros de estado/severidad/área, detalle y edición limitada de título/descripción; validación visual y recorrido navegador pendientes. Sólo desarrollo sintético. |
 | Auditoría e historiales | Parcialmente implementados | Se persisten historiales de estado y asignación, eventos de incidencia y la base de auditoría append-only de Management; falta revisar minimización/retención y conectar las futuras mutaciones administrativas. |
-| Pruebas | Parcialmente validadas localmente | Hay pruebas de catálogos, JWT/roles, HTTP de autenticación/autorización y flujos de incidencias. El servicio reproducible `test` de Podman ejecuta 18 pruebas contra PostgreSQL local; la imagen de producción permanece sin dependencias de desarrollo. |
+| Pruebas | Suite API validada localmente | El 2026-09-28, la suite completa del target de pruebas ejecutada en Podman contra PostgreSQL local terminó con **27 passed in 1.47s**, sin fallos ni pruebas omitidas; la imagen de producción permanece sin dependencias de desarrollo. |
 | Piloto | No iniciado | Depende de implementación y revisión de seguridad |
 
 ## 2.1 Estado de fases
@@ -211,6 +211,8 @@ La fase se considera **cerrada de forma condicionada**, no validada definitivame
 | 2026-09-28 | Se completó M5 de Management de forma provisional | `ComplianceReview` tiene cambio de estado restringido, motivo de cierre, auditoría de creación/estado/asociación y validación de jurisdicción con incidencia. Pruebas Podman: 25 superadas | HealthCore Digital |
 | 2026-09-28 | Se completó M6 de Management de forma provisional | OpenAPI y tipos compartidos, consulta autorizada de auditoría, backoffice estático de lectura y guía de rollback/promoción. Instalación limpia y restauración de dump sintético: migración idempotente, seeds y 27 pruebas superadas | HealthCore Digital |
 | 2026-09-28 | Se documentó la propuesta M0 de permisos | `proposals.md`: cuatro roles principales, áreas operativas con `area_id`, matriz de mínimo privilegio y capacidades granulares futuras. Pendiente de aprobación por Tecnología y Cumplimiento | HealthCore Digital |
+| 2026-09-28 | Se registró la suite completa de API | Ejecución local del usuario con target de pruebas Podman contra PostgreSQL: `27 passed in 1.47s`, sin fallos ni pruebas omitidas | HealthCore Digital |
+| 2026-09-28 | Se implementó el prototipo inicial del backoffice de incidencias | `uis/backoffice/operational-incidents/`: cola, filtros, detalle y editor de título/descripción con JWT en memoria; validaciones estáticas pasaron. Suite backend tras CORS local pendiente de repetir porque Podman y `uv` no están disponibles en este entorno actual | HealthCore Digital |
 
 ## 9. Regla de actualización
 

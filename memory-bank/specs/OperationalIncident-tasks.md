@@ -96,19 +96,21 @@ Documento de consolidación de esta fase: [`OperationalIncident-initial-decision
 
 ### P1 — Backoffice
 
-- [ ] Crear la cola de incidencias.
-- [ ] Cargar catálogos desde la API.
-- [ ] Implementar filtros combinables por `IncidentStatus`, `severity` y área responsable.
-- [ ] Implementar paginación, ordenación y limpieza de filtros.
+- [x] Crear prototipo de cola paginada en `uis/backoffice/operational-incidents/`.
+- [x] Cargar catálogos y etiquetas maestras desde la API para la cola y el detalle.
+- [x] Implementar filtros combinables por estado, severidad y área responsable (el alcance del área de `responsibleArea` lo impone la API).
+- [x] Implementar paginación anterior/siguiente; orden por fecha descendente aplicado por API. Limpieza de filtros pendiente.
 - [ ] Crear formulario de registro.
 - [ ] Crear formulario de edición.
-- [ ] Crear ficha de detalle.
+- [x] Crear ficha de detalle con atributos de solo lectura.
 - [ ] Mostrar historial de estados y responsables.
 - [ ] Mostrar el área responsable actual.
 - [ ] Crear vista de incidencias abiertas agrupadas por severidad.
-- [ ] Implementar estados de carga, vacío y error.
-- [ ] Ocultar acciones no autorizadas.
-- [ ] Evitar mostrar o enviar información clínica.
+- [x] Implementar estados de carga, vacío y error.
+- [x] Mostrar/ocultar detalle y editor según rol/alcance como ayuda de UX; API continúa siendo autoridad.
+- [x] Añadir aviso de no-PHI y no presentar campos clínicos ni permitir editarlos en el editor limitado.
+- [x] Integrar edición de título y descripción para `responsibleArea` sólo si la incidencia coincide con el `area_id` del JWT; `PATCH` sólo envía esos campos.
+- [ ] Validar visualmente el flujo en navegador y completar limpieza de filtros/ordenación si se requieren antes de cerrar Fase 3.
 
 ### P1 — Pruebas
 
