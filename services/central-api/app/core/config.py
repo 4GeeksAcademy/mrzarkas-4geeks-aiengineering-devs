@@ -17,6 +17,12 @@ class Settings(BaseSettings):
     app_name: str = "HealthCore API"
     database_url: SecretStr | None = None
 
+    # Temporary self-issued JWT auth (see memory-bank/proposals.md).
+    # Replace with the client's SSO/OIDC provider before production.
+    jwt_secret_key: SecretStr = SecretStr("insecure-development-secret-change-me")
+    jwt_algorithm: str = "HS256"
+    jwt_expires_minutes: int = 60
+
     @field_validator("database_url", mode="before")
     @classmethod
     def empty_database_url_is_unset(cls, value: object) -> object:

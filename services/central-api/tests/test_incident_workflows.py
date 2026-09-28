@@ -5,6 +5,8 @@ from uuid import UUID, uuid4
 import pytest
 from sqlalchemy import delete, select
 
+from app.auth.dependencies import Actor
+from app.auth.roles import ADMIN, RESPONSIBLE_AREA
 from app.db.models.catalog import Catalog, CatalogValue
 from app.db.session import SessionLocal, engine
 from app.incidents.history import AuditEvent, IncidentStatusHistory
@@ -50,6 +52,9 @@ def test_incident_update_transition_history_and_audit():
             if not ids or not required.issubset(ids):
                 pytest.skip("Catalog seed is required for integration tests")
 
+            area_id = uuid4()
+            admin_actor = Actor(id=uuid4(), role=ADMIN)
+
             payload = IncidentCreate(
                 title="Integration test incident",
                 description="Incident workflow integration test",
@@ -60,15 +65,16 @@ def test_incident_update_transition_history_and_audit():
                 entry_channel_value_id=ids["clinicPhone"],
                 incident_type_value_id=ids["systemAvailability"],
                 severity_value_id=ids["critical"],
-                responsible_area_id=uuid4(),
+                responsible_area_id=area_id,
             )
-            incident = await create_incident(payload, session)
+            incident = await create_incident(payload, session, admin_actor)
             incident_id = incident.id
 
             updated = await update_incident(
                 incident.id,
-                IncidentUpdate(title="Updated integration incident", actor_id=payload.reporter_id),
+                IncidentUpdate(title="Updated integration incident"),
                 session,
+                admin_actor,
             )
             assert updated.title == "Updated integration incident"
 
@@ -76,15 +82,15 @@ def test_incident_update_transition_history_and_audit():
                 incident.id,
                 StatusTransitionRequest(
                     status_value_id=ids["underAnalysis"],
-                    actor_id=payload.reporter_id,
                     reason="Begin analysis",
                 ),
                 session,
+                admin_actor,
             )
             assert transitioned.status_value_id == ids["underAnalysis"]
 
-            history = await incident_history(incident.id, session)
-            audit = await incident_audit(incident.id, session)
+            history = await incident_history(incident.id, session, admin_actor)
+            audit = await incident_audit(incident.id, session, admin_actor)
             assert len(history) == 2
             assert history[-1].to_status_value_id == ids["underAnalysis"]
             assert {event.action for event in audit} == {"created", "updated", "status_changed"}
@@ -110,6 +116,8 @@ def test_invalid_transition_is_rejected():
             if not ids or not {"clinicPhone", "systemAvailability", "critical", "new", "closed"}.issubset(ids):
                 pytest.skip("Catalog seed is required for integration tests")
 
+            admin_actor = Actor(id=uuid4(), role=ADMIN)
+
             payload = IncidentCreate(
                 title="Invalid transition test",
                 description="Transition validation integration test",
@@ -118,19 +126,80 @@ def test_invalid_transition_is_rejected():
                 incident_type_value_id=ids["systemAvailability"], severity_value_id=ids["critical"],
                 responsible_area_id=uuid4(),
             )
-            incident = await create_incident(payload, session)
+            incident = await create_incident(payload, session, admin_actor)
             created_incident_id = incident.id
             with pytest.raises(Exception) as error:
                 await transition_incident(
                     created_incident_id,
-                    StatusTransitionRequest(status_value_id=ids["closed"], actor_id=payload.reporter_id),
+                    StatusTransitionRequest(status_value_id=ids["closed"]),
                     session,
+                    admin_actor,
                 )
             assert getattr(error.value, "status_code", None) == 409
             await session.rollback()
             await session.execute(delete(AuditEvent).where(AuditEvent.entity_id == created_incident_id))
             await session.execute(delete(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == created_incident_id))
             await session.execute(delete(OperationalIncident).where(OperationalIncident.id == created_incident_id))
+            await session.commit()
+
+        if engine is not None:
+            await engine.dispose()
+
+    _run(workflow())
+
+
+def test_responsible_area_actor_is_limited_to_own_area_create_and_close():
+    if not os.getenv("DATABASE_URL") or SessionLocal is None:
+        pytest.skip("DATABASE_URL is required for integration tests")
+
+    async def workflow():
+        async with SessionLocal() as session:
+            ids = await _catalog_ids()
+            if not ids or not {"clinicPhone", "systemAvailability", "critical", "new", "cancelled"}.issubset(ids):
+                pytest.skip("Catalog seed is required for integration tests")
+
+            own_area_id = uuid4()
+            other_area_id = uuid4()
+            area_actor = Actor(id=uuid4(), role=RESPONSIBLE_AREA, area_id=own_area_id)
+
+            payload = IncidentCreate(
+                title="Area scoped incident",
+                description="Created by a responsibleArea actor",
+                reporter_id=uuid4(), clinic_id=uuid4(), jurisdiction_id=uuid4(),
+                affected_system_id=uuid4(), entry_channel_value_id=ids["clinicPhone"],
+                incident_type_value_id=ids["systemAvailability"], severity_value_id=ids["critical"],
+                responsible_area_id=own_area_id,
+            )
+            incident = await create_incident(payload, session, area_actor)
+
+            with pytest.raises(Exception) as create_error:
+                await create_incident(
+                    payload.model_copy(update={"responsible_area_id": other_area_id}),
+                    session,
+                    area_actor,
+                )
+            assert getattr(create_error.value, "status_code", None) == 403
+
+            with pytest.raises(Exception) as update_error:
+                await update_incident(
+                    incident.id,
+                    IncidentUpdate(title="Attempted update"),
+                    session,
+                    area_actor,
+                )
+            assert getattr(update_error.value, "status_code", None) == 403
+
+            closed = await transition_incident(
+                incident.id,
+                StatusTransitionRequest(status_value_id=ids["cancelled"]),
+                session,
+                area_actor,
+            )
+            assert closed.status_value_id == ids["cancelled"]
+
+            await session.execute(delete(AuditEvent).where(AuditEvent.entity_id == incident.id))
+            await session.execute(delete(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == incident.id))
+            await session.execute(delete(OperationalIncident).where(OperationalIncident.id == incident.id))
             await session.commit()
 
         if engine is not None:

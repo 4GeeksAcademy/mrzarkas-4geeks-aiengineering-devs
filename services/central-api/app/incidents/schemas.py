@@ -36,7 +36,6 @@ class IncidentListResponse(BaseModel):
 
 
 class IncidentUpdate(BaseModel):
-    actor_id: UUID | None = None
     title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, min_length=1, max_length=10000)
     severity_value_id: UUID | None = None
@@ -46,7 +45,6 @@ class IncidentUpdate(BaseModel):
 
 class StatusTransitionRequest(BaseModel):
     status_value_id: UUID
-    actor_id: UUID
     reason: str | None = Field(default=None, max_length=2000)
 
 
