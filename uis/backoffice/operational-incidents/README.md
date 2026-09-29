@@ -41,7 +41,10 @@ to allow only the UI origin and the required `Authorization` and
 ## Pages and behavior
 
 - `#/incidents`: paginated queue with status and severity filters. Broader
-  roles can also request an area filter; the API always enforces area scope.
+  roles can also request an area filter; `responsibleArea` stays scoped to its
+  JWT area and does not receive that filter. The list shows explicit loading,
+  recoverable error, and empty-result states. The create button is available
+  only to `admin`, `technology`, and `responsibleArea`.
 - `#/incidents/new`: create an incident using active catalogs and reference
   data from the API. Clinic options follow the selected jurisdiction, while
   the API validates the affected system's jurisdiction. The reporter's

@@ -65,6 +65,20 @@ def make_incident_identifier() -> str:
     return f"HC-{datetime.now(UTC):%Y%m%d}-{uuid4().hex[:8].upper()}"
 
 
+def incident_sort_column(sort_by: str):
+    """Return a server-allowlisted incident column for stable list sorting."""
+    sort_columns = {
+        "created_at": OperationalIncident.created_at,
+        "updated_at": OperationalIncident.updated_at,
+        "title": OperationalIncident.title,
+        "incident_identifier": OperationalIncident.incident_identifier,
+    }
+    try:
+        return sort_columns[sort_by]
+    except KeyError as error:
+        raise HTTPException(status_code=422, detail="Unsupported incident sort field") from error
+
+
 async def get_catalog_value(
     session: AsyncSession, value_id: UUID, catalog_name: str
 ) -> CatalogValue:
@@ -170,6 +184,8 @@ async def list_incidents(
     status_value_id: UUID | None = Query(default=None),
     severity_value_id: UUID | None = Query(default=None),
     responsible_area_id: UUID | None = Query(default=None),
+    sort_by: str = Query(default="created_at", pattern="^(created_at|updated_at|title|incident_identifier)$"),
+    sort_direction: str = Query(default="desc", pattern="^(asc|desc)$"),
     offset: int = Query(default=0, ge=0),
     limit: int = Query(default=50, ge=1, le=100),
     session: AsyncSession = Depends(get_session),
@@ -190,11 +206,13 @@ async def list_incidents(
         filters.append(OperationalIncident.responsible_area_id == responsible_area_id)
 
     total = (await session.execute(select(func.count()).select_from(OperationalIncident).where(*filters))).scalar_one()
+    sort_column = incident_sort_column(sort_by)
+    ordered_column = sort_column.asc() if sort_direction == "asc" else sort_column.desc()
     items = (
         await session.execute(
             select(OperationalIncident)
             .where(*filters)
-            .order_by(OperationalIncident.created_at.desc())
+            .order_by(ordered_column, OperationalIncident.id.asc())
             .offset(offset)
             .limit(limit)
         )
@@ -229,10 +247,14 @@ async def open_incidents_by_severity(
     # Count only open incidents. Keeping this calculation in the API avoids
     # duplicating status semantics in future clients.
     status_value = aliased(CatalogValue)
+    open_filters = [status_value.is_open.is_(True)]
+    scoped_area_id = visible_incident_area_id(actor)
+    if scoped_area_id is not None:
+        open_filters.append(OperationalIncident.responsible_area_id == scoped_area_id)
     open_counts = dict((await session.execute(
         select(OperationalIncident.severity_value_id, func.count(OperationalIncident.id))
         .join(status_value, OperationalIncident.status_value_id == status_value.id)
-        .where(status_value.is_open.is_(True))
+        .where(*open_filters)
         .group_by(OperationalIncident.severity_value_id)
     )).all())
     return [

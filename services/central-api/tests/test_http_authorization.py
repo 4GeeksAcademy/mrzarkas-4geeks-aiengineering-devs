@@ -88,6 +88,35 @@ def test_http_authorization_enforces_area_capability_and_audit_access() -> None:
             assert created.json()["reporter_id"] == str(admin_id)
             incident_id = UUID(created.json()["id"])
 
+            # Exercise server-side ordering before pagination. The just-created
+            # incident is visible on the first page, and unsupported sort keys
+            # are rejected by FastAPI validation rather than reaching SQL.
+            sorted_list = await client.get(
+                "/incidents?sort_by=title&sort_direction=asc&offset=0&limit=100",
+                headers=_bearer(ADMIN),
+            )
+            assert sorted_list.status_code == 200
+            ordered_items = sorted_list.json()["items"]
+            sorted_all = await client.get(
+                "/incidents?sort_by=title&sort_direction=asc&offset=0&limit=100",
+                headers=_bearer(ADMIN),
+            )
+            assert sorted_all.status_code == 200
+            all_ordered_items = sorted_all.json()["items"]
+            assert all_ordered_items == sorted(
+                all_ordered_items, key=lambda item: (item["title"], item["id"])
+            )
+            paged = await client.get(
+                "/incidents?sort_by=title&sort_direction=asc&offset=0&limit=1",
+                headers=_bearer(ADMIN),
+            )
+            assert paged.status_code == 200
+            assert paged.json()["items"] == all_ordered_items[:1]
+            invalid_sort = await client.get(
+                "/incidents?sort_by=status_value_id", headers=_bearer(ADMIN)
+            )
+            assert invalid_sort.status_code == 422
+
             direction_list = await client.get("/incidents", headers=_bearer(DIRECTION))
             assert direction_list.status_code == 200
             direction_item = next(
