@@ -19,11 +19,20 @@ uv run --no-sync uvicorn app.main:app --reload
 From the repository root, start the container:
 
 ```sh
-docker compose up --build
-# Podman users: podman compose up --build
+cp services/central-api/env.example services/central-api/.env
+docker compose --env-file services/central-api/.env up --build
+# Podman users: podman compose --env-file services/central-api/.env up --build
 ```
 
-Check `http://localhost:8000/health` for `{"status":"ok"}`. For a different published port, copy `services/central-api/env.example` to a root `.env` and set `API_PORT`; Git ignores `.env`.
+Compose starts PostgreSQL, applies Alembic migrations, seeds the provisional
+catalogs and synthetic reference data, and then starts the API and static
+backoffice. Open `http://localhost:8080` for the UI and
+`http://localhost:8000/health` for the API health check. The local database
+credentials and JWT secret in `env.example` are development-only; change them
+for any shared environment. Git ignores `services/central-api/.env`.
+
+Stop the stack with `docker compose down`. Add `-v` only if you intentionally
+want to delete the local PostgreSQL volume and all its data.
 
 ## PostgreSQL, SQLAlchemy, and Alembic
 
@@ -74,6 +83,7 @@ curl http://localhost:8000/catalogs/severity
 The endpoint returns only active values currently within their effective date
 range, ordered by `sort_order` and then by technical key.
 
-Compose reads `DATABASE_URL` from the root `.env` file and passes it to the container. Never put real credentials in `env.example` or Git.
+Compose overrides the container's database URL to use the `postgres` service
+hostname. Never put real credentials in `env.example` or Git.
 
 Spanish documentation: [README.es.md](./README.es.md).

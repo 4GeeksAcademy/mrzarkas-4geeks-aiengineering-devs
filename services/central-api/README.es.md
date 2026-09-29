@@ -19,11 +19,20 @@ uv run --no-sync uvicorn app.main:app --reload
 Desde la raíz del repositorio, arrancar el contenedor:
 
 ```sh
-docker compose up --build
-# Usuarios de Podman: podman compose up --build
+cp services/central-api/env.example services/central-api/.env
+docker compose --env-file services/central-api/.env up --build
+# Usuarios de Podman: podman compose --env-file services/central-api/.env up --build
 ```
 
-Comprobar `http://localhost:8000/health`: debe devolver `{"status":"ok"}`. Para cambiar el puerto publicado, copiar `services/central-api/env.example` a un `.env` en la raíz y definir `API_PORT`; Git ignora `.env`.
+Compose inicia PostgreSQL, aplica migraciones Alembic, carga los catálogos
+provisionales y los datos sintéticos de referencia, y después inicia la API y
+el backoffice estático. Abrir `http://localhost:8080` para la UI y
+`http://localhost:8000/health` para comprobar la API. Las credenciales de base
+de datos y la clave JWT de `env.example` son sólo para desarrollo; cámbialas
+en cualquier entorno compartido. Git ignora `services/central-api/.env`.
+
+Detener con `docker compose down`. Añade `-v` únicamente si quieres borrar
+intencionadamente el volumen local de PostgreSQL y todos sus datos.
 
 ## PostgreSQL, SQLAlchemy y Alembic
 
@@ -47,7 +56,9 @@ uv run --no-sync alembic current
 
 Sin `DATABASE_URL`, la API puede arrancar y responder `/health`, pero Alembic y las operaciones de base de datos fallarán explícitamente porque necesitan una conexión.
 
-Compose toma `DATABASE_URL` del `.env` de la raíz y la entrega al contenedor. No incluir credenciales reales en `env.example` ni en Git.
+Compose configura la URL de base de datos dentro de los contenedores usando el
+hostname del servicio `postgres`. No incluir credenciales reales en
+`env.example` ni en Git.
 
 Después de aplicar las migraciones, cargar los catálogos con:
 

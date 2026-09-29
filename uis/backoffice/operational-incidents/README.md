@@ -8,8 +8,24 @@ shared write access, real data, pilot, or production.
 
 ## Run locally
 
-Serve this directory with a static HTTP server (opening `index.html` directly
-may prevent browser module loading). For example, from the repository root:
+Recommended: start PostgreSQL, the API, and this backoffice together from the
+repository root using Docker Compose:
+
+```sh
+cp services/central-api/env.example services/central-api/.env
+docker compose --env-file services/central-api/.env up --build
+# Podman: podman compose --env-file services/central-api/.env up --build
+```
+
+Open `http://localhost:8080` and use `http://localhost:8000` as the API base
+URL. Compose applies migrations and loads synthetic development catalogs and
+reference data before starting the API. The values in `env.example` are for
+local development only.
+
+To run only the static UI without Compose, serve this directory with a static
+HTTP server (opening `index.html` directly may prevent browser module loading):
+
+For example, from the repository root:
 
 ```sh
 python -m http.server 8080 --directory uis/backoffice/operational-incidents
