@@ -37,6 +37,22 @@ def _run(coro):
     return asyncio.run(coro)
 
 
+def test_incident_create_does_not_require_reporter_identity():
+    payload = IncidentCreate(
+        title="Operational issue",
+        description="Synthetic incident for schema validation.",
+        clinic_id=uuid4(),
+        jurisdiction_id=uuid4(),
+        affected_system_id=uuid4(),
+        entry_channel_value_id=uuid4(),
+        incident_type_value_id=uuid4(),
+        severity_value_id=uuid4(),
+        responsible_area_id=uuid4(),
+    )
+
+    assert "reporter_id" not in payload.model_dump()
+
+
 async def _catalog_ids() -> dict[str, UUID]:
     if SessionLocal is None:
         return {}
@@ -74,7 +90,6 @@ def test_incident_update_transition_history_and_audit():
             payload = IncidentCreate(
                 title="Integration test incident",
                 description="Incident workflow integration test",
-                reporter_id=uuid4(),
                 clinic_id=refs["dev-us-clinic-01"],
                 jurisdiction_id=refs["US"],
                 affected_system_id=refs["usEhr"],
@@ -85,6 +100,7 @@ def test_incident_update_transition_history_and_audit():
             )
             incident = await create_incident(payload, session, admin_actor)
             incident_id = incident.id
+            assert incident.reporter_id == admin_actor.id
 
             severity_summary = await open_incidents_by_severity(session, admin_actor)
             open_by_severity = {
@@ -161,7 +177,7 @@ def test_invalid_transition_is_rejected():
             payload = IncidentCreate(
                 title="Invalid transition test",
                 description="Transition validation integration test",
-                reporter_id=uuid4(), clinic_id=refs["dev-us-clinic-01"], jurisdiction_id=refs["US"],
+                clinic_id=refs["dev-us-clinic-01"], jurisdiction_id=refs["US"],
                 affected_system_id=refs["usEhr"], entry_channel_value_id=ids["clinicPhone"],
                 incident_type_value_id=ids["systemAvailability"], severity_value_id=ids["critical"],
                 responsible_area_id=refs["technology"],
@@ -206,7 +222,7 @@ def test_responsible_area_actor_is_limited_to_own_area_create_update_and_close()
             payload = IncidentCreate(
                 title="Area scoped incident",
                 description="Created by a responsibleArea actor",
-                reporter_id=uuid4(), clinic_id=refs["dev-us-clinic-01"], jurisdiction_id=refs["US"],
+                clinic_id=refs["dev-us-clinic-01"], jurisdiction_id=refs["US"],
                 affected_system_id=refs["usEhr"], entry_channel_value_id=ids["clinicPhone"],
                 incident_type_value_id=ids["systemAvailability"], severity_value_id=ids["critical"],
                 responsible_area_id=own_area_id,

@@ -71,6 +71,10 @@ tbody tr:last-child td { border-bottom: 0; }
 .breadcrumbs { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
 .breadcrumbs a { text-decoration: none; }
 .detail-grid { display: grid; gap: 18px; grid-template-columns: minmax(0, 1.6fr) minmax(240px, .8fr); }
+.create-form { display: grid; gap: 18px 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.field-full { grid-column: 1 / -1; }
+.create-form textarea { min-height: 190px; }
+.creation-confirmation { background: #ecfdf3; border: 1px solid #abefc6; border-radius: 7px; color: var(--success); font-size: 14px; font-weight: 600; margin: 0 0 16px; padding: 12px 14px; }
 .detail-card { padding: 20px; }
 .detail-card h2 { font-size: 16px; margin-bottom: 18px; }
 .incident-title { font-size: clamp(22px, 3vw, 29px); margin: 0 0 7px; overflow-wrap: anywhere; }
@@ -93,6 +97,8 @@ footer { color: var(--muted); font-size: 12px; line-height: 1.5; margin-top: 24p
   .environment-badge { font-size: 10px; padding: 6px 8px; }
   .page-shell { margin-top: 18px; padding: 0 14px; }
   .connection-form, .filters { grid-template-columns: 1fr; }
+  .create-form { grid-template-columns: 1fr; }
+  .field-full { grid-column: auto; }
   .connection-form .button { width: 100%; }
   .page-heading { align-items: start; flex-direction: column; gap: 14px; }
   .detail-grid { grid-template-columns: 1fr; }

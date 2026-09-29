@@ -56,7 +56,6 @@ def test_http_authorization_enforces_area_capability_and_audit_access() -> None:
             base_payload = {
                 "title": "Reference validation test",
                 "description": "Verifies US and UK reference compatibility.",
-                "reporter_id": str(uuid4()),
                 "clinic_id": str(refs["dev-us-clinic-01"]),
                 "jurisdiction_id": str(refs["US"]),
                 "affected_system_id": str(refs["usEhr"]),
@@ -79,12 +78,14 @@ def test_http_authorization_enforces_area_capability_and_audit_access() -> None:
             )
             assert invalid_system_jurisdiction.status_code == 422
 
+            admin_id = uuid4()
             created = await client.post(
                 "/incidents",
-                headers=_bearer(ADMIN),
+                headers={"Authorization": f"Bearer {create_access_token(admin_id, ADMIN)}"},
                 json={**base_payload, "title": "HTTP authorization test"},
             )
             assert created.status_code == 201
+            assert created.json()["reporter_id"] == str(admin_id)
             incident_id = UUID(created.json()["id"])
 
             direction_list = await client.get("/incidents", headers=_bearer(DIRECTION))

@@ -34,6 +34,10 @@ function canEditGenerally() {
   return ['admin', 'technology'].includes(session.claims?.role);
 }
 
+function canCreateIncident() {
+  return ['admin', 'technology', 'responsibleArea'].includes(session.claims?.role);
+}
+
 async function api(path, options = {}) {
   const response = await fetch(`${session.apiUrl}${path}`, {
     ...options,
@@ -116,6 +120,29 @@ function option(label, value = '') {
   return item;
 }
 
+function requiredSelectField(labelText, id, items, selected = '', emptyLabel = 'Selecciona una opción') {
+  const label = element('label', 'field');
+  label.append(element('span', '', labelText));
+  const select = document.createElement('select');
+  select.id = id;
+  select.name = id;
+  select.required = true;
+  populateRequiredSelect(select, items, selected, emptyLabel);
+  label.append(select);
+  return { label, select };
+}
+
+function populateRequiredSelect(select, items, selected = '', emptyLabel = 'Selecciona una opción') {
+  select.replaceChildren(option(emptyLabel));
+  select.options[0].disabled = true;
+  select.options[0].selected = !selected;
+  for (const item of items) {
+    const entry = option(item.label, item.id);
+    entry.selected = item.id === selected;
+    select.append(entry);
+  }
+}
+
 function selectField(labelText, id, items, selected = '') {
   const label = element('label', 'field');
   label.append(element('span', '', labelText));
@@ -181,18 +208,125 @@ async function renderRoute() {
   }
   const [section, id] = routeParts();
   if (section !== 'incidents' || !id) return renderList();
-  if (id === 'new') return renderNotImplemented();
+  if (id === 'new') return renderCreate();
   return renderDetail(id);
 }
 
-function renderNotImplemented() {
+function renderCreate() {
   app.replaceChildren();
-  const panel = element('section', 'panel empty-state');
-  panel.append(element('h1', '', 'Alta de incidencias'), element('p', '', 'Este incremento cubre la lista y la edición limitada de incidencias existentes.'));
-  const back = element('a', 'button button-secondary', 'Volver a incidencias');
-  back.href = '#/incidents';
-  panel.append(back);
-  app.append(panel);
+  if (!canCreateIncident()) {
+    showError(Object.assign(new Error('Tu perfil no puede crear incidencias.'), { status: 403 }), 'Alta no disponible');
+    return;
+  }
+
+  const back = element('p', 'breadcrumbs');
+  const backLink = element('a', '', '← Volver a incidencias');
+  backLink.href = '#/incidents';
+  back.append(backLink);
+
+  const heading = element('div', 'page-heading');
+  const title = element('div');
+  title.append(element('p', 'eyebrow', 'Operaciones'), element('h1', '', 'Nueva incidencia'), element('p', '', 'Registra el impacto operativo sin incluir información de pacientes.'));
+  heading.append(title);
+
+  const panel = element('section', 'panel create-panel');
+  const form = element('form', 'create-form');
+  const jurisdiction = requiredSelectField('Jurisdicción', 'jurisdiction_id', (session.references.jurisdictions ?? []).filter(item => item.is_active));
+  const clinic = requiredSelectField('Clínica', 'clinic_id', [], '', 'Selecciona primero una jurisdicción');
+  const system = requiredSelectField('Sistema afectado', 'affected_system_id', (session.references['affected-systems'] ?? []).filter(item => item.is_active));
+  system.label.append(element('span', 'field-hint', 'La API valida que el sistema corresponda a la jurisdicción seleccionada.'));
+  const areaItems = (session.references['responsible-areas'] ?? []).filter(item => item.is_active);
+  const ownArea = session.claims.role === 'responsibleArea' ? session.claims.area_id : '';
+  const area = requiredSelectField('Área responsable', 'responsible_area_id', ownArea ? areaItems.filter(item => item.id === ownArea) : areaItems, ownArea);
+  const channel = requiredSelectField('Canal de entrada', 'entry_channel_value_id', (session.catalogs.entryChannel?.values ?? []).filter(item => item.is_active !== false));
+  const type = requiredSelectField('Tipo', 'incident_type_value_id', (session.catalogs.incidentType?.values ?? []).filter(item => item.is_active !== false));
+  const severity = requiredSelectField('Severidad', 'severity_value_id', (session.catalogs.severity?.values ?? []).filter(item => item.is_active !== false));
+
+  const titleLabel = element('label', 'field');
+  titleLabel.append(element('span', '', 'Título'));
+  const titleInput = document.createElement('input');
+  titleInput.name = 'title';
+  titleInput.required = true;
+  titleInput.maxLength = 200;
+  titleInput.autocomplete = 'off';
+  titleLabel.append(titleInput, element('span', 'field-hint', 'Máximo 200 caracteres. No incluyas datos de pacientes.'));
+
+  const descriptionLabel = element('label', 'field field-full');
+  descriptionLabel.append(element('span', '', 'Descripción'));
+  const descriptionInput = document.createElement('textarea');
+  descriptionInput.name = 'description';
+  descriptionInput.required = true;
+  descriptionInput.maxLength = 10000;
+  descriptionLabel.append(descriptionInput, element('span', 'field-hint', 'Máximo 10.000 caracteres. Describe el impacto operativo, no información clínica.'));
+
+  const privacyNotice = element('div', 'privacy-notice field-full', 'No incluyas nombres, identificadores, diagnósticos, notas clínicas ni datos de pacientes. Si detectas posible PHI, no la reproduzcas y sigue el procedimiento interno de escalado.');
+  const feedback = element('p', 'feedback field-full');
+  feedback.setAttribute('role', 'status');
+  const actions = element('div', 'form-actions field-full');
+  const cancel = element('a', 'button button-secondary', 'Cancelar');
+  cancel.href = '#/incidents';
+  const submit = element('button', 'button button-primary', 'Crear incidencia');
+  submit.type = 'submit';
+  actions.append(cancel, submit);
+
+  form.append(
+    jurisdiction.label,
+    clinic.label,
+    system.label,
+    area.label,
+    channel.label,
+    type.label,
+    severity.label,
+    titleLabel,
+    descriptionLabel,
+    privacyNotice,
+    feedback,
+    actions,
+  );
+  jurisdiction.select.addEventListener('change', () => {
+    const availableClinics = (session.references.clinics ?? []).filter(item => item.is_active && item.jurisdiction_id === jurisdiction.select.value);
+    populateRequiredSelect(clinic.select, availableClinics, '', availableClinics.length ? 'Selecciona una clínica' : 'No hay clínicas activas para esta jurisdicción');
+  });
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    titleInput.value = titleInput.value.trim();
+    descriptionInput.value = descriptionInput.value.trim();
+    if (!titleInput.value || !descriptionInput.value) {
+      form.reportValidity();
+      return;
+    }
+    submit.disabled = true;
+    feedback.className = 'feedback field-full';
+    feedback.textContent = 'Creando incidencia…';
+    try {
+      const incident = await api('/incidents', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: titleInput.value,
+          description: descriptionInput.value,
+          clinic_id: clinic.select.value,
+          jurisdiction_id: jurisdiction.select.value,
+          affected_system_id: system.select.value,
+          entry_channel_value_id: channel.select.value,
+          incident_type_value_id: type.select.value,
+          severity_value_id: severity.select.value,
+          responsible_area_id: area.select.value,
+        }),
+      });
+      setMessage(`Incidencia ${incident.incident_identifier} creada.`, 'success');
+      location.hash = `/incidents/${encodeURIComponent(incident.id)}?created=1`;
+    } catch (error) {
+      feedback.className = 'feedback field-full error';
+      feedback.textContent = error.status === 403
+        ? 'La API ha denegado la creación por permisos o por el área asignada a tu cuenta.'
+        : error.status === 422
+          ? `La API rechazó los datos: ${error.message}`
+          : error.message;
+      submit.disabled = false;
+    }
+  });
+  panel.append(form);
+  app.append(back, heading, panel);
 }
 
 async function renderList() {
@@ -213,6 +347,11 @@ async function renderList() {
     const title = element('div');
     title.append(element('p', 'eyebrow', 'Operaciones'), element('h1', '', 'Incidencias'), element('p', '', `${data.total} resultado${data.total === 1 ? '' : 's'} en el ámbito autorizado.`));
     heading.append(title);
+    if (canCreateIncident()) {
+      const createLink = element('a', 'button button-primary', 'Nueva incidencia');
+      createLink.href = '#/incidents/new';
+      heading.append(createLink);
+    }
     app.replaceChildren(heading);
 
     const filters = element('form', 'panel filters');
@@ -332,6 +471,11 @@ async function renderDetail(id) {
     const title = element('div');
     title.append(element('p', 'eyebrow', incident.incident_identifier), element('h1', 'incident-title', incident.title), element('p', 'incident-subtitle', `Creada ${dateLabel(incident.created_at)}`));
     heading.append(title);
+    let confirmation;
+    if (routeQuery().get('created') === '1') {
+      confirmation = element('p', 'creation-confirmation', `Incidencia ${incident.incident_identifier} creada correctamente.`);
+      confirmation.setAttribute('role', 'status');
+    }
     const detailGrid = element('div', 'detail-grid');
     const summary = element('section', 'detail-card');
     summary.append(element('h2', '', 'Resumen operativo'));
@@ -413,7 +557,7 @@ async function renderDetail(id) {
       editor.append(form);
     }
     detailGrid.append(summary, editor);
-    app.replaceChildren(back, heading, detailGrid);
+    app.replaceChildren(back, ...(confirmation ? [confirmation] : []), heading, detailGrid);
   } catch (error) {
     showError(error, 'No se pudo cargar el detalle');
   }

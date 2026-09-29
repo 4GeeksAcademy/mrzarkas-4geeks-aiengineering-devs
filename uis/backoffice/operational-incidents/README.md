@@ -26,11 +26,19 @@ to allow only the UI origin and the required `Authorization` and
 
 - `#/incidents`: paginated queue with status and severity filters. Broader
   roles can also request an area filter; the API always enforces area scope.
+- `#/incidents/new`: create an incident using active catalogs and reference
+  data from the API. Clinic options follow the selected jurisdiction, while
+  the API validates the affected system's jurisdiction. The reporter's
+  identity is derived by the API from the JWT and is never sent by the form.
 - `#/incidents/{uuid}`: incident detail. `responsibleArea` can edit only title
   and description when the incident's `responsible_area_id` matches its JWT
   `area_id`. `admin` and `technology` use their existing general update
   capability; read-only roles receive no editor. API authorization remains
   authoritative even if a request bypasses this UI.
+
+Incident creation is shown for `admin`, `technology`, and `responsibleArea`;
+the latter can only submit incidents for the area in its JWT. A successful
+create opens the new incident detail and displays a confirmation.
 
 The UI decodes JWT claims only to present appropriate controls. It does not
 verify signatures or grant access. Catalog labels and reference-data labels

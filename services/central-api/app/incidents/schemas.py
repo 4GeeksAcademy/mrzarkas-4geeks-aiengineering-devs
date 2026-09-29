@@ -7,7 +7,6 @@ from pydantic import BaseModel, ConfigDict, Field
 class IncidentCreate(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     description: str = Field(min_length=1, max_length=10000)
-    reporter_id: UUID
     clinic_id: UUID
     jurisdiction_id: UUID
     affected_system_id: UUID
@@ -23,6 +22,7 @@ class IncidentResponse(IncidentCreate):
 
     id: UUID
     incident_identifier: str
+    reporter_id: UUID
     status_value_id: UUID
     created_at: datetime
     created_by: UUID
