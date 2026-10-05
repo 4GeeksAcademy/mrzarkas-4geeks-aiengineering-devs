@@ -1,0 +1,37 @@
+[project]
+name = "healthcore-central-api"
+version = "0.1.0"
+description = "Central HealthCore FastAPI service"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.34,<1",
+    "alembic>=1.15,<2",
+    "asyncpg>=0.30,<1",
+    "pydantic-settings>=2.7,<3",
+    "sqlalchemy[asyncio]>=2.0,<3",
+    "pyjwt>=2.9,<3",
+]
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[project.scripts]
+seed-catalogs = "app.catalogs.seed:main"
+seed-reference-data = "app.reference_data.seed:main"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27,<1",
+    "pytest>=8.3,<9",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+markers = [
+    "integration: tests that require PostgreSQL",
+]

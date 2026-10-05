@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HealthCore · Management</title>
+    <style>
+      body { background:#f6f8fb; color:#172033; font:14px system-ui,sans-serif; margin:0; }
+      main { margin:32px auto; max-width:1050px; padding:0 20px; }
+      section { background:#fff; border:1px solid #dce3ee; border-radius:10px; margin:16px 0; padding:20px; }
+      h1,h2 { margin-top:0; } input,select,button { border:1px solid #aeb9ca; border-radius:6px; padding:9px; } button { background:#155eef; color:#fff; cursor:pointer; } button[disabled] { opacity:.55; cursor:not-allowed; }
+      table { border-collapse:collapse; width:100%; } th,td { border-bottom:1px solid #e6ebf2; padding:9px; text-align:left; } .error { color:#b42318; } .empty { color:#667085; } .notice { color:#475467; } .hidden { display:none; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Management · HealthCore</h1>
+      <p class="notice">Backoffice de desarrollo: sólo datos sintéticos. El backend aplica las autorizaciones; esta interfaz no almacena el token.</p>
+      <section>
+        <label>URL API <input id="apiUrl" value="http://localhost:8000" size="34" /></label>
+        <label>JWT <input id="token" type="password" autocomplete="off" size="52" /></label>
+        <button id="load">Cargar</button>
+        <p id="message" class="notice">Introduce un JWT autorizado para consultar Management.</p>
+      </section>
+      <section>
+        <h2>Catálogos</h2>
+        <div id="catalogs" class="empty">Sin cargar.</div>
+      </section>
+      <section>
+        <h2>Maestros</h2>
+        <label>Recurso <select id="resource"><option value="jurisdictions">Jurisdicciones</option><option value="clinics">Clínicas</option><option value="affected-systems">Sistemas</option><option value="responsible-areas">Áreas responsables</option></select></label>
+        <button id="loadReferences">Consultar</button>
+        <div id="references" class="empty">Sin cargar.</div>
+      </section>
+      <section>
+        <h2>Auditoría</h2>
+        <label>Tipo <input id="resourceType" placeholder="catalogValue" /></label>
+        <button id="loadAudit">Consultar eventos</button>
+        <div id="audit" class="empty">Sin cargar.</div>
+      </section>
+    </main>
+    <script>
+      const byId = id => document.getElementById(id);
+      const message = text => { byId('message').textContent = text; };
+      const request = async path => {
+        const response = await fetch(`${byId('apiUrl').value.replace(/\/$/, '')}${path}`, { headers: { Authorization: `Bearer ${byId('token').value}` } });
+        if (!response.ok) throw new Error(`${response.status}: ${await response.text()}`);
+        return response.json();
+      };
+      const table = (rows, columns) => !rows.length ? '<p class="empty">Sin resultados.</p>' : `<table><thead><tr>${columns.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${columns.map(c => `<td>${row[c] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+      byId('load').onclick = async () => { try { const data = await request('/management/catalogs'); byId('catalogs').innerHTML = table(data.items, ['catalog_name','version','is_active']); message(`Catálogos cargados: ${data.total}.`); } catch (error) { message(error.message); byId('catalogs').textContent = 'Error al cargar.'; } };
+      byId('loadReferences').onclick = async () => { try { const data = await request(`/management/reference-data/${byId('resource').value}`); byId('references').innerHTML = table(data.items, ['key','label','jurisdiction_id','is_active']); } catch (error) { byId('references').textContent = `Error: ${error.message}`; } };
+      byId('loadAudit').onclick = async () => { try { const type = byId('resourceType').value; const data = await request(`/management/audit-events?limit=50${type ? `&resource_type=${encodeURIComponent(type)}` : ''}`); byId('audit').innerHTML = table(data.items, ['occurred_at','resource_type','action','actor_id','reason']); } catch (error) { byId('audit').textContent = `Error: ${error.message}`; } };
+    </script>
+  </body>
+</html>
