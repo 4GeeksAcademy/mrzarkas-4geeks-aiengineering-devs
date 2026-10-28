@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:16-alpine
     env_file:
-      - ./services/central-api/.env
+      - ./backend/.env
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-healthcore}
       POSTGRES_USER: ${POSTGRES_USER:-healthcore}
@@ -19,10 +19,10 @@ services:
 
   db-init:
     build:
-      context: ./services/central-api
+      context: ./backend
       target: production
     env_file:
-      - ./services/central-api/.env
+      - ./backend/.env
     environment:
       APP_ENVIRONMENT: development
     command:
@@ -38,10 +38,10 @@ services:
 
   api:
     build:
-      context: ./services/central-api
+      context: ./backend
       target: production
     env_file:
-      - ./services/central-api/.env
+      - ./backend/.env
     environment:
       APP_ENVIRONMENT: development
     ports:
@@ -62,10 +62,10 @@ services:
   test:
     profiles: ["test"]
     build:
-      context: ./services/central-api
+      context: ./backend
       target: test
     env_file:
-      - ./services/central-api/.env
+      - ./backend/.env
     environment:
       APP_ENVIRONMENT: test
     depends_on:

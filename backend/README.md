@@ -94,7 +94,7 @@ The root Compose starts PostgreSQL, applies existing migrations and synthetic
 seeds through `db-init`, then starts the shared API, Next.js at port 3000,
 and the static backoffice at port 8080 (Management at `/management/`).
 All services share the root `.env` and the same database. See the
-[setup guide](../../uis/backoffice/stack-status/README.md).
+[setup guide](../frontend/README.md).
 `GET /status` runs `SELECT 1`, returning HTTP 200 with
 `{"status":"ok","database":"connected"}` or HTTP 503 with
 `{"status":"error","database":"unavailable"}`. `/health` is unchanged.

@@ -13,6 +13,6 @@ la API protegida, pendientes de UX final y aprobación M0.
 Desde la raíz: `podman compose up --build -d` (o `docker compose`).
 Abrir http://localhost:8080/management/ y usar http://localhost:8000 como URL API.
 Management comparte API, base y servidor estático con incidencias operativas.
-Consultar la [configuración](../stack-status/README.es.md). Se mantienen los controles JWT.
+Consultar la [configuración](../../../frontend/README.es.md). Se mantienen los controles JWT.
 
 [English](./README.md).

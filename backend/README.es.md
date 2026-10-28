@@ -81,7 +81,7 @@ El Compose raíz inicia PostgreSQL, aplica las migraciones existentes y los
 seeds sintéticos mediante `db-init`, y después inicia la API compartida,
 Next.js en el puerto 3000 y el backoffice estático en 8080 (Management en
 `/management/`). Todos usan el `.env` raíz y la misma base de datos. Consulta
-la [guía](../../uis/backoffice/stack-status/README.es.md).
+la [guía](../frontend/README.es.md).
 `GET /status` ejecuta `SELECT 1`, devolviendo HTTP 200 con
 `{"status":"ok","database":"connected"}` o HTTP 503 con
 `{"status":"error","database":"unavailable"}`. `/health` no cambia.

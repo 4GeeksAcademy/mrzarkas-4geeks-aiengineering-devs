@@ -16,7 +16,7 @@ services:
 
   db-init:
     build:
-      context: ./services/central-api
+      context: ./backend
       target: production
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
@@ -35,7 +35,7 @@ services:
 
   backend:
     build:
-      context: ./services/central-api
+      context: ./backend
       target: production
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
@@ -57,7 +57,7 @@ services:
 
   frontend:
     build:
-      context: ./uis/backoffice/stack-status
+      context: ./frontend
     environment:
       BACKEND_URL: ${BACKEND_URL:?Set BACKEND_URL in .env}
       BACKOFFICE_URL: ${BACKOFFICE_URL:?Set BACKOFFICE_URL in .env}
@@ -89,7 +89,7 @@ services:
   test:
     profiles: ["test"]
     build:
-      context: ./services/central-api
+      context: ./backend
       target: test
     environment:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}

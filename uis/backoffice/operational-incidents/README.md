@@ -20,7 +20,7 @@ docker compose up --build
 
 Open `http://localhost:8080` and use `http://localhost:8000` as the API base
 URL. Compose applies migrations and loads synthetic development catalogs and
-reference data before starting the API. Configure the root .env using the [integrated setup guide](../stack-status/README.md).
+reference data before starting the API. Configure the root .env using the [integrated setup guide](../../../frontend/README.md).
 Next.js runs at port 3000; Management is available at `/management/` on port 8080.
 
 To run only the static UI without Compose, serve this directory with a static

@@ -16,4 +16,4 @@ pending.
 From the monorepo root: `podman compose up --build -d` (or `docker compose`).
 Open http://localhost:8080/management/ and use http://localhost:8000 as the API URL.
 Management shares the API, database and static server with operational incidents.
-See [configuration](../stack-status/README.md). Existing JWT controls remain required.
+See [configuration](../../../frontend/README.md). Existing JWT controls remain required.

@@ -306,3 +306,23 @@ Esta plantilla fue creada como parte del Programa de Carrera de Ingeniería de I
 Puedes encontrar otras plantillas y recursos similares en la [página de GitHub de 4Geeks Academy](https://github.com/4geeksacademy).
 
 _Esta plantilla la mantiene 4Geeks Academy para el track de Ingeniería de IA. Uso exclusivo del programa._
+
+
+## Entrega de Dockerización — estructura actual
+
+Para este ejercicio, las aplicaciones siguen las carpetas exigidas:
+
+```text
+frontend/          # Página Next.js y Dockerfile multi-stage
+backend/           # API FastAPI existente y Dockerfile
+docker-compose.yml # Entorno integrado compartido
+.env.example       # Solo nombres; copiar y completar un .env local
+```
+
+Desde la raíz: `podman compose up --build -d` o
+`docker compose up --build -d`. Consulta la [guía](frontend/README.es.md).
+Next.js está en 3000, la API en 8000 y el backoffice estático en 8080
+(Management en `/management/`). Esta estructura raíz es una excepción
+autorizada expresamente a las convenciones originales del monorepo.
+La base integrada contiene tablas y seeds sintéticos de la aplicación
+existente; no es la base vacía descrita en el ejercicio mínimo.

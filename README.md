@@ -306,3 +306,23 @@ This template was built as part of the 4Geeks Academy AI Engineering Career Prog
 You can find other templates and resources like this at the [4Geeks Academy GitHub page](https://github.com/4geeksacademy).
 
 _This template is maintained by 4Geeks Academy for the AI Engineering track. For exclusive use in the programme._
+
+
+## Dockerization assignment — current layout
+
+For this assignment, the application paths follow the required layout:
+
+```text
+frontend/          # Next.js status page and multi-stage Dockerfile
+backend/           # Existing FastAPI API and Dockerfile
+docker-compose.yml # Shared integrated environment
+.env.example       # Variable names only; copy and fill a local .env
+```
+
+From the repository root: `podman compose up --build -d` or
+`docker compose up --build -d`. See [setup](frontend/README.md).
+Next.js runs on 3000, the API on 8000 and the existing static backoffice on
+8080 (Management at `/management/`). This root layout is an explicitly
+authorized exception to the original monorepo folder convention.
+The integrated database contains the existing application's tables and
+synthetic seeds; it is not the empty database described by the minimal exercise.

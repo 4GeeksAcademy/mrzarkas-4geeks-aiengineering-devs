@@ -9,7 +9,7 @@ para escritura compartida, datos reales, piloto ni producción.
 
 Desde la raíz del monorepo: `podman compose up --build -d` o
 `docker compose up --build -d`, con el `.env` raíz preparado según la
-[guía de configuración](../stack-status/README.es.md).
+[guía de configuración](../../../frontend/README.es.md).
 Abrir http://localhost:8080 y usar http://localhost:8000 como URL API.
 El arranque aplica migraciones y seeds sintéticos. Next.js está en 3000 y
 Management en http://localhost:8080/management/.
