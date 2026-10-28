@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth.router import router as auth_router
 from app.catalogs.router import router as catalogs_router
@@ -7,6 +10,7 @@ from app.compliance.router import router as compliance_router
 from app.core.config import get_settings
 from app.incidents.router import router as incidents_router
 from app.management.router import router as management_router
+from app.db.session import engine
 
 app = FastAPI(title="HealthCore API")
 settings = get_settings()
@@ -29,3 +33,16 @@ app.include_router(management_router)
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/status", responses={503: {"description": "Database unavailable"}})
+async def status():
+    """Check connectivity without reading or creating application data."""
+    if engine is None:
+        return JSONResponse(status_code=503, content={"status": "error", "database": "unavailable"})
+    try:
+        async with engine.connect() as connection:
+            await connection.execute(text("SELECT 1"))
+    except (SQLAlchemyError, OSError, TimeoutError):
+        return JSONResponse(status_code=503, content={"status": "error", "database": "unavailable"})
+    return {"status": "ok", "database": "connected"}
