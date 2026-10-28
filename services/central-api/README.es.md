@@ -19,17 +19,18 @@ uv run --no-sync uvicorn app.main:app --reload
 Desde la raíz del repositorio, arrancar el contenedor:
 
 ```sh
-cp services/central-api/env.example services/central-api/.env
-docker compose --env-file services/central-api/.env up --build
-# Usuarios de Podman: podman compose --env-file services/central-api/.env up --build
+cp .env.example .env
+# Completar .env según la guía integrada enlazada abajo.
+docker compose up --build
+# Usuarios de Podman: podman compose up --build
 ```
 
 Compose inicia PostgreSQL, aplica migraciones Alembic, carga los catálogos
 provisionales y los datos sintéticos de referencia, y después inicia la API y
 el backoffice estático. Abrir `http://localhost:8080` para la UI y
 `http://localhost:8000/health` para comprobar la API. Las credenciales de base
-de datos y la clave JWT de `env.example` son sólo para desarrollo; cámbialas
-en cualquier entorno compartido. Git ignora `services/central-api/.env`.
+de datos y la clave JWT se generan localmente en el `.env` raíz;
+`.env.example` contiene solo los nombres de variables. Git ignora `.env`.
 
 Detener con `docker compose down`. Añade `-v` únicamente si quieres borrar
 intencionadamente el volumen local de PostgreSQL y todos sus datos.
@@ -56,8 +57,7 @@ uv run --no-sync alembic current
 
 Sin `DATABASE_URL`, la API puede arrancar y responder `/health`, pero Alembic y las operaciones de base de datos fallarán explícitamente porque necesitan una conexión.
 
-Compose configura la URL de base de datos dentro de los contenedores usando el
-hostname del servicio `postgres`. No incluir credenciales reales en
+DATABASE_URL del .env raíz debe usar el hostname del servicio `db`. No incluir credenciales reales en
 `env.example` ni en Git.
 
 Después de aplicar las migraciones, cargar los catálogos con:
@@ -70,7 +70,25 @@ La imagen instala la API como paquete y genera el ejecutable a partir de
 `[project.scripts]`. Con Podman puede ejecutarse dentro del contenedor:
 
 ```sh
-podman exec 4geeks-aiengineering-api-1 uv run --no-sync seed-catalogs
+podman compose exec backend uv run --no-sync seed-catalogs
 ```
 
 Documentación en inglés: [README.md](./README.md).
+
+## Stack contenedorizado integrado
+
+El Compose raíz inicia PostgreSQL, aplica las migraciones existentes y los
+seeds sintéticos mediante `db-init`, y después inicia la API compartida,
+Next.js en el puerto 3000 y el backoffice estático en 8080 (Management en
+`/management/`). Todos usan el `.env` raíz y la misma base de datos. Consulta
+la [guía](../../uis/backoffice/stack-status/README.es.md).
+`GET /status` ejecuta `SELECT 1`, devolviendo HTTP 200 con
+`{"status":"ok","database":"connected"}` o HTTP 503 con
+`{"status":"error","database":"unavailable"}`. `/health` no cambia.
+Python 3.12 conserva la restricción del paquete existente. Los requisitos
+fijados se comparan con uv.lock y se instalan con uv pip; uv sync instala
+el proyecto. La etapa test incluye las dependencias de desarrollo.
+
+Pruebas de estado sin PostgreSQL: `uv run --no-sync pytest tests/test_status.py -q`.
+Suite completa desde la raíz: `docker compose --profile test run --rm test`.
+La suite modifica registros sintéticos: usar solo la base local de desarrollo.

@@ -12,15 +12,16 @@ Recommended: start PostgreSQL, the API, and this backoffice together from the
 repository root using Docker Compose:
 
 ```sh
-cp services/central-api/env.example services/central-api/.env
-docker compose --env-file services/central-api/.env up --build
-# Podman: podman compose --env-file services/central-api/.env up --build
+cp .env.example .env
+# Fill the root .env first.
+docker compose up --build
+# Podman: podman compose up --build
 ```
 
 Open `http://localhost:8080` and use `http://localhost:8000` as the API base
 URL. Compose applies migrations and loads synthetic development catalogs and
-reference data before starting the API. The values in `env.example` are for
-local development only.
+reference data before starting the API. Configure the root .env using the [integrated setup guide](../stack-status/README.md).
+Next.js runs at port 3000; Management is available at `/management/` on port 8080.
 
 To run only the static UI without Compose, serve this directory with a static
 HTTP server (opening `index.html` directly may prevent browser module loading):

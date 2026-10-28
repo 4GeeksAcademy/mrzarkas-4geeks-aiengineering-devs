@@ -1,16 +1,13 @@
+name: healthcore-stack
 services:
-  postgres:
+  db:
     image: postgres:16-alpine
-    env_file:
-      - ./services/central-api/.env
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-healthcore}
-      POSTGRES_USER: ${POSTGRES_USER:-healthcore}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-healthcore_dev_password}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     volumes:
-      - healthcore-postgres-data:/var/lib/postgresql/data
+      - mvp-postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -21,10 +18,10 @@ services:
     build:
       context: ./services/central-api
       target: production
-    env_file:
-      - ./services/central-api/.env
     environment:
-      APP_ENVIRONMENT: development
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:?Set APP_ENVIRONMENT in .env}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
     command:
       - sh
       - -c
@@ -33,44 +30,74 @@ services:
         && uv run --no-sync seed-catalogs
         && uv run --no-sync seed-reference-data
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
 
-  api:
+  backend:
     build:
       context: ./services/central-api
       target: production
-    env_file:
-      - ./services/central-api/.env
     environment:
-      APP_ENVIRONMENT: development
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:?Set APP_ENVIRONMENT in .env}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
     ports:
-      - "${API_PORT:-8000}:8000"
+      - "127.0.0.1:${API_PORT:-8000}:8000"
     depends_on:
       db-init:
         condition: service_completed_successfully
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - uv run --no-sync python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/status', timeout=5)"
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./uis/backoffice/stack-status
+    environment:
+      BACKEND_URL: ${BACKEND_URL:?Set BACKEND_URL in .env}
+      BACKOFFICE_URL: ${BACKOFFICE_URL:?Set BACKOFFICE_URL in .env}
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - node -e "fetch('http://127.0.0.1:3000').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   backoffice:
     image: nginx:1.27-alpine
     ports:
-      - "${BACKOFFICE_PORT:-8080}:80"
+      - "127.0.0.1:${BACKOFFICE_PORT:-8080}:80"
     volumes:
       - ./uis/backoffice/operational-incidents:/usr/share/nginx/html:ro
+      - ./uis/backoffice/management:/usr/share/nginx/html/management:ro
     depends_on:
-      - api
+      backend:
+        condition: service_healthy
 
   test:
     profiles: ["test"]
     build:
       context: ./services/central-api
       target: test
-    env_file:
-      - ./services/central-api/.env
     environment:
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
       APP_ENVIRONMENT: test
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
     depends_on:
-      postgres:
-        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
 
 volumes:
-  healthcore-postgres-data:
+  mvp-postgres-data:

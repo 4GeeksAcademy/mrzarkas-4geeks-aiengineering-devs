@@ -19,17 +19,18 @@ uv run --no-sync uvicorn app.main:app --reload
 From the repository root, start the container:
 
 ```sh
-cp services/central-api/env.example services/central-api/.env
-docker compose --env-file services/central-api/.env up --build
-# Podman users: podman compose --env-file services/central-api/.env up --build
+cp .env.example .env
+# Fill the root .env using the integrated setup guide below.
+docker compose up --build
+# Podman users: podman compose up --build
 ```
 
 Compose starts PostgreSQL, applies Alembic migrations, seeds the provisional
 catalogs and synthetic reference data, and then starts the API and static
 backoffice. Open `http://localhost:8080` for the UI and
 `http://localhost:8000/health` for the API health check. The local database
-credentials and JWT secret in `env.example` are development-only; change them
-for any shared environment. Git ignores `services/central-api/.env`.
+credentials and JWT secret must be generated locally in the root `.env`;
+`.env.example` contains variable names only. Git ignores `.env`.
 
 Stop the stack with `docker compose down`. Add `-v` only if you intentionally
 want to delete the local PostgreSQL volume and all its data.
@@ -67,7 +68,7 @@ The API is installed as a package during the image build, so the
 run it inside the running service container:
 
 ```sh
-podman exec 4geeks-aiengineering-api-1 uv run --no-sync seed-catalogs
+podman compose exec backend uv run --no-sync seed-catalogs
 ```
 
 The seed is idempotent, uses the stable catalog keys, and does not create clinics,
@@ -83,7 +84,24 @@ curl http://localhost:8000/catalogs/severity
 The endpoint returns only active values currently within their effective date
 range, ordered by `sort_order` and then by technical key.
 
-Compose overrides the container's database URL to use the `postgres` service
-hostname. Never put real credentials in `env.example` or Git.
+The root DATABASE_URL must use the `db` service hostname. Never put real credentials in `env.example` or Git.
 
 Spanish documentation: [README.es.md](./README.es.md).
+
+## Integrated container stack
+
+The root Compose starts PostgreSQL, applies existing migrations and synthetic
+seeds through `db-init`, then starts the shared API, Next.js at port 3000,
+and the static backoffice at port 8080 (Management at `/management/`).
+All services share the root `.env` and the same database. See the
+[setup guide](../../uis/backoffice/stack-status/README.md).
+`GET /status` runs `SELECT 1`, returning HTTP 200 with
+`{"status":"ok","database":"connected"}` or HTTP 503 with
+`{"status":"error","database":"unavailable"}`. `/health` is unchanged.
+Python 3.12 preserves the existing package constraint. Locked requirements
+are verified against uv.lock and installed with uv pip; uv sync installs the
+project. The test stage includes development dependencies.
+
+Status tests without PostgreSQL: `uv run --no-sync pytest tests/test_status.py -q`.
+Full synthetic integration suite from the root: `docker compose --profile test run --rm test`.
+The full suite modifies synthetic test records; use only the local development database.
