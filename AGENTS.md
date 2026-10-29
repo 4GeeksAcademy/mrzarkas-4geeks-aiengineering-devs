@@ -81,12 +81,14 @@ Estas reglas de trabajo no certifican ni demuestran cumplimiento normativo. No d
 | --- | --- |
 | `/uis` | Aplicaciones frontend. |
 | `/uis/website` | Ubicacion prevista para la web corporativa publica; no existe actualmente en el arbol inspeccionado. |
+| `/frontend` | Ubicacion alternativa existente del website: landing de HealthCore Digital en Next.js. Usar como referencia principal del sitio web mientras `/uis/website` no exista. Entrada en `app/page.js`; scripts `pnpm build` y `pnpm start`; URL local configurada `http://localhost:3000`. |
 | `/uis/backoffice` | Aplicacion interna existente, con areas separadas de incidencias operativas y Management. |
 | `/services` | APIs y servicios backend; existe `services/central-api/`. |
 
 Reglas:
 
 - No crear un segundo arbol de aplicaciones ni ubicar APIs fuera de `/services`.
+- Reconocer `/frontend` como alternativa existente a `/uis/website`; consultar sus README y conservar su ubicacion durante la auditoria, sin duplicar ni trasladar la aplicacion.
 - No mezclar componentes internos con la web publica sin justificacion aprobada.
 - La web corporativa, si se autoriza en una tarea futura, debe reflejar la marca y el negocio de HealthCore. El backoffice debe seguir separado del sitio publico.
 - La entrada de cada frontend vive en `/` dentro del directorio de esa aplicacion, no en la raiz del monorepo.
