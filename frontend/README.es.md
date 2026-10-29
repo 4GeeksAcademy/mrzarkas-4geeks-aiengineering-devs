@@ -104,3 +104,9 @@ el escritorio. La revisión visual completa en móvil, el recorrido por teclado
 y la consola quedan pendientes: los cambios concurrentes de foco de Chrome
 impidieron completar esas comprobaciones. No se ejecutaron lint ni tests al
 no existir scripts configurados.
+
+## Auditoría de rendimiento
+
+El hero conserva next/image, dimensiones intrínsecas y preload, y añade
+`fetchPriority="high"` para su petición LCP. Mediciones reproducibles de
+producción y capturas en `../audit/`; análisis en `../AUDIT.md`.

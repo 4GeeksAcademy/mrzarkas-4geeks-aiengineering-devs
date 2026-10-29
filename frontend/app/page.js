@@ -83,7 +83,7 @@ export default async function Home() {
             </div>
             <figure className={styles.heroVisual}>
               <div className={styles.imageFrame}>
-                <Image src={healthcareTeam} alt="Ilustración de profesionales sanitarios colaborando con herramientas digitales en la recepción de un centro de salud." className={styles.heroImage} sizes="(max-width: 800px) 100vw, 55vw" preload />
+                <Image src={healthcareTeam} alt="Ilustración de profesionales sanitarios colaborando con herramientas digitales en la recepción de un centro de salud." className={styles.heroImage} sizes="(max-width: 800px) 100vw, 55vw" preload fetchPriority="high" />
               </div>
               <figcaption className={styles.imageCaption}><span className={styles.captionIcon}><Icon name="heart" /></span><span>La tecnología nos conecta.<br /><strong>Las personas nos inspiran.</strong></span></figcaption>
             </figure>

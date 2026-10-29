@@ -103,3 +103,9 @@ and all nine referenced resources returned HTTP 200. Desktop was visually
 reviewed. Full mobile visual review, keyboard traversal and console review
 remain pending because concurrent Chrome focus changes prevented completion.
 Lint and tests were not run because no scripts are configured.
+
+## Performance audit
+
+The hero retains next/image optimization, intrinsic dimensions and preload,
+with explicit `fetchPriority="high"` for its LCP request. Reproducible production
+measurements and browser screenshots are in `../audit/`; see `../AUDIT.md`.
