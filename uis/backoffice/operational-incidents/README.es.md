@@ -5,6 +5,9 @@
 Evidencia Lighthouse de producción en `../../../audit/`. El aviso de datos
 sintéticos usa el color oscuro de marca para el contraste del texto pequeño.
 HTML/CSS/JS nativos servidos por Nginx, sin bundler de desarrollo.
+`select-field.js` comparte la estructura de los select de campos obligatorios,
+filtros y ordenación. Los wrappers conservan valores predeterminados, atributos
+de validación y selección de opciones.
 
 UI estática de desarrollo, sin dependencias, para la API OperationalIncident.
 Incluye cola paginada, detalle y editor de título/descripción limitado por área.

@@ -1,3 +1,5 @@
+import { createSelectField } from './select-field.js';
+
 const PAGE_SIZE = 20;
 const app = document.querySelector('#app');
 const connectionForm = document.querySelector('#connectionForm');
@@ -143,14 +145,10 @@ function option(label, value = '') {
 }
 
 function requiredSelectField(labelText, id, items, selected = '', emptyLabel = 'Selecciona una opción') {
-  const label = element('label', 'field');
-  label.append(element('span', '', labelText));
-  const select = document.createElement('select');
-  select.id = id;
+  const { label, select } = createSelectField(labelText, id);
   select.name = id;
   select.required = true;
   populateRequiredSelect(select, items, selected, emptyLabel);
-  label.append(select);
   return { label, select };
 }
 
@@ -166,31 +164,23 @@ function populateRequiredSelect(select, items, selected = '', emptyLabel = 'Sele
 }
 
 function selectField(labelText, id, items, selected = '') {
-  const label = element('label', 'field');
-  label.append(element('span', '', labelText));
-  const select = document.createElement('select');
-  select.id = id;
+  const { label, select } = createSelectField(labelText, id);
   select.append(option('Todos'));
   for (const item of items) {
     const entry = option(item.label, item.id);
     entry.selected = item.id === selected;
     select.append(entry);
   }
-  label.append(select);
   return label;
 }
 
 function fixedSelectField(labelText, id, values, selected = '') {
-  const label = element('label', 'field');
-  label.append(element('span', '', labelText));
-  const select = document.createElement('select');
-  select.id = id;
+  const { label, select } = createSelectField(labelText, id);
   for (const [value, text] of values) {
     const entry = option(text, value);
     entry.selected = value === selected;
     select.append(entry);
   }
-  label.append(select);
   return label;
 }
 

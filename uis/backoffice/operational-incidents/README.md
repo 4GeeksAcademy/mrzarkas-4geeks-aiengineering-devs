@@ -5,6 +5,9 @@
 Production Lighthouse evidence is in `../../../audit/`. The synthetic-data
 badge uses the existing dark brand color for sufficient small-text contrast.
 Native HTML/CSS/JS is served by Nginx; there is no development bundler to audit.
+`select-field.js` shares labeled-select DOM construction between required
+fields, catalog filters and fixed sorting controls. The existing wrappers
+retain their defaults, validation attributes and option selection behavior.
 
 Static, dependency-free development UI for the `OperationalIncident` API.
 It provides a paginated incident queue and a detail page with the scoped
