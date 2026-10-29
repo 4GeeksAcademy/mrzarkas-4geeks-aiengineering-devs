@@ -1,5 +1,11 @@
 # Backoffice de incidencias operativas
 
+## Auditoría de rendimiento
+
+Evidencia Lighthouse de producción en `../../../audit/`. El aviso de datos
+sintéticos usa el color oscuro de marca para el contraste del texto pequeño.
+HTML/CSS/JS nativos servidos por Nginx, sin bundler de desarrollo.
+
 UI estática de desarrollo, sin dependencias, para la API OperationalIncident.
 Incluye cola paginada, detalle y editor de título/descripción limitado por área.
 La API es la frontera de autorización. Solo datos sintéticos: no autorizado

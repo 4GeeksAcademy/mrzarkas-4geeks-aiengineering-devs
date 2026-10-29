@@ -1,5 +1,11 @@
 # Operational incidents backoffice
 
+## Performance audit
+
+Production Lighthouse evidence is in `../../../audit/`. The synthetic-data
+badge uses the existing dark brand color for sufficient small-text contrast.
+Native HTML/CSS/JS is served by Nginx; there is no development bundler to audit.
+
 Static, dependency-free development UI for the `OperationalIncident` API.
 It provides a paginated incident queue and a detail page with the scoped
 title/description editor. It uses the API as the authorization boundary and

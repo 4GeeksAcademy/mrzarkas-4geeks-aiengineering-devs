@@ -21,7 +21,7 @@ a { color: var(--blue); }
 .topbar { align-items: center; background: var(--surface); border-bottom: 1px solid var(--line); display: flex; gap: 36px; min-height: 68px; padding: 0 max(24px, calc((100vw - 1160px) / 2)); }
 .topbar nav { display: flex; gap: 16px; height: 68px; }
 .nav-link { align-items: center; border-bottom: 2px solid var(--blue); color: var(--blue-dark); display: flex; font-size: 14px; font-weight: 650; padding: 0 8px; text-decoration: none; }
-.environment-badge { background: #e7f0ed; border-radius: 999px; color: #42766a; font-size: 12px; font-weight: 600; margin-left: auto; padding: 7px 11px; }
+.environment-badge { background: #e7f0ed; border-radius: 999px; color: var(--blue-dark); font-size: 12px; font-weight: 600; margin-left: auto; padding: 7px 11px; }
 .page-shell { margin: 28px auto 48px; max-width: 1160px; padding: 0 24px; }
 .connection-card, .panel, .detail-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 1px 2px #1018280a; }
 .connection-card { margin-bottom: 28px; padding: 18px 20px 14px; }
