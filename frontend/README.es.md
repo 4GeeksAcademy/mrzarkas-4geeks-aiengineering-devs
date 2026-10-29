@@ -110,3 +110,5 @@ no existir scripts configurados.
 El hero conserva next/image, dimensiones intrínsecas y preload, y añade
 `fetchPriority="high"` para su petición LCP. Mediciones reproducibles de
 producción y capturas en `../audit/`; análisis en `../AUDIT.md`.
+`app/icon.svg` proporciona la marca existente mediante los metadatos de Next.js
+y evita la petición fallida del favicon predeterminado.

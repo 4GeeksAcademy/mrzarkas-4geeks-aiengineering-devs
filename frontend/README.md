@@ -109,3 +109,5 @@ Lint and tests were not run because no scripts are configured.
 The hero retains next/image optimization, intrinsic dimensions and preload,
 with explicit `fetchPriority="high"` for its LCP request. Reproducible production
 measurements and browser screenshots are in `../audit/`; see `../AUDIT.md`.
+`app/icon.svg` supplies the existing HealthCore mark through Next.js icon
+metadata, avoiding the browser's failed default favicon request.
