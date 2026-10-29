@@ -77,3 +77,30 @@ No usar `down -v` si se quiere conservar la base. El archivo
 configuración anterior; ya no se necesita para levantar el proyecto.
 
 [English](./README.md).
+
+
+## Portada HealthCore Digital
+
+La página principal contiene cabecera, hero de bienvenida, tarjetas de
+Incidencias operativas y Management, presentación institucional y footer.
+Los destinos originales se mantienen. Inventario no está implementado y no
+se presenta como herramienta disponible. Un indicador discreto en el footer
+conserva la consulta existente a /status desde el servidor.
+
+Se utilizan CSS Modules nativos de Next.js (`app/page.module.css`), fuentes
+del sistema, foco visible de teclado y soporte de movimiento reducido. El
+hero reutiliza `app/assets/imgs/AdobeStock_2207054294.jpeg` con next/image.
+El original no se modifica; no hay imágenes ni fuentes externas en ejecución.
+
+Compilar con `podman compose build frontend`. Para ver solo este cambio,
+ejecutar `podman compose up -d --no-deps frontend` y abrir el puerto 3000.
+No requiere reiniciar backend ni inicializar la base. El paquete ofrece
+build/dev/start; no tiene scripts de lint ni pruebas configurados. Revisar
+escritorio/móvil, navegación por teclado y ambos enlaces en el navegador.
+
+Validación realizada: build de producción correcto; portada, ambos destinos
+y los nueve recursos referenciados responden HTTP 200. Se revisó visualmente
+el escritorio. La revisión visual completa en móvil, el recorrido por teclado
+y la consola quedan pendientes: los cambios concurrentes de foco de Chrome
+impidieron completar esas comprobaciones. No se ejecutaron lint ni tests al
+no existir scripts configurados.

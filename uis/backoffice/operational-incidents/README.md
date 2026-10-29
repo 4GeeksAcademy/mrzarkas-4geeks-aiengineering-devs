@@ -69,3 +69,15 @@ Current API contract limits shown in the editor are 200 characters for title
 and 10,000 for description. The PHI warning is a user reminder, not a PHI
 detector. These values remain subject to M0 approval; do not treat this
 prototype as a compliance control.
+
+## Visual identity
+
+The UI uses the HealthCore Digital landing palette, native CSS, responsive
+layouts and visible keyboard focus. Existing API requests, routes and token
+handling are unchanged. Tables scroll within their containers on small screens.
+
+Validation: JavaScript syntax checks and diff whitespace checks passed;
+HTTP checks confirmed both pages and CSS match local files. Both initial
+screens were reviewed on desktop, and Management at 393px. Authenticated
+data views, full keyboard traversal and mobile incidents review remain
+pending; no development JWT was supplied for the data views.

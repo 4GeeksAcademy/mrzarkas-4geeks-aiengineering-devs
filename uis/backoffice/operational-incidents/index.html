@@ -4,17 +4,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <title>HealthCore · Incidencias operativas</title>
     <link rel="stylesheet" href="./styles.css" />
     <script type="module" src="./app.js"></script>
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#/incidents" aria-label="HealthCore, incidencias">HealthCore <span>Operaciones</span></a>
+      <a class="brand" href="#/incidents" aria-label="HealthCore, incidencias"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7Z" /></svg></span><span class="brand-wordmark"><span class="brand-name">HealthCore</span><span class="brand-unit">DIGITAL</span></span></a>
       <nav aria-label="Navegación principal"><a class="nav-link" href="#/incidents">Incidencias</a><a class="nav-link" href="#/summary">Resumen</a></nav>
       <span class="environment-badge">Prototipo · datos sintéticos</span>
     </header>
-    <main class="page-shell">
+    <a class="skip-link" href="#workspace">Saltar al contenido</a>
+    <main class="page-shell" id="workspace">
+      <div class="workspace-intro"><p class="eyebrow">HealthCore Digital · Operaciones</p><h1>Gestión de incidencias</h1><p>Un espacio para coordinar las incidencias operativas y acompañar el trabajo de nuestros equipos.</p></div>
       <section class="connection-card" aria-labelledby="connection-heading">
         <div class="connection-heading">
           <div><p class="eyebrow">Conexión de desarrollo</p><h2 id="connection-heading">Conectar con la API</h2></div>

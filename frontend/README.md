@@ -76,3 +76,30 @@ Avoid `down -v` when preserving the database. The
 copy; it is no longer needed to start this project.
 
 [Español](./README.es.md).
+
+
+## HealthCore Digital landing
+
+The homepage has a corporate header, welcome hero, cards for existing
+Operational incidents and Management, an institutional introduction and footer.
+The original tool URLs are unchanged. Inventory is not implemented and is not
+shown as an available tool. A small footer indicator preserves the existing
+server-side /status connectivity check.
+
+Styles use native Next.js CSS Modules (`app/page.module.css`), system fonts,
+visible keyboard focus and reduced-motion support. The hero uses the locally
+provided `app/assets/imgs/AdobeStock_2207054294.jpeg` through next/image. Its
+original file is unchanged; images and fonts need no external runtime services.
+
+Validate the production build with `podman compose build frontend`. To preview
+only this change, use `podman compose up -d --no-deps frontend` and open port
+3000. No backend or database initialization is needed for this UI refresh.
+The existing package scripts provide build/dev/start; no lint or test script
+is configured. Verify desktop/mobile layouts, keyboard navigation and both
+tool links in a browser.
+
+Validation performed: production build passed; the homepage, both tool URLs
+and all nine referenced resources returned HTTP 200. Desktop was visually
+reviewed. Full mobile visual review, keyboard traversal and console review
+remain pending because concurrent Chrome focus changes prevented completion.
+Lint and tests were not run because no scripts are configured.

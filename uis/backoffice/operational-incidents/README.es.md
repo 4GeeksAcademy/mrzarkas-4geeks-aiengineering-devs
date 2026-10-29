@@ -42,3 +42,18 @@ sobre PHI es un recordatorio, no un detector ni un control de cumplimiento.
 Los valores siguen sujetos a aprobación M0.
 
 [English](./README.md).
+
+
+## Identidad visual
+
+La interfaz utiliza la paleta de la portada HealthCore Digital, CSS nativo,
+distribución responsive y foco visible de teclado. Se conservan las consultas
+a la API, las rutas y el manejo del token. Las tablas se desplazan dentro de
+sus contenedores en pantallas pequeñas.
+
+Validación: sintaxis JavaScript y comprobación del diff correctas; HTTP
+confirma que ambas páginas y CSS coinciden con los archivos locales. Se
+revisaron las pantallas iniciales en escritorio y Management a 393px.
+Quedan pendientes las vistas con datos autenticados, el recorrido completo
+por teclado y las incidencias en móvil; no se proporcionó JWT de desarrollo
+para revisar las vistas con datos.

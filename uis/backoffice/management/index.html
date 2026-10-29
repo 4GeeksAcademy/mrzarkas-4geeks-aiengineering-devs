@@ -3,41 +3,46 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <title>HealthCore · Management</title>
-    <style>
-      body { background:#f6f8fb; color:#172033; font:14px system-ui,sans-serif; margin:0; }
-      main { margin:32px auto; max-width:1050px; padding:0 20px; }
-      section { background:#fff; border:1px solid #dce3ee; border-radius:10px; margin:16px 0; padding:20px; }
-      h1,h2 { margin-top:0; } input,select,button { border:1px solid #aeb9ca; border-radius:6px; padding:9px; } button { background:#155eef; color:#fff; cursor:pointer; } button[disabled] { opacity:.55; cursor:not-allowed; }
-      table { border-collapse:collapse; width:100%; } th,td { border-bottom:1px solid #e6ebf2; padding:9px; text-align:left; } .error { color:#b42318; } .empty { color:#667085; } .notice { color:#475467; } .hidden { display:none; }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main>
-      <h1>Management · HealthCore</h1>
+    <a class="skip-link" href="#workspace">Saltar al contenido</a>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="HealthCore Digital, Management"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7Z" /></svg></span><span class="brand-wordmark"><span class="brand-name">HealthCore</span><span class="brand-unit">DIGITAL</span></span></a>
+      <nav aria-label="Navegación principal"><a href="#catalog-section">Catálogos</a><a href="#reference-section">Maestros</a><a href="#audit-section">Auditoría</a></nav>
+      <span class="environment-badge">Prototipo · datos sintéticos</span>
+    </header>
+    <main id="workspace">
+      <p class="eyebrow">HealthCore Digital · Recursos internos</p><h1>Management</h1><p class="intro">Consulta los catálogos, datos de referencia y eventos de auditoría disponibles según tus permisos.</p>
       <p class="notice">Backoffice de desarrollo: sólo datos sintéticos. El backend aplica las autorizaciones; esta interfaz no almacena el token.</p>
-      <section>
+      <section class="connection-card">
+        <h2>Conectar con la API</h2>
+        <div class="connection-controls">
         <label>URL API <input id="apiUrl" value="http://localhost:8000" size="34" /></label>
         <label>JWT <input id="token" type="password" autocomplete="off" size="52" /></label>
         <button id="load">Cargar</button>
+        </div>
         <p id="message" class="notice">Introduce un JWT autorizado para consultar Management.</p>
       </section>
-      <section>
+      <section id="catalog-section">
         <h2>Catálogos</h2>
-        <div id="catalogs" class="empty">Sin cargar.</div>
+        <div id="catalogs" class="empty table-wrap" tabindex="0" role="region" aria-label="Resultados de catálogos">Sin cargar.</div>
       </section>
-      <section>
+      <section id="reference-section">
         <h2>Maestros</h2>
         <label>Recurso <select id="resource"><option value="jurisdictions">Jurisdicciones</option><option value="clinics">Clínicas</option><option value="affected-systems">Sistemas</option><option value="responsible-areas">Áreas responsables</option></select></label>
         <button id="loadReferences">Consultar</button>
-        <div id="references" class="empty">Sin cargar.</div>
+        <div id="references" class="empty table-wrap" tabindex="0" role="region" aria-label="Resultados de maestros">Sin cargar.</div>
       </section>
-      <section>
+      <section id="audit-section">
         <h2>Auditoría</h2>
         <label>Tipo <input id="resourceType" placeholder="catalogValue" /></label>
         <button id="loadAudit">Consultar eventos</button>
-        <div id="audit" class="empty">Sin cargar.</div>
+        <div id="audit" class="empty table-wrap" tabindex="0" role="region" aria-label="Resultados de auditoría">Sin cargar.</div>
       </section>
+    <footer><strong>HealthCore Digital</strong> · Soluciones digitales para nuestros equipos<br />Entorno de desarrollo · Datos sintéticos</footer>
     </main>
     <script>
       const byId = id => document.getElementById(id);
