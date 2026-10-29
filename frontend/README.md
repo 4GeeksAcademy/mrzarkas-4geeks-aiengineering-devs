@@ -111,3 +111,5 @@ with explicit `fetchPriority="high"` for its LCP request. Reproducible productio
 measurements and browser screenshots are in `../audit/`; see `../AUDIT.md`.
 `app/icon.svg` supplies the existing HealthCore mark through Next.js icon
 metadata, avoiding the browser's failed default favicon request.
+`app/section-heading.js` shares the institutional eyebrow/h2 structure for
+tools and About, preserving section IDs, heading levels and CSS Modules.

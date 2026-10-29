@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Website 1350px: headings, links, image, icon, no overflow, keyboard skip link PASS",
+    "Website 393px: headings, links, image, icon, no overflow, keyboard skip link PASS",
+    "Backoffice catalog filter and fixed sorting selection retained after route update PASS",
+    "Required creation fields remain labeled/named; choosing jurisdiction populates clinics PASS (not submitted)",
+    "Disconnect clears token and restores connection form PASS",
+    "Management target available; no uncaught browser errors across checked pages PASS"
+  ],
+  "dataWrites": 0
+}

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import healthcareTeam from "./assets/imgs/AdobeStock_2207054294.jpeg";
 import styles from "./page.module.css";
+import SectionHeading from "./section-heading";
 
 export const dynamic = "force-dynamic";
 
@@ -91,11 +92,13 @@ export default async function Home() {
         </section>
 
         <section id="herramientas" className={`${styles.container} ${styles.toolsSection}`} aria-labelledby="tools-title">
-          <div className={styles.sectionHeading}>
-            <p className={styles.eyebrow}>TU TRABAJO, MÁS SENCILLO</p>
-            <h2 id="tools-title">Nuestras herramientas</h2>
-            <p>Accede a los recursos digitales que acompañan el día a día de nuestros equipos.</p>
-          </div>
+          <SectionHeading
+            className={styles.sectionHeading}
+            id="tools-title"
+            eyebrow={{ className: styles.eyebrow, text: "TU TRABAJO, MÁS SENCILLO" }}
+            title="Nuestras herramientas"
+            description="Accede a los recursos digitales que acompañan el día a día de nuestros equipos."
+          />
           <div className={styles.toolGrid}>
             {tools.map((tool) => (
               <article className={styles.toolCard} key={tool.name}>
@@ -112,8 +115,11 @@ export default async function Home() {
           <div className={styles.aboutPanel}>
             <div className={styles.aboutIdentity}>
               <span className={styles.aboutIcon}><Icon name="cross" /></span>
-              <p className={styles.eyebrow}>CUIDAR ES LO QUE NOS UNE</p>
-              <h2 id="about-title">Acerca de{" "}<br />HealthCore</h2>
+              <SectionHeading
+                id="about-title"
+                eyebrow={{ className: styles.eyebrow, text: "CUIDAR ES LO QUE NOS UNE" }}
+                title={<>Acerca de{" "}<br />HealthCore</>}
+              />
             </div>
             <div className={styles.aboutCopy}>
               <p>HealthCore es una organización sanitaria especializada en atención ambulatoria, comprometida con ofrecer servicios accesibles y de calidad.</p>

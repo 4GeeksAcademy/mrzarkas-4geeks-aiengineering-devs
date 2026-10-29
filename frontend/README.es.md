@@ -112,3 +112,5 @@ El hero conserva next/image, dimensiones intrínsecas y preload, y añade
 producción y capturas en `../audit/`; análisis en `../AUDIT.md`.
 `app/icon.svg` proporciona la marca existente mediante los metadatos de Next.js
 y evita la petición fallida del favicon predeterminado.
+`app/section-heading.js` comparte la estructura eyebrow/h2 de herramientas
+y presentación institucional, conservando ids, niveles y CSS Modules.
