@@ -114,3 +114,6 @@ producción y capturas en `../audit/`; análisis en `../AUDIT.md`.
 y evita la petición fallida del favicon predeterminado.
 `app/section-heading.js` comparte la estructura eyebrow/h2 de herramientas
 y presentación institucional, conservando ids, niveles y CSS Modules.
+En esta auditoría se completaron comprobaciones de navegador a 1350/393 px,
+salto con teclado, ambos destinos, imagen y excepciones no controladas;
+evidencia en `../audit/steps/05-section-heading/browser-checks.json` y `../REPORT.md`.

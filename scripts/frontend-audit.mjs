@@ -55,7 +55,8 @@ for (let run = 1; run <= Number(count); run++) {
     if (lhr.runtimeError) throw new Error(lhr.runtimeError.message);
     const prefix = resolve(outputDir, `${target}-${mode}-${run}`);
     await writeFile(`${prefix}.report.json`, redact(JSON.stringify(lhr, null, 2)));
-    await writeFile(`${prefix}.report.html`, redact(ReportGenerator.generateReport(lhr, 'html')));
+    const html = ReportGenerator.generateReport(lhr, 'html').replace(/^[\t ]+$/gm, '');
+    await writeFile(`${prefix}.report.html`, redact(html));
     if (run === 1) {
       // Preserve the trace for diagnosis separately from the score report.
       if (result.artifacts?.Trace) await writeFile(`${prefix}.trace.json`, redact(JSON.stringify(result.artifacts.Trace)));

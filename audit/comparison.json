@@ -1,0 +1,374 @@
+{
+  "before": {
+    "website-desktop": {
+      "scores": {
+        "performance": [
+          100,
+          100,
+          100
+        ],
+        "accessibility": [
+          100,
+          100,
+          100
+        ],
+        "best-practices": [
+          96,
+          96,
+          96
+        ],
+        "seo": [
+          100,
+          100,
+          100
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 14.847,
+          "min": 11.482999999999999,
+          "max": 25.17
+        },
+        "largest-contentful-paint": {
+          "median": 463.5892,
+          "min": 446.2365,
+          "max": 474.2015
+        },
+        "cumulative-layout-shift": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "total-blocking-time": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        }
+      }
+    },
+    "website-mobile": {
+      "scores": {
+        "performance": [
+          99,
+          99,
+          99
+        ],
+        "accessibility": [
+          100,
+          100,
+          100
+        ],
+        "best-practices": [
+          96,
+          96,
+          96
+        ],
+        "seo": [
+          100,
+          100,
+          100
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 9.697000000000001,
+          "min": 6.657,
+          "max": 56.485
+        },
+        "largest-contentful-paint": {
+          "median": 1952.8758000000003,
+          "min": 1951.8155000000002,
+          "max": 2041.6846
+        },
+        "cumulative-layout-shift": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "total-blocking-time": {
+          "median": 9.5,
+          "min": 9.5,
+          "max": 19
+        }
+      }
+    },
+    "backoffice-desktop": {
+      "scores": {
+        "performance": [
+          100,
+          100,
+          100
+        ],
+        "accessibility": [
+          95,
+          95,
+          95
+        ],
+        "best-practices": [
+          100,
+          100,
+          100
+        ],
+        "seo": [
+          90,
+          90,
+          90
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 3.154,
+          "min": 1.31,
+          "max": 8.448
+        },
+        "largest-contentful-paint": {
+          "median": 322.9464,
+          "min": 322.7986,
+          "max": 323.417
+        },
+        "cumulative-layout-shift": {
+          "median": 0.01001811779470566,
+          "min": 0.01001811779470566,
+          "max": 0.01001811779470566
+        },
+        "total-blocking-time": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        }
+      }
+    },
+    "summary-desktop": {
+      "scores": {
+        "performance": [
+          100,
+          100,
+          100
+        ],
+        "accessibility": [
+          95,
+          95,
+          95
+        ],
+        "best-practices": [
+          100,
+          100,
+          100
+        ],
+        "seo": [
+          90,
+          90,
+          90
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 2.415,
+          "min": 1.161,
+          "max": 6.867
+        },
+        "largest-contentful-paint": {
+          "median": 323.1781,
+          "min": 323.1558,
+          "max": 331.99520000000007
+        },
+        "cumulative-layout-shift": {
+          "median": 0.034190029003589875,
+          "min": 0.02417191120888422,
+          "max": 0.034190029003589875
+        },
+        "total-blocking-time": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        }
+      }
+    }
+  },
+  "after": {
+    "website-desktop": {
+      "scores": {
+        "performance": [
+          100,
+          100,
+          100
+        ],
+        "accessibility": [
+          100,
+          100,
+          100
+        ],
+        "best-practices": [
+          100,
+          100,
+          100
+        ],
+        "seo": [
+          100,
+          100,
+          100
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 46.217999999999996,
+          "min": 24.763,
+          "max": 47.799
+        },
+        "largest-contentful-paint": {
+          "median": 477.44230000000005,
+          "min": 473.2641999999999,
+          "max": 491.17330000000004
+        },
+        "cumulative-layout-shift": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "total-blocking-time": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        }
+      }
+    },
+    "website-mobile": {
+      "scores": {
+        "performance": [
+          99,
+          99,
+          99
+        ],
+        "accessibility": [
+          100,
+          100,
+          100
+        ],
+        "best-practices": [
+          100,
+          100,
+          100
+        ],
+        "seo": [
+          100,
+          100,
+          100
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 29.810000000000002,
+          "min": 12.041,
+          "max": 179.52
+        },
+        "largest-contentful-paint": {
+          "median": 2042.13,
+          "min": 2028.6724,
+          "max": 2046.3824
+        },
+        "cumulative-layout-shift": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "total-blocking-time": {
+          "median": 18,
+          "min": 16,
+          "max": 25
+        }
+      }
+    },
+    "backoffice-desktop": {
+      "scores": {
+        "performance": [
+          100,
+          100,
+          100
+        ],
+        "accessibility": [
+          100,
+          100,
+          100
+        ],
+        "best-practices": [
+          100,
+          100,
+          100
+        ],
+        "seo": [
+          90,
+          90,
+          90
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 1.74,
+          "min": 1.0030000000000001,
+          "max": 4.201
+        },
+        "largest-contentful-paint": {
+          "median": 364.91805,
+          "min": 362.57055,
+          "max": 365.03895
+        },
+        "cumulative-layout-shift": {
+          "median": 0.01001811779470566,
+          "min": 0.01001811779470566,
+          "max": 0.01001811779470566
+        },
+        "total-blocking-time": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        }
+      }
+    },
+    "summary-desktop": {
+      "scores": {
+        "performance": [
+          100,
+          100,
+          100
+        ],
+        "accessibility": [
+          100,
+          100,
+          100
+        ],
+        "best-practices": [
+          100,
+          100,
+          100
+        ],
+        "seo": [
+          90,
+          90,
+          90
+        ]
+      },
+      "metrics": {
+        "server-response-time": {
+          "median": 2.0839999999999996,
+          "min": 1.295,
+          "max": 6.182
+        },
+        "largest-contentful-paint": {
+          "median": 370.70160000000004,
+          "min": 365.3613,
+          "max": 409.7845
+        },
+        "cumulative-layout-shift": {
+          "median": 0.01949269361264338,
+          "min": 0.004490106091118699,
+          "max": 0.034190029003589875
+        },
+        "total-blocking-time": {
+          "median": 0,
+          "min": 0,
+          "max": 0
+        }
+      }
+    }
+  }
+}

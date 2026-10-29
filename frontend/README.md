@@ -113,3 +113,6 @@ measurements and browser screenshots are in `../audit/`; see `../AUDIT.md`.
 metadata, avoiding the browser's failed default favicon request.
 `app/section-heading.js` shares the institutional eyebrow/h2 structure for
 tools and About, preserving section IDs, heading levels and CSS Modules.
+Audit follow-up: automated browser checks completed for 1350/393px layouts,
+keyboard skip navigation, both destinations, image loading and uncaught errors;
+see `../audit/steps/05-section-heading/browser-checks.json` and `../REPORT.md`.
