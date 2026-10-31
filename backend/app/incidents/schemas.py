@@ -5,6 +5,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class IncidentCreate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     title: str = Field(min_length=1, max_length=200)
     description: str = Field(min_length=1, max_length=10000)
     clinic_id: UUID
@@ -56,6 +58,8 @@ class IncidentListResponse(BaseModel):
 
 
 class IncidentUpdate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, min_length=1, max_length=10000)
     severity_value_id: UUID | None = None
@@ -64,11 +68,15 @@ class IncidentUpdate(BaseModel):
 
 
 class StatusTransitionRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     status_value_id: UUID
     reason: str | None = Field(default=None, max_length=2000)
 
 
 class IncidentAssignmentRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     responsible_area_id: UUID
     reason: str | None = Field(default=None, max_length=2000)
 

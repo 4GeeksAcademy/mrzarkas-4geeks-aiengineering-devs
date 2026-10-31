@@ -1,6 +1,9 @@
+from typing import Literal
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -11,6 +14,21 @@ from app.core.config import get_settings
 from app.incidents.router import router as incidents_router
 from app.management.router import router as management_router
 from app.db.session import engine
+
+
+class HealthResponse(BaseModel):
+    status: Literal["ok"]
+
+
+class StatusConnectedResponse(BaseModel):
+    status: Literal["ok"]
+    database: Literal["connected"]
+
+
+class StatusUnavailableResponse(BaseModel):
+    status: Literal["error"]
+    database: Literal["unavailable"]
+
 
 app = FastAPI(title="HealthCore API")
 settings = get_settings()
@@ -30,13 +48,22 @@ app.include_router(incidents_router)
 app.include_router(management_router)
 
 
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+@app.get("/health", response_model=HealthResponse)
+def health() -> HealthResponse:
+    return HealthResponse(status="ok")
 
 
-@app.get("/status", responses={503: {"description": "Database unavailable"}})
-async def status():
+@app.get(
+    "/status",
+    response_model=StatusConnectedResponse,
+    responses={
+        503: {
+            "model": StatusUnavailableResponse,
+            "description": "Database unavailable",
+        }
+    },
+)
+async def status() -> StatusConnectedResponse | JSONResponse:
     """Check connectivity without reading or creating application data."""
     if engine is None:
         return JSONResponse(status_code=503, content={"status": "error", "database": "unavailable"})
@@ -45,4 +72,4 @@ async def status():
             await connection.execute(text("SELECT 1"))
     except (SQLAlchemyError, OSError, TimeoutError):
         return JSONResponse(status_code=503, content={"status": "error", "database": "unavailable"})
-    return {"status": "ok", "database": "connected"}
+    return StatusConnectedResponse(status="ok", database="connected")

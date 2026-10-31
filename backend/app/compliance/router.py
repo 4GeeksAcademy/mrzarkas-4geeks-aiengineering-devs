@@ -15,6 +15,8 @@ from app.management.service import add_audit_event
 router = APIRouter(prefix="/compliance-reviews", tags=["compliance-reviews"])
 
 class ComplianceReviewCreate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     jurisdiction_id: UUID
     status: Literal["open", "inReview", "closed", "cancelled"] = "open"
 
@@ -27,6 +29,8 @@ class ComplianceReviewRead(ComplianceReviewCreate):
 
 
 class ComplianceReviewStatusUpdate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     status: Literal["open", "inReview", "closed", "cancelled"]
     reason: str | None = Field(default=None, max_length=2000)
 

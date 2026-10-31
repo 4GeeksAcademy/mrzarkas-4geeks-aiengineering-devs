@@ -6,7 +6,7 @@ from __future__ import annotations
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.auth.roles import ROLES
 from app.auth.security import create_access_token
@@ -16,6 +16,8 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 class TokenRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     actor_id: UUID
     role: str
     area_id: UUID | None = None

@@ -38,8 +38,26 @@ class ManagedCatalogValueResponse(BaseModel):
     updated_by: UUID
 
 
+class CatalogValueListItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    key: str
+    label: str
+    description: str | None
+    is_active: bool
+    is_open: bool | None
+    sort_order: int
+    effective_from: datetime
+    effective_to: datetime | None
+    created_at: datetime
+    created_by: UUID
+    updated_at: datetime
+    updated_by: UUID
+
+
 class CatalogValueListResponse(BaseModel):
-    items: list[ManagedCatalogValueResponse]
+    items: list[CatalogValueListItem]
     total: int
 
 
@@ -83,6 +101,8 @@ class CatalogValueUpdate(BaseModel):
 
 
 class ActivationRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
     is_active: bool
     reason: str | None = Field(default=None, max_length=2000)
 
@@ -107,8 +127,22 @@ class ReferenceValueResponse(BaseModel):
     jurisdiction_id: UUID | None = None
 
 
+class ReferenceValueListItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    key: str
+    label: str
+    is_active: bool
+    created_at: datetime
+    created_by: UUID
+    updated_at: datetime
+    updated_by: UUID
+    jurisdiction_id: UUID | None = None
+
+
 class ReferenceValueListResponse(BaseModel):
-    items: list[ReferenceValueResponse]
+    items: list[ReferenceValueListItem]
     total: int
 
 
