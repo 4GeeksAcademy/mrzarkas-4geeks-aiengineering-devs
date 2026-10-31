@@ -1,6 +1,6 @@
 # PLAN — Implementación futura de serialización
 
-**Estado:** diseño aprobado; implementación parcial iniciada. `TASK-SER-006` está validada con tests enfocados; las tareas restantes mantienen sus dependencias y aprobaciones.
+**Estado:** TASK-SER-001–017 completadas para el entorno sintético aprobado. Véase cierre final y límites; el baseline anterior se conserva como histórico.
 Auditoría por endpoint y evidencia: [serialization-audit.md](../../../docs/serialization-audit.md). Requisitos: [spec.md](./spec.md). Tareas verificables: [tasks.md](./tasks.md).
 
 ## Principios de diseño
@@ -94,3 +94,28 @@ Los otros 14 handlers se clasifican ✅ con evidencia y pruebas actuales/propues
 - Dependencias instalables desde lockfile o entorno de servicio disponible, DB de pruebas claramente sintética y aprobación antes de suite que modifica registros.
 - Confirmación de consumers externos/contratos documentados antes de cambios de shape o política `extra`.
 - Sin commits, dependencias, migraciones o cambios fuera de los cuatro documentos hasta nueva autorización.
+## Diseño y validación históricos hasta 010 — 2026-10-31
+
+Se conservaron los nombres publicados IncidentResponse y ComplianceReviewRead, separando su herencia de los inputs; sus JSON Schemas son idénticos a HEAD be2bad5. Las listas Management usan CatalogValueListItem y ReferenceValueListItem sin reducción de campos. TASK-SER-010 queda completada mediante pruebas de las 11 operaciones Management en OpenAPI, claves HTTP, metadata, paginación, cobertura y campos gestionados por servidor; no requiere modificar tipos TS sin consumidor verificado.
+
+La suite completa contra PostgreSQL local no productiva pasa **74 pruebas en 1.57s** con `podman compose --profile test run --build --rm test`. La aprobación de Cumplimiento/Gobierno del Dato para continuar está confirmada; no comprende por inferencia nuevas políticas de snapshots. TASK-SER-003/011 y medición, cobertura global, OpenAPI final, manual `/docs` y cierre siguen pendientes. La sincronización documental fue autorizada expresamente por el responsable; no se modifican otras fuentes históricas del Memory Bank.
+
+## Política audit-output-v1 aprobada e implementada — 2026-10-31
+
+El responsable aprueba expresamente la propuesta específica de TASK-SER-003 y autoriza continuar con TASK-SER-011 para el entorno sintético. Esta decisión sustituye el seguimiento previo que indicaba falta de política por campo; no constituye aprobación para datos reales o producción. La política completa, categorías, compatibilidad y decisiones técnicas constan en docs/serialization-audit.md.
+
+Implementación: backend/app/audit_serialization.py y validators de AuditEventResponse, ManagementAuditEventResponse, StatusHistoryResponse y AssignmentHistoryResponse. Permisos, escritores, tablas, migraciones y retención permanecen sin cambios. Las respuestas mantienen campos/tipos generales; cambian deliberadamente valores de texto y contenido de snapshots. La redacción se señala mediante _redacted dentro del snapshot; los motivos se sustituyen por [REDACTED].
+
+Validación actual: `podman compose --profile test run --build --rm test`, salida 0, **117 passed in 1.61s**, imagen test `bdcee65a60db`, PostgreSQL local sintética. Comparación ejecutada en imagen test: los JSON Schemas de las cuatro respuestas de auditoría/historial son idénticos a HEAD `be2bad5`; OpenAPI conserva 28 operaciones. Pruebas de lectura SQL posterior confirman snapshots y motivos originales intactos; las nuevas fixtures de integración se insertan en una transacción aislada que se revierte. Los resultados 74/63 anteriores son históricos. TASK-SER-012–017 siguen pendientes, incluida compatibilidad global y comprobación manual en /docs.
+
+## Cierre final de TASK-SER-012–017 — 2026-10-31
+
+Las 17 tareas quedan completadas exclusivamente para el entorno sintético aprobado. Evidencia actual: `podman compose --profile test run --build --rm test`, salida 0, **145 passed in 1.75s**, imagen `a98a68ae2ca0`; 28 operaciones y cuatro rutas especiales verificadas. OpenAPI documenta errores existentes mediante ErrorResponse sin cambiar su ejecución. Los JSON Schemas de IncidentResponse, ComplianceReviewRead y cuatro respuestas de auditoría/historial se conservaron contra HEAD be2bad5; los valores redactados siguen la política aprobada.
+
+TASK-SER-012 registra dos rondas sin modificación funcional: incidencias p50 1,401/1,389 ms, p95 1,645/1,566 ms, 17.598 bytes; clínicas p50 0,893/0,931 ms, p95 1,147/1,295 ms, 755 bytes. Ambas rutas: 2 SELECT, 0 cargas de relaciones. No se justifica optimización; método/SQL/columnas y script reproducible en docs/serialization-measurement.py y JSON asociado. ASGI con PostgreSQL local, sin medición de concurrencia/red.
+
+TASK-SER-013–015: shapes/extras/roles/históricos/persistencia, 28 rutas/requestBody/respuestas/errores y documentación especial probados. Build Compose backend/frontend/backoffice salida 0, producción Next.js desde caché válida. Chrome autenticado verifica Management y estado vacío de incidencias; detalle/escritura de incidencias queda probado por HTTP.
+
+TASK-SER-016: Chrome /docs observó POST /auth/tokens 201 (20:58:36 UTC), GET /management/reference-data/clinics offset=0 limit=1 200 (20:59:01 UTC), POST /compliance-reviews 201 (21:01:44 UTC). La última escritura usa jurisdicción US sintética e ignora id/created_by cliente. Su revisión 7850de3d-7194-49f1-b8b5-ad775d8e7ec4 y evento created permanecen como fixture local autorizada. No se registran tokens.
+
+TASK-SER-017: inventario final 28/28 ✅ y matriz Requirement → Endpoint → Design → Task → Test → Evidence en docs/serialization-audit.md. Los resultados 117/74/63 y afirmaciones de pendientes anteriores son históricos, sustituidos por este cierre. No se modifican datos previos, retención, migraciones, permisos, dependencias ni contratos de payload incidentalmente. No se certifica HIPAA/UK GDPR ni autorización de datos reales/piloto/producción. No se crean commits.

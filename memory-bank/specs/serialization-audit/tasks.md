@@ -1,6 +1,6 @@
 # TASKS — Ejecución futura de serialización
 
-**Estado:** aprobado; ejecución parcial. `TASK-SER-001`, `TASK-SER-002` y `TASK-SER-006` completadas con evidencia; las demás tareas siguen pendientes.
+**Estado:** TASK-SER-001–017 completadas para el entorno sintético aprobado. Véase cierre final y límites; el baseline anterior se conserva como histórico.
 Referencias: [SPEC](./spec.md), [PLAN](./plan.md), [auditoría técnica](../../../docs/serialization-audit.md).
 
 Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerrarla. IDs de prueba `T-SER-*` son futuros. `uv 0.8.22` y las dependencias bloqueadas se instalaron en `/tmp`; el entorno del repositorio y el lockfile no se modificaron.
@@ -8,6 +8,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
 ## Grupo A — Preparación y auditoría
 
 - [x] TASK-SER-001 — Preparar entorno y línea base reproducible
+  - **Evidencia de cierre/seguimiento (2026-10-31):** La ejecución actual con Podman y PostgreSQL local sintética supera la suite completa: 74 passed in 1.57s. El build conserva uv 0.8.22 y el lockfile; Python observado en la imagen: 3.12.13.
   - **Objetivo:** habilitar verificaciones sin cambiar versiones ni datos de aplicación.
   - **Requisitos:** SER-TEST-001, SER-COMP-001.
   - **Archivos previstos:** `backend/README.md`, `backend/pyproject.toml`, `backend/uv.lock`, tests (sólo si resultan necesarios); no editar dependencias en esta tarea sin autorización.
@@ -27,7 +28,8 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-OPENAPI-001`, `T-SER-COMPAT-001`.
   - **Evidencia:** OpenAPI previo y actual generados: 28 operaciones cada uno. SHA-256 canónico previo `dfc2177fc03e2cdc127f8584635790cb4ae7413abc68bdc20bd3ad806737eaa0`; actual `74b01908b230fdc84c5498f44395c75341ea1a894b07c3db64b32a6bb4672850`. Mapa local de frontends/tests revisado; el responsable confirma el 2026-10-31 que no hay consumidores externos conocidos por ahora y que health se usa internamente para el estado de contenedores. Ver discrepancia de `/health` y `/status` en la auditoría.
 
-- [ ] TASK-SER-003 — Revisar clasificación con Compliance
+- [x] TASK-SER-003 — Revisar clasificación con Compliance
+  - **Evidencia de cierre/seguimiento (2026-10-31):** El responsable aprueba explícitamente la política específica propuesta y autoriza continuar para datos sintéticos. Política audit-output-v1 detallada en docs/serialization-audit.md: IDs/referencias/timestamps conservados, texto libre redactado, claves no autorizadas excluidas y persistencia intacta. TASK-SER-003 queda completada para este alcance.
   - **Objetivo:** decidir clasificación de actor IDs y payloads de auditoría antes de restringirlos.
   - **Requisitos:** SER-SEC-003, SER-SEC-004, SER-COMP-001.
   - **Archivos previstos:** schemas/servicios audit sólo tras aprobación; ninguna modificación a `memory-bank` o Rules está incluida.
@@ -40,6 +42,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
 ## Grupo B — Seguridad
 
 - [x] TASK-SER-004 — Verificar contrato JWT de desarrollo
+  - **Evidencia de cierre/seguimiento (2026-10-31):** La suite completa actual incluye test_auth.py y supera 74 pruebas sin fallos ni omisiones; el fallo histórico por falta de DATABASE_URL queda resuelto.
   - **Objetivo:** demostrar que el único flujo de token conserva su propósito limitado.
   - **Requisitos:** SER-SEC-001, SER-SEC-002.
   - **Archivos previstos:** `backend/app/auth/router.py`, `backend/tests/test_auth.py`.
@@ -49,7 +52,8 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** test actual de producción más `T-SER-SECRET-001`.
   - **Evidencia:** dos tests enfocados de producción pasaron (`self_issued_tokens_are_disabled_outside_development` y `token_endpoint_is_not_exposed_in_production`). Petición sintética en `development`: 201, claves exactas `access_token`/`token_type`, tipo `bearer`; el JWT no se imprimió. El módulo `test_auth.py` completo dio 13 passed y 1 fallo en el test de rutas de incidencias por falta de `DATABASE_URL`; esa ruta no forma parte del endpoint de emisión y queda pendiente validar con DB.
 
-- [ ] TASK-SER-005 — Hacer explícita la política de atributos extra
+- [x] TASK-SER-005 — Hacer explícita la política de atributos extra
+  - **Evidencia de cierre/seguimiento (2026-10-31):** Los 13 casos de política de entrada y los workflows HTTP de permisos se ejecutaron dentro de la suite PostgreSQL actual: 74 passed in 1.57s. Se conserva ignore/forbid y no se ampliaron permisos.
   - **Objetivo:** documentar y probar rechazo/ignorancia de campos no declarados y restricciones por rol.
   - **Requisitos:** SER-FR-005, SER-SEC-005.
   - **Archivos previstos:** `backend/app/auth/router.py`, `backend/app/compliance/router.py`, `backend/app/incidents/schemas.py`, `backend/app/management/schemas.py`, tests HTTP.
@@ -59,9 +63,10 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-INPUT-001`, `T-SER-ACCESS-001` con campos sintéticos.
   - **Evidencia:** pruebas para cada familia de schemas y lista de posibles breaking changes.
   - **Avance (2026-10-31):** `extra="ignore"` explícito en requests que usaban el default; se conservó `extra="forbid"` en los modelos Management que ya lo declaraban. `backend/tests/test_input_schema_policy.py`: 13 passed con payloads sintéticos.
-  - **Pendiente antes de completar:** ejecutar las verificaciones HTTP 403 de `test_http_authorization.py::test_http_authorization_enforces_area_capability_and_audit_access` y `test_incident_workflows.py::test_incident_update_transition_history_and_audit`. Requieren una PostgreSQL aislada accesible mediante `DATABASE_URL` con dialecto `postgresql+asyncpg`, `alembic upgrade head` y catálogos/referencias sintéticos requeridos por los tests. En el entorno actual no hay `DATABASE_URL` ni Podman; se comprobará en el otro entorno indicado antes de decidir si hay bloqueo. No se modificaron permisos.
+  - **Pendiente histórico, resuelto por la evidencia de cierre anterior:** ejecutar las verificaciones HTTP 403 de `test_http_authorization.py::test_http_authorization_enforces_area_capability_and_audit_access` y `test_incident_workflows.py::test_incident_update_transition_history_and_audit`. Requieren una PostgreSQL aislada accesible mediante `DATABASE_URL` con dialecto `postgresql+asyncpg`, `alembic upgrade head` y catálogos/referencias sintéticos requeridos por los tests. En el entorno actual no hay `DATABASE_URL` ni Podman; se comprobará en el otro entorno indicado antes de decidir si hay bloqueo. No se modificaron permisos.
 
-- [ ] TASK-SER-011 — Acotar respuestas de auditoría
+- [x] TASK-SER-011 — Acotar respuestas de auditoría
+  - **Evidencia de cierre (2026-10-31):** política audit-output-v1 aplicada mediante proyección centralizada, TypeAdapters Pydantic por evento y validators de modelos de respuesta. Incluye auditoría Incident/Management y motivos de historiales. Tests unitarios y HTTP PostgreSQL verifican contenido permitido, exclusión, texto libre, fechas históricas, permisos, referencias y lectura SQL sin cambios de snapshots/motivos. Suite: 117 passed in 1.61s; JSON Schemas de las cuatro respuestas iguales a HEAD be2bad5; 28 operaciones.
   - **Objetivo:** establecer proyección segura para snapshots una vez exista aprobación de Compliance.
   - **Requisitos:** SER-SEC-001, SER-SEC-003, SER-SEC-004, SER-FR-002.
   - **Archivos previstos:** `backend/app/incidents/schemas.py`, `backend/app/management/schemas.py`, routers audit, servicio/modelos sólo si el diseño aprobado afecta escritura.
@@ -83,7 +88,8 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-HEALTH-001` para 200/503 y no filtración; suite test_status.
   - **Evidencia:** OpenAPI del snapshot previo y del código actual; ambos con 28 operaciones. El actual declara `HealthResponse`, `StatusConnectedResponse` y `StatusUnavailableResponse`. `test_status.py`: 3 passed antes y 5 passed después, sin PostgreSQL. Los payloads 200/503 y los códigos existentes se mantienen.
 
-- [ ] TASK-SER-007 — Separar contratos de incidencia
+- [x] TASK-SER-007 — Separar contratos de incidencia
+  - **Evidencia de cierre/seguimiento (2026-10-31):** IncidentResponse deriva directamente de BaseModel y conserva su JSON Schema idéntico al de HEAD be2bad5. Las cinco rutas mantienen contrato y códigos; pruebas de proyección ORM, OpenAPI y workflows superadas en la suite completa.
   - **Objetivo:** desacoplar salida de incidencia del esquema de creación manteniendo el contrato publicado.
   - **Requisitos:** SER-FR-002, SER-FR-005, SER-FR-006, SER-SEC-003, SER-COMP-001.
   - **Archivos previstos:** `backend/app/incidents/schemas.py`, `backend/app/incidents/router.py`, tests HTTP/workflows.
@@ -93,7 +99,8 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-INC`, `T-SER-WRITE-001`, `T-SER-ORM-001` y workflows.
   - **Evidencia:** OpenAPI diff, tests de cinco endpoints y consumer map.
 
-- [ ] TASK-SER-008 — Confirmar proyección de listados
+- [x] TASK-SER-008 — Confirmar proyección de listados
+  - **Evidencia de cierre/seguimiento (2026-10-31):** Las pruebas HTTP de catálogo y las cuatro familias de referencias verifican claves exactas y wrappers items/total; paginación comprobada con offset=1, limit=1. Suite completa: 74 passed in 1.57s.
   - **Objetivo:** registrar `ListItem` específico para las listas administrativas sin romper campos vigentes.
   - **Requisitos:** SER-FR-003, SER-FR-004, SER-COMP-001.
   - **Archivos previstos:** `backend/app/management/schemas.py`, router Management y tests; `backend/app/incidents/schemas.py` sólo si se detecta regresión.
@@ -103,9 +110,10 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-LIST-001`, casos para cada `resource`, comparación de OpenAPI.
   - **Evidencia:** schema de lista, snapshot de contrato y resultado tests.
   - **Avance (2026-10-31):** añadidos `CatalogValueListItem` y `ReferenceValueListItem`; propiedades y requireds idénticos a los schemas de detalle, wrappers `{items,total}` sin cambios. `backend/tests/test_management_openapi.py`: 2 passed. OpenAPI conserva 28 operaciones; hash actual `85853ecb622ad4ef412e0977d62db67c3193dade22fa8db1c5d150665336214f`.
-  - **Pendiente:** validar payloads runtime de catálogo y referencia con PostgreSQL aislada mediante `test_http_authorization.py::test_admin_manages_catalog_values_with_audit_and_no_physical_delete` y `test_http_authorization.py::test_admin_manages_reference_data_without_invalidating_history`; requiere `DATABASE_URL`, migraciones y seeds sintéticos.
+  - **Pendiente histórico, resuelto por la evidencia de cierre anterior:** validar payloads runtime de catálogo y referencia con PostgreSQL aislada mediante `test_http_authorization.py::test_admin_manages_catalog_values_with_audit_and_no_physical_delete` y `test_http_authorization.py::test_admin_manages_reference_data_without_invalidating_history`; requiere `DATABASE_URL`, migraciones y seeds sintéticos.
 
-- [ ] TASK-SER-009 — Separar contratos de ComplianceReview
+- [x] TASK-SER-009 — Separar contratos de ComplianceReview
+  - **Evidencia de cierre/seguimiento (2026-10-31):** ComplianceReviewRead deriva directamente de BaseModel y conserva su JSON Schema idéntico al de HEAD be2bad5. Las tres rutas mantienen contrato y permisos; lifecycle, proyección ORM y OpenAPI superados en la suite completa.
   - **Objetivo:** diferenciar input create/update de response read.
   - **Requisitos:** SER-FR-005, SER-FR-006, SER-SEC-003, SER-COMP-001.
   - **Archivos previstos:** `backend/app/compliance/router.py`, schemas/modelos y `backend/tests/test_http_authorization.py`.
@@ -115,7 +123,8 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-COMP`, `T-SER-ACCESS-001`, ciclo de Compliance existente.
   - **Evidencia:** OpenAPI diff y tests lifecycle.
 
-- [ ] TASK-SER-010 — Formalizar respuestas Management
+- [x] TASK-SER-010 — Formalizar respuestas Management
+  - **Evidencia de cierre/seguimiento (2026-10-31):** Completada conservando contratos vigentes en el entorno no productivo aprobado. Las 11 operaciones Management tienen comprobación OpenAPI de output, input aplicable y límites de paginación. HTTP comprueba claves exactas de listados/escrituras/auditoría, paginación y filtros, cobertura UUID y rechazo 422 de id/created_by/updated_by/created_at/updated_at en PATCH de catálogo y clínica. Permisos y trazabilidad se verifican con workflows existentes. No se modificaron metadata, snapshots, schemas Management ni tipos TS sin consumidor. Suite completa: 74 passed in 1.57s; TASK-SER-011 sigue independiente y pendiente.
   - **Objetivo:** verificar campos administrativos de salida y alinear schemas sin quitar propiedades sin aprobación.
   - **Requisitos:** SER-FR-002, SER-FR-003, SER-FR-006, SER-SEC-003, SER-COMP-001.
   - **Archivos previstos:** `backend/app/management/schemas.py`, `backend/app/management/router.py`, `packages/shared/types/management.ts` sólo si hay consumidor/contrato validado, tests HTTP.
@@ -127,7 +136,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
 
 ## Grupo D — Optimización
 
-- [ ] TASK-SER-012 — Medir proyecciones y consultas
+- [x] TASK-SER-012 — Medir proyecciones y consultas
   - **Objetivo:** decidir si la lectura completa de entidades en listados amerita optimización.
   - **Requisitos:** SER-NFR-001, SER-FR-003.
   - **Archivos previstos:** `backend/app/incidents/router.py`, `backend/app/management/router.py`, tests/fixtures de rendimiento sólo si la medición lo justifica.
@@ -139,7 +148,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
 
 ## Grupo E — Testing
 
-- [ ] TASK-SER-013 — Añadir tests de shape y exposición
+- [x] TASK-SER-013 — Añadir tests de shape y exposición
   - **Objetivo:** verificar allowlists, secretos y respuestas ORM en modelos tocados.
   - **Requisitos:** SER-FR-002, SER-FR-006, SER-SEC-001, SER-SEC-003, SER-TEST-001.
   - **Archivos previstos:** tests existentes en `backend/tests/`; preferir añadirlos en archivos actuales.
@@ -149,7 +158,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-SHAPE-001`, `T-SER-ORM-001`, `T-SER-SECRET-001`.
   - **Evidencia:** comandos y resultados asociados a cada endpoint ID.
 
-- [ ] TASK-SER-014 — Probar entradas y compatibilidad funcional
+- [x] TASK-SER-014 — Probar entradas y compatibilidad funcional
   - **Objetivo:** demostrar validación de escritura y mantener consumidores/semántica.
   - **Requisitos:** SER-FR-005/006, SER-SEC-005, SER-COMP-001, SER-TEST-001.
   - **Archivos previstos:** `backend/tests/test_http_authorization.py`, `test_incident_workflows.py`, `test_auth.py`, tests de catálogo/Compliance; consumers sólo con cambios aprobados.
@@ -159,7 +168,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-INPUT-001`, `T-SER-WRITE-001`, `T-SER-ACCESS-001`, `T-SER-COMPAT-001`.
   - **Evidencia:** resultados backend + consumer test/build pertinente.
 
-- [ ] TASK-SER-015 — Verificar OpenAPI completo
+- [x] TASK-SER-015 — Verificar OpenAPI completo
   - **Objetivo:** asegurar que OpenAPI refleja handlers, schemas y errores reales.
   - **Requisitos:** SER-FR-001, SER-COMP-001, SER-TEST-001.
   - **Archivos previstos:** `backend/tests/test_auth.py` (test OpenAPI existente) y tests actuales, sin crear excesivas carpetas.
@@ -169,7 +178,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
   - **Tests:** `T-SER-OPENAPI-001`, `T-SER-COMPAT-001`.
   - **Evidencia:** tests pass y artefacto/resumen OpenAPI comparado.
 
-- [ ] TASK-SER-016 — Verificar tres endpoints en `/docs`
+- [x] TASK-SER-016 — Verificar tres endpoints en `/docs`
   - **Objetivo:** registrar verificación manual de auth o equivalente, lista y escritura/detalle.
   - **Requisitos:** SER-TEST-002.
   - **Archivos previstos:** evidencia de entrega autorizada; no requiere cambios de código.
@@ -181,7 +190,7 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
 
 ## Grupo F — Cierre
 
-- [ ] TASK-SER-017 — Cerrar trazabilidad y auditoría final
+- [x] TASK-SER-017 — Cerrar trazabilidad y auditoría final
   - **Objetivo:** emitir inventario final y verificar Definition of Done antes de declarar fin.
   - **Requisitos:** todos los SER-FR/SEC/COMP/NFR/TEST aplicables.
   - **Archivos previstos:** `docs/serialization-audit.md`, `memory-bank/specs/serialization-audit/spec.md`, `plan.md`, `tasks.md`; no actualizar otros documentos protegidos sin autorización.
@@ -208,3 +217,27 @@ Cada tarea detalla criterios, pruebas y evidencia que se deben adjuntar al cerra
 ## Control de implementación y commits
 
 La implementación posterior sólo comienza tras aprobación expresa. Para cada tarea: referenciar requisito; observar baseline; cambio mínimo; tests; verificación de consumidores; evidencia; marcar completada sólo con aceptación demostrada. No modificar códigos HTTP, permisos, paginación ni semántica de error sin razón documentada y aprobación. No crear commits automáticamente; si el desarrollador los autoriza, separar auditoría/documentación, contratos de serialización, tests y cierre en cambios coherentes revisables.
+
+## Evidencia histórica consolidada hasta 010 — 2026-10-31
+
+Autorización expresa del responsable para sincronizar estos documentos. Comando ejecutado por el agente: `podman compose --profile test run --build --rm test`, salida 0, **74 passed in 1.57s**, PostgreSQL local con datos no productivos. Imagen test: `8e32984c05cc`. Las validaciones parciales anteriores se conservan como historial. La comparación de JSON Schemas de IncidentResponse y ComplianceReviewRead contra HEAD `be2bad5` fue idéntica; OpenAPI conserva 28 operaciones. No se ejecutó la verificación manual en `/docs`, medición de rendimiento ni cierre global.
+
+## Política audit-output-v1 aprobada e implementada — 2026-10-31
+
+El responsable aprueba expresamente la propuesta específica de TASK-SER-003 y autoriza continuar con TASK-SER-011 para el entorno sintético. Esta decisión sustituye el seguimiento previo que indicaba falta de política por campo; no constituye aprobación para datos reales o producción. La política completa, categorías, compatibilidad y decisiones técnicas constan en docs/serialization-audit.md.
+
+Implementación: backend/app/audit_serialization.py y validators de AuditEventResponse, ManagementAuditEventResponse, StatusHistoryResponse y AssignmentHistoryResponse. Permisos, escritores, tablas, migraciones y retención permanecen sin cambios. Las respuestas mantienen campos/tipos generales; cambian deliberadamente valores de texto y contenido de snapshots. La redacción se señala mediante _redacted dentro del snapshot; los motivos se sustituyen por [REDACTED].
+
+Validación actual: `podman compose --profile test run --build --rm test`, salida 0, **117 passed in 1.61s**, imagen test `bdcee65a60db`, PostgreSQL local sintética. Comparación ejecutada en imagen test: los JSON Schemas de las cuatro respuestas de auditoría/historial son idénticos a HEAD `be2bad5`; OpenAPI conserva 28 operaciones. Pruebas de lectura SQL posterior confirman snapshots y motivos originales intactos; las nuevas fixtures de integración se insertan en una transacción aislada que se revierte. Los resultados 74/63 anteriores son históricos. TASK-SER-012–017 siguen pendientes, incluida compatibilidad global y comprobación manual en /docs.
+
+## Cierre final de TASK-SER-012–017 — 2026-10-31
+
+Las 17 tareas quedan completadas exclusivamente para el entorno sintético aprobado. Evidencia actual: `podman compose --profile test run --build --rm test`, salida 0, **145 passed in 1.75s**, imagen `a98a68ae2ca0`; 28 operaciones y cuatro rutas especiales verificadas. OpenAPI documenta errores existentes mediante ErrorResponse sin cambiar su ejecución. Los JSON Schemas de IncidentResponse, ComplianceReviewRead y cuatro respuestas de auditoría/historial se conservaron contra HEAD be2bad5; los valores redactados siguen la política aprobada.
+
+TASK-SER-012 registra dos rondas sin modificación funcional: incidencias p50 1,401/1,389 ms, p95 1,645/1,566 ms, 17.598 bytes; clínicas p50 0,893/0,931 ms, p95 1,147/1,295 ms, 755 bytes. Ambas rutas: 2 SELECT, 0 cargas de relaciones. No se justifica optimización; método/SQL/columnas y script reproducible en docs/serialization-measurement.py y JSON asociado. ASGI con PostgreSQL local, sin medición de concurrencia/red.
+
+TASK-SER-013–015: shapes/extras/roles/históricos/persistencia, 28 rutas/requestBody/respuestas/errores y documentación especial probados. Build Compose backend/frontend/backoffice salida 0, producción Next.js desde caché válida. Chrome autenticado verifica Management y estado vacío de incidencias; detalle/escritura de incidencias queda probado por HTTP.
+
+TASK-SER-016: Chrome /docs observó POST /auth/tokens 201 (20:58:36 UTC), GET /management/reference-data/clinics offset=0 limit=1 200 (20:59:01 UTC), POST /compliance-reviews 201 (21:01:44 UTC). La última escritura usa jurisdicción US sintética e ignora id/created_by cliente. Su revisión 7850de3d-7194-49f1-b8b5-ad775d8e7ec4 y evento created permanecen como fixture local autorizada. No se registran tokens.
+
+TASK-SER-017: inventario final 28/28 ✅ y matriz Requirement → Endpoint → Design → Task → Test → Evidence en docs/serialization-audit.md. Los resultados 117/74/63 y afirmaciones de pendientes anteriores son históricos, sustituidos por este cierre. No se modifican datos previos, retención, migraciones, permisos, dependencias ni contratos de payload incidentalmente. No se certifica HIPAA/UK GDPR ni autorización de datos reales/piloto/producción. No se crean commits.

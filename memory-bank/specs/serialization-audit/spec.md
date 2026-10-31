@@ -1,15 +1,15 @@
 # SPEC — Auditoría de serialización
 
-**Estado:** aprobado para implementación; avance parcial en `TASK-SER-006`, sin considerar completa la auditoría global.
+**Estado:** TASK-SER-001–017 completadas para el entorno sintético aprobado. Véase cierre final y límites; el baseline anterior se conserva como histórico.
 **Alcance técnico observado:** 28 handlers de aplicación FastAPI en `backend/app`; ver [auditoría](../../../docs/serialization-audit.md). La auditoría documenta aparte las rutas automáticas de OpenAPI/Docs.
 
 ## Contexto y problema
 
 La API actual está implementada en `backend/app`, a pesar de que documentación histórica y `memory-bank/technology-stack.md` mencionan `services/central-api/` y dicen que aún no existe una API. El código/configuración son la evidencia del estado técnico. El servicio está en etapa de prototipo pre-MVP y no está autorizado para piloto ni producción (`memory-bank/current-state.md`).
 
-26 de 28 handlers de aplicación declaran `response_model`. Los dos restantes son `GET /health` y `GET /status`. Entre los modelos existentes se encontraron contratos explícitos y allowlists Pydantic; también acoplamiento de `IncidentResponse`/`ComplianceReviewRead` a modelos de entrada, listados administrativos con esquemas de salida amplios y payloads de auditoría con JSON arbitrario. La descripción de una incidencia puede terminar en un snapshot de auditoría.
+En el baseline inicial, 26 de 28 handlers de aplicación declaraban `response_model`. Los dos restantes eran `GET /health` y `GET /status`. Entre los modelos existentes se encontraron contratos explícitos y allowlists Pydantic; también acoplamiento de `IncidentResponse`/`ComplianceReviewRead` a modelos de entrada, listados administrativos con esquemas de salida amplios y payloads de auditoría con JSON arbitrario. La descripción de una incidencia puede terminar en un snapshot de auditoría.
 
-La ejecución local no permitió confirmar payloads ni OpenAPI: no están disponibles `uv`, pytest o las dependencias Python. Los requisitos siguientes son objetivos para implementación posterior, no capacidades ya demostradas.
+En la inspección inicial, la ejecución local no permitió confirmar payloads ni OpenAPI: no estaban disponibles `uv`, pytest o las dependencias Python. Los requisitos siguientes son objetivos para implementación posterior, no capacidades ya demostradas.
 
 ## Objetivos
 
@@ -27,9 +27,9 @@ Excluye migraciones innecesarias, cambios de negocio/autorización, rediseño fr
 
 ## Hallazgos de auditoría
 
-- Inventario: 28 handlers en cinco routers y `main.py`; routers registrados estáticamente, sin subaplicaciones encontradas. 26 contratos explícitos, dos ausentes. Cuatro rutas docs se derivan de defaults FastAPI y quedan como respuesta especial documentada.
+- Inventario inicial: 28 handlers en cinco routers y `main.py`; routers registrados estáticamente, sin subaplicaciones encontradas. 26 contratos explícitos, dos ausentes. Cuatro rutas docs se derivan de defaults FastAPI y quedan como respuesta especial documentada.
 - Estado inicial: 14 ✅, 13 ⚠️, 1 ❌; detalle por método/ruta, entrada/salida/códigos/consumidor/riesgo en [serialization-audit.md](../../../docs/serialization-audit.md). `/health` tenía un schema inferido abierto; `/status` carecía de schema de éxito y contenido documentado para 503.
-- Avance: `TASK-SER-006` añade modelos explícitos de health/status y documentación del 503. El OpenAPI previo y actual registra 28 operaciones; los tests previos pasaron 3 y los actuales 5. La suite global y la comprobación manual `/docs` siguen pendientes.
+- Avance: `TASK-SER-006` añade modelos explícitos de health/status y documentación del 503. El OpenAPI previo y actual registra 28 operaciones; los tests previos pasaron 3 y los actuales 5. La suite global ya pasa (ver evidencia actual); la comprobación manual `/docs` sigue pendiente.
 - Entidades no declaran relaciones ORM navegables en los modelos revisados. Los endpoints de lista usan paginación; la lista de incidencias proyecta `IncidentListItem`, aunque SQL selecciona la entidad completa. No hay evidencia de N+1; cualquier optimización requiere medición.
 - Seguridad: no se hallaron campos password/hash ni flujos email/password en el backend revisado. `POST /auth/tokens` es un emisor JWT temporal de desarrollo con token previsto en la respuesta y 404 fuera de entornos permitidos. Auditoría ofrece actor IDs y mapas JSON; la descripción puede quedar en `before_data`/`after_data`.
 - Consumidores identificados: backoffice de incidencias, backoffice Management y página web que consulta `/status`. No se encontraron llamadas locales a Compliance, endpoint audit de incidencias o mutaciones Management; clientes externos son desconocidos.
@@ -129,7 +129,7 @@ Cada requisito incluye fundamento, evidencia, endpoints afectados, prioridad, cr
 **EARS:** IF audit snapshot data contains an attribute not approved for disclosure, THEN THE system SHALL omit or safely redact that attribute from the response according to a policy reviewed by Compliance and tested against persisted audit cases.
 **Justificación/evidencia:** EP-015 y EP-026 devuelven `dict | None`; la edición de incidencia captura valores de cambios y puede incluir `description`. El sistema indica no incluir PHI y sólo usar datos sintéticos.
 **Endpoints:** EP-010, EP-015, EP-018–EP-026.
-**Prioridad:** P0; bloqueado por revisión de Compliance antes de decidir cambios de contenido/retención.
+**Prioridad:** P0; política audit-output-v1 aprobada para el entorno sintético e implementada en salida. Cambios de retención siguen fuera de alcance.
 **Aceptación:** política aprobada identifica claves y tratamiento; tests prueban snapshots autorizados/no autorizados y no exponen dato sensible; no se alteran registros históricos sin aprobación.
 **Pruebas:** `T-SER-AUDIT-001`, `T-SER-SECRET-001`.
 
@@ -180,7 +180,7 @@ Cada requisito incluye fundamento, evidencia, endpoints afectados, prioridad, cr
 **Aceptación:** registrar fecha/entorno, endpoint, código, payload sintético esperado/observado y resultado; no declarar ejecución antes de disponer del entorno.
 **Pruebas:** `T-SER-MANUAL-001`.
 
-## Criterios de aceptación de esta SPEC
+## Criterios de aceptación de esta SPEC — baseline histórico
 
 - Inventario trazable con todos los 28 handlers reales y rutas de documentación separadas como excepciones técnicas.
 - Cada endpoint tiene estado inicial, entrada, salida, consumidor conocido, campos, códigos relevantes, riesgo y prueba propuesta.
@@ -208,6 +208,34 @@ Cada requisito incluye fundamento, evidencia, endpoints afectados, prioridad, cr
 | SER-TEST-001 | EP-001–EP-028 | Suite shape/security/input/OpenAPI | TASK-SER-013–TASK-SER-015 | T-SER-SHAPE-001, T-SER-INPUT-001, T-SER-OPENAPI-001 |
 | SER-TEST-002 | EP-001, EP-007/EP-021, EP-006/EP-009/EP-018 | Evidencia manual con datos sintéticos | TASK-SER-016 | T-SER-MANUAL-001 |
 
-## Definition of Done
+## Definition of Done — baseline histórico
 
-La Definition of Done global sólo se satisface en la fase posterior y no se marca como cumplida ahora: inventario completo; contratos aplicables/excepciones documentados; sin proyecciones ORM no controladas; entradas/salidas separadas donde corresponda; ausencia verificada de secretos; listados y relaciones justificadas; compatibilidad revisada; suite/OpenAPI y tres pruebas manuales ejecutadas; auditoría inicial/final; requisitos y tareas trazables; revisión de Cumplimiento para auditoría/PHI; y bloqueos restantes descritos. Esta iteración sólo prepara documentos para aprobación.
+La Definition of Done global sólo se satisface en la fase posterior y no se marca como cumplida ahora: inventario completo; contratos aplicables/excepciones documentados; sin proyecciones ORM no controladas; entradas/salidas separadas donde corresponda; ausencia verificada de secretos; listados y relaciones justificadas; compatibilidad revisada; suite/OpenAPI y tres pruebas manuales ejecutadas; auditoría inicial/final; requisitos y tareas trazables; revisión de Cumplimiento para auditoría/PHI; y bloqueos restantes descritos. La fase inicial sólo preparaba documentos para aprobación; el avance implementado se describe en la evidencia actual siguiente.
+
+## Evidencia histórica del cierre de 010 — 2026-10-31
+
+- Suite ejecutada por el agente contra PostgreSQL local no productiva: `podman compose --profile test run --build --rm test`, **74 passed in 1.57s**, salida 0. Versiones y dependencias bloqueadas conservadas; Python de la imagen actual 3.12.13.
+- Los 28 handlers tienen contrato explícito de éxito; status mantiene documentación y prueba del 503. Esto no equivale a verificar todos los errores de TASK-SER-015.
+- IncidentResponse y ComplianceReviewRead independientes de sus inputs; JSON Schemas idénticos a HEAD be2bad5. Management conserva metadata y contratos actuales: 11 operaciones comprobadas en OpenAPI, claves HTTP, paginación, cobertura UUID y rechazo de campos gestionados por servidor.
+- Aprobación de Cumplimiento/Gobierno del Dato para continuar en entorno no productivo confirmada por el responsable. La clasificación específica de snapshots y política de redacción/retención sigue pendiente; no se alteró persistencia ni exposición.
+- Los resultados iniciales y los identificadores T-SER futuros no se reinterpretan como evidencia de requisitos globales completos. Véanse tasks.md y docs/serialization-audit.md para alcance y pendientes.
+
+## Política audit-output-v1 aprobada e implementada — 2026-10-31
+
+El responsable aprueba expresamente la propuesta específica de TASK-SER-003 y autoriza continuar con TASK-SER-011 para el entorno sintético. Esta decisión sustituye el seguimiento previo que indicaba falta de política por campo; no constituye aprobación para datos reales o producción. La política completa, categorías, compatibilidad y decisiones técnicas constan en docs/serialization-audit.md.
+
+Implementación: backend/app/audit_serialization.py y validators de AuditEventResponse, ManagementAuditEventResponse, StatusHistoryResponse y AssignmentHistoryResponse. Permisos, escritores, tablas, migraciones y retención permanecen sin cambios. Las respuestas mantienen campos/tipos generales; cambian deliberadamente valores de texto y contenido de snapshots. La redacción se señala mediante _redacted dentro del snapshot; los motivos se sustituyen por [REDACTED].
+
+Validación actual: `podman compose --profile test run --build --rm test`, salida 0, **117 passed in 1.61s**, imagen test `bdcee65a60db`, PostgreSQL local sintética. Comparación ejecutada en imagen test: los JSON Schemas de las cuatro respuestas de auditoría/historial son idénticos a HEAD `be2bad5`; OpenAPI conserva 28 operaciones. Pruebas de lectura SQL posterior confirman snapshots y motivos originales intactos; las nuevas fixtures de integración se insertan en una transacción aislada que se revierte. Los resultados 74/63 anteriores son históricos. TASK-SER-012–017 siguen pendientes, incluida compatibilidad global y comprobación manual en /docs.
+
+## Cierre final de TASK-SER-012–017 — 2026-10-31
+
+Las 17 tareas quedan completadas exclusivamente para el entorno sintético aprobado. Evidencia actual: `podman compose --profile test run --build --rm test`, salida 0, **145 passed in 1.75s**, imagen `a98a68ae2ca0`; 28 operaciones y cuatro rutas especiales verificadas. OpenAPI documenta errores existentes mediante ErrorResponse sin cambiar su ejecución. Los JSON Schemas de IncidentResponse, ComplianceReviewRead y cuatro respuestas de auditoría/historial se conservaron contra HEAD be2bad5; los valores redactados siguen la política aprobada.
+
+TASK-SER-012 registra dos rondas sin modificación funcional: incidencias p50 1,401/1,389 ms, p95 1,645/1,566 ms, 17.598 bytes; clínicas p50 0,893/0,931 ms, p95 1,147/1,295 ms, 755 bytes. Ambas rutas: 2 SELECT, 0 cargas de relaciones. No se justifica optimización; método/SQL/columnas y script reproducible en docs/serialization-measurement.py y JSON asociado. ASGI con PostgreSQL local, sin medición de concurrencia/red.
+
+TASK-SER-013–015: shapes/extras/roles/históricos/persistencia, 28 rutas/requestBody/respuestas/errores y documentación especial probados. Build Compose backend/frontend/backoffice salida 0, producción Next.js desde caché válida. Chrome autenticado verifica Management y estado vacío de incidencias; detalle/escritura de incidencias queda probado por HTTP.
+
+TASK-SER-016: Chrome /docs observó POST /auth/tokens 201 (20:58:36 UTC), GET /management/reference-data/clinics offset=0 limit=1 200 (20:59:01 UTC), POST /compliance-reviews 201 (21:01:44 UTC). La última escritura usa jurisdicción US sintética e ignora id/created_by cliente. Su revisión 7850de3d-7194-49f1-b8b5-ad775d8e7ec4 y evento created permanecen como fixture local autorizada. No se registran tokens.
+
+TASK-SER-017: inventario final 28/28 ✅ y matriz Requirement → Endpoint → Design → Task → Test → Evidence en docs/serialization-audit.md. Los resultados 117/74/63 y afirmaciones de pendientes anteriores son históricos, sustituidos por este cierre. No se modifican datos previos, retención, migraciones, permisos, dependencias ni contratos de payload incidentalmente. No se certifica HIPAA/UK GDPR ni autorización de datos reales/piloto/producción. No se crean commits.

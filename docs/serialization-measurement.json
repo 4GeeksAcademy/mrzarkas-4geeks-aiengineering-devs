@@ -1,0 +1,168 @@
+{
+  "dataset": {
+    "incidents": 100,
+    "description_chars": 9200,
+    "page_limit": 25
+  },
+  "samples_per_round": 50,
+  "warmup": 5,
+  "transport": "HTTP ASGI in test container; SQL to PostgreSQL in Podman; single reused transaction/session",
+  "/incidents?limit=25&sort_by=title&sort_direction=asc": [
+    {
+      "round": "before_no_change",
+      "p50_ms": 1.401,
+      "p95_ms": 1.645,
+      "payload_bytes": [
+        17598
+      ],
+      "queries_per_request": [
+        2
+      ],
+      "relationship_loads": [
+        0
+      ],
+      "selected_columns": [
+        [
+          "count"
+        ],
+        [
+          "id",
+          "incident_identifier",
+          "title",
+          "description",
+          "reporter_id",
+          "clinic_id",
+          "jurisdiction_id",
+          "affected_system_id",
+          "entry_channel_value_id",
+          "incident_type_value_id",
+          "severity_value_id",
+          "status_value_id",
+          "responsible_area_id",
+          "compliance_review_id",
+          "created_at",
+          "created_by",
+          "updated_at",
+          "updated_by"
+        ]
+      ],
+      "sql_without_parameters": [
+        "SELECT count(*) AS count_1 \nFROM operational_incident",
+        "SELECT operational_incident.id, operational_incident.incident_identifier, operational_incident.title, operational_incident.description, operational_incident.reporter_id, operational_incident.clinic_id, operational_incident.jurisdiction_id, operational_incident.affected_system_id, operational_incident.entry_channel_value_id, operational_incident.incident_type_value_id, operational_incident.severity_value_id, operational_incident.status_value_id, operational_incident.responsible_area_id, operational_incident.compliance_review_id, operational_incident.created_at, operational_incident.created_by, operational_incident.updated_at, operational_incident.updated_by \nFROM operational_incident ORDER BY operational_incident.title ASC, operational_incident.id ASC \n LIMIT $1::INTEGER OFFSET $2::INTEGER"
+      ]
+    },
+    {
+      "round": "after_no_change",
+      "p50_ms": 1.389,
+      "p95_ms": 1.566,
+      "payload_bytes": [
+        17598
+      ],
+      "queries_per_request": [
+        2
+      ],
+      "relationship_loads": [
+        0
+      ],
+      "selected_columns": [
+        [
+          "count"
+        ],
+        [
+          "id",
+          "incident_identifier",
+          "title",
+          "description",
+          "reporter_id",
+          "clinic_id",
+          "jurisdiction_id",
+          "affected_system_id",
+          "entry_channel_value_id",
+          "incident_type_value_id",
+          "severity_value_id",
+          "status_value_id",
+          "responsible_area_id",
+          "compliance_review_id",
+          "created_at",
+          "created_by",
+          "updated_at",
+          "updated_by"
+        ]
+      ],
+      "sql_without_parameters": [
+        "SELECT count(*) AS count_1 \nFROM operational_incident",
+        "SELECT operational_incident.id, operational_incident.incident_identifier, operational_incident.title, operational_incident.description, operational_incident.reporter_id, operational_incident.clinic_id, operational_incident.jurisdiction_id, operational_incident.affected_system_id, operational_incident.entry_channel_value_id, operational_incident.incident_type_value_id, operational_incident.severity_value_id, operational_incident.status_value_id, operational_incident.responsible_area_id, operational_incident.compliance_review_id, operational_incident.created_at, operational_incident.created_by, operational_incident.updated_at, operational_incident.updated_by \nFROM operational_incident ORDER BY operational_incident.title ASC, operational_incident.id ASC \n LIMIT $1::INTEGER OFFSET $2::INTEGER"
+      ]
+    }
+  ],
+  "/management/reference-data/clinics?limit=25": [
+    {
+      "round": "before_no_change",
+      "p50_ms": 0.893,
+      "p95_ms": 1.147,
+      "payload_bytes": [
+        755
+      ],
+      "queries_per_request": [
+        2
+      ],
+      "relationship_loads": [
+        0
+      ],
+      "selected_columns": [
+        [
+          "count"
+        ],
+        [
+          "jurisdiction_id",
+          "id",
+          "key",
+          "label",
+          "is_active",
+          "created_at",
+          "created_by",
+          "updated_at",
+          "updated_by"
+        ]
+      ],
+      "sql_without_parameters": [
+        "SELECT count(*) AS count_1 \nFROM reference_clinic",
+        "SELECT reference_clinic.jurisdiction_id, reference_clinic.id, reference_clinic.key, reference_clinic.label, reference_clinic.is_active, reference_clinic.created_at, reference_clinic.created_by, reference_clinic.updated_at, reference_clinic.updated_by \nFROM reference_clinic ORDER BY reference_clinic.key \n LIMIT $1::INTEGER OFFSET $2::INTEGER"
+      ]
+    },
+    {
+      "round": "after_no_change",
+      "p50_ms": 0.931,
+      "p95_ms": 1.295,
+      "payload_bytes": [
+        755
+      ],
+      "queries_per_request": [
+        2
+      ],
+      "relationship_loads": [
+        0
+      ],
+      "selected_columns": [
+        [
+          "count"
+        ],
+        [
+          "jurisdiction_id",
+          "id",
+          "key",
+          "label",
+          "is_active",
+          "created_at",
+          "created_by",
+          "updated_at",
+          "updated_by"
+        ]
+      ],
+      "sql_without_parameters": [
+        "SELECT count(*) AS count_1 \nFROM reference_clinic",
+        "SELECT reference_clinic.jurisdiction_id, reference_clinic.id, reference_clinic.key, reference_clinic.label, reference_clinic.is_active, reference_clinic.created_at, reference_clinic.created_by, reference_clinic.updated_at, reference_clinic.updated_by \nFROM reference_clinic ORDER BY reference_clinic.key \n LIMIT $1::INTEGER OFFSET $2::INTEGER"
+      ]
+    }
+  ]
+}
