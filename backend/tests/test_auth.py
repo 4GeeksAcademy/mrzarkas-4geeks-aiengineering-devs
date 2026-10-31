@@ -19,6 +19,72 @@ from app.auth.roles import (
 from app.auth.security import InvalidTokenError, create_access_token, decode_access_token
 from app.core.config import get_settings
 from app.main import app
+from fastapi.routing import APIRoute
+
+
+def test_all_28_operations_have_explicit_contracts_and_documented_errors() -> None:
+    expected = {
+        "/auth/tokens": {"post"}, "/catalogs/{catalog_name}": {"get"},
+        "/compliance-reviews": {"post"}, "/compliance-reviews/{review_id}": {"get"},
+        "/compliance-reviews/{review_id}/status": {"patch"},
+        "/incidents": {"post", "get"}, "/incidents/metrics/open-by-severity": {"get"},
+        "/incidents/{incident_id}": {"get", "patch"},
+        "/incidents/{incident_id}/transitions": {"post"},
+        "/incidents/{incident_id}/assignments": {"post"},
+        "/incidents/{incident_id}/history": {"get"},
+        "/incidents/{incident_id}/assignment-history": {"get"},
+        "/incidents/{incident_id}/audit": {"get"},
+        "/management/catalogs": {"get"},
+        "/management/catalogs/{catalog_name}/values": {"get", "post"},
+        "/management/catalogs/{catalog_name}/values/{value_id}": {"patch"},
+        "/management/catalogs/{catalog_name}/values/{value_id}/activation": {"post"},
+        "/management/reference-data/{resource}": {"get", "post"},
+        "/management/reference-data/{resource}/{resource_id}": {"patch"},
+        "/management/reference-data/{resource}/{resource_id}/activation": {"post"},
+        "/management/affected-systems/{system_id}/jurisdictions": {"put"},
+        "/management/audit-events": {"get"}, "/health": {"get"}, "/status": {"get"},
+    }
+    openapi = app.openapi()
+    observed = {path: set(operations) for path, operations in openapi["paths"].items()}
+    assert observed == expected
+    assert sum(map(len, observed.values())) == 28
+    routes = [route for route in app.routes if isinstance(route, APIRoute)]
+    assert all(route.response_model is not None for route in routes)
+    for route in routes:
+        for method in route.methods:
+            operation = openapi["paths"][route.path][method.lower()]
+            success = str(route.status_code or 200)
+            assert "schema" in operation["responses"][success]["content"]["application/json"]
+            if route.path not in {"/auth/tokens", "/health", "/status"}:
+                assert {"401", "403"}.issubset(operation["responses"])
+            for code, response in operation["responses"].items():
+                if int(code) >= 400:
+                    assert "schema" in response["content"]["application/json"]
+            if method in {"POST", "PATCH", "PUT"}:
+                assert operation["requestBody"]["required"] is True
+    assert "404" in openapi["paths"]["/auth/tokens"]["post"]["responses"]
+    assert "500" in openapi["paths"]["/incidents/{incident_id}/transitions"]["post"]["responses"]
+    assert "503" in openapi["paths"]["/incidents"]["post"]["responses"]
+
+
+def test_documentation_routes_are_special_responses() -> None:
+    expected = {"/openapi.json": "application/json", "/docs": "text/html",
+                "/docs/oauth2-redirect": "text/html", "/redoc": "text/html"}
+    for path, media_type in expected.items():
+        response = _request("GET", path)
+        assert response.status_code == 200
+        assert response.headers["content-type"].startswith(media_type)
+        assert path not in app.openapi()["paths"]
+
+
+def test_token_response_is_exact_and_does_not_reflect_unknown_secret() -> None:
+    response = _request("POST", "/auth/tokens", json={
+        "actor_id": str(uuid4()), "role": "admin", "password": "synthetic-hidden-marker",
+    })
+    assert response.status_code == 201
+    assert set(response.json()) == {"access_token", "token_type"}
+    assert response.json()["token_type"] == "bearer"
+    assert "synthetic-hidden-marker" not in response.text
 
 
 def _request(method: str, path: str, **kwargs: object) -> Response:

@@ -1,3 +1,4 @@
+from app.error_contracts import error_responses
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
@@ -33,7 +34,7 @@ from app.incidents.schemas import (
     StatusTransitionRequest,
 )
 
-router = APIRouter(prefix="/incidents", tags=["incidents"])
+router = APIRouter(prefix="/incidents", tags=["incidents"], responses=error_responses(401, 403))
 
 
 async def require_incident_update_capability(
@@ -102,7 +103,7 @@ async def get_catalog_value(
     return value
 
 
-@router.post("", response_model=IncidentResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=IncidentResponse, status_code=status.HTTP_201_CREATED, responses=error_responses(422, 503))
 async def create_incident(
     payload: IncidentCreate,
     session: AsyncSession = Depends(get_session),
@@ -179,7 +180,7 @@ async def create_incident(
     return incident
 
 
-@router.get("", response_model=IncidentListResponse)
+@router.get("", response_model=IncidentListResponse, responses=error_responses(422))
 async def list_incidents(
     status_value_id: UUID | None = Query(default=None),
     severity_value_id: UUID | None = Query(default=None),
@@ -268,7 +269,7 @@ async def open_incidents_by_severity(
     ]
 
 
-@router.get("/{incident_id}", response_model=IncidentResponse)
+@router.get("/{incident_id}", response_model=IncidentResponse, responses=error_responses(404, 422))
 async def get_incident(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),
@@ -281,7 +282,7 @@ async def get_incident(
     return incident
 
 
-@router.patch("/{incident_id}", response_model=IncidentResponse)
+@router.patch("/{incident_id}", response_model=IncidentResponse, responses=error_responses(404, 422))
 async def update_incident(
     incident_id: UUID,
     payload: IncidentUpdate,
@@ -372,7 +373,7 @@ async def update_incident(
     return incident
 
 
-@router.post("/{incident_id}/transitions", response_model=IncidentResponse)
+@router.post("/{incident_id}/transitions", response_model=IncidentResponse, responses=error_responses(404, 409, 422, 500))
 async def transition_incident(
     incident_id: UUID,
     payload: StatusTransitionRequest,
@@ -414,7 +415,7 @@ async def transition_incident(
     return incident
 
 
-@router.post("/{incident_id}/assignments", response_model=IncidentResponse)
+@router.post("/{incident_id}/assignments", response_model=IncidentResponse, responses=error_responses(404, 409, 422))
 async def assign_incident(
     incident_id: UUID,
     payload: IncidentAssignmentRequest,
@@ -455,7 +456,7 @@ async def assign_incident(
     return incident
 
 
-@router.get("/{incident_id}/history", response_model=list[StatusHistoryResponse])
+@router.get("/{incident_id}/history", response_model=list[StatusHistoryResponse], responses=error_responses(404, 422))
 async def incident_history(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),
@@ -470,7 +471,7 @@ async def incident_history(
     )).scalars().all())
 
 
-@router.get("/{incident_id}/assignment-history", response_model=list[AssignmentHistoryResponse])
+@router.get("/{incident_id}/assignment-history", response_model=list[AssignmentHistoryResponse], responses=error_responses(404, 422))
 async def incident_assignment_history(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),
@@ -487,7 +488,7 @@ async def incident_assignment_history(
     )).scalars().all())
 
 
-@router.get("/{incident_id}/audit", response_model=list[AuditEventResponse])
+@router.get("/{incident_id}/audit", response_model=list[AuditEventResponse], responses=error_responses(404, 422))
 async def incident_audit(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),

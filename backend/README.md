@@ -105,3 +105,28 @@ project. The test stage includes development dependencies.
 Status tests without PostgreSQL: `uv run --no-sync pytest tests/test_status.py -q`.
 Full synthetic integration suite from the root: `docker compose --profile test run --rm test`.
 The full suite modifies synthetic test records; use only the local development database.
+
+Incident and ComplianceReview read contracts are independent of their input
+schemas and preserve the published fields. Response contract tests check exact
+output fields, ORM attribute filtering and route schemas; Management HTTP tests
+also check collection wrappers and write responses.
+Management checks cover all eleven OpenAPI operations, pagination and audit
+filters, plus rejection of server-managed fields in catalog and clinic PATCHes.
+
+## Audit response policy
+
+The approved synthetic-environment policy preserves audit identifiers,
+references and timestamps. Audit snapshots use event-specific allowlists and
+strict Pydantic validation. Non-null title, description and label values in
+snapshots, and reasons in Management audit and incident histories, are returned
+as `[REDACTED]`; null remains null. Unknown or invalid fields are excluded.
+`_redacted: true` inside a snapshot signals content was hidden. Unknown events
+or root lists return only that marker; jurisdiction_ids lists in coverage
+events remain supported. Historical incident `"None"` review references retain
+their original representation. Current and historical events use the same
+projection, without rewriting records or changing retention or permissions.
+Technical keys remain visible under the existing access policy; their syntax
+validation is not a general detector of secrets embedded in identifier values.
+The backoffice continues to display reasons, now as the redaction marker.
+
+Final serialization audit (2026-10-31): 145 tests passed against synthetic PostgreSQL; all 28 operations and documentation routes verified. OpenAPI annotations describe existing errors (detail string or validation list), without changing exception handling. See ../docs/serialization-audit.md for approved redaction, measurements, manual Swagger checks and scope limitations. No production approval is implied.

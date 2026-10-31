@@ -3,6 +3,7 @@ non-development deployment (see memory-bank/proposals.md)."""
 
 from __future__ import annotations
 
+from app.error_contracts import error_responses
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
@@ -28,7 +29,7 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
-@router.post("/tokens", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/tokens", response_model=TokenResponse, status_code=status.HTTP_201_CREATED, responses=error_responses(404, 422))
 def issue_token(payload: TokenRequest) -> TokenResponse:
     if not get_settings().self_issued_token_endpoint_enabled:
         # Deliberately return 404 rather than advertise a development-only

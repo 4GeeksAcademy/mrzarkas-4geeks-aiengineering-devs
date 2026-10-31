@@ -1,3 +1,4 @@
+from app.error_contracts import error_responses
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -12,7 +13,7 @@ from app.compliance.models import ComplianceReview
 from app.reference_data.models import Jurisdiction
 from app.management.service import add_audit_event
 
-router = APIRouter(prefix="/compliance-reviews", tags=["compliance-reviews"])
+router = APIRouter(prefix="/compliance-reviews", tags=["compliance-reviews"], responses=error_responses(401, 403))
 
 class ComplianceReviewCreate(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -20,8 +21,10 @@ class ComplianceReviewCreate(BaseModel):
     jurisdiction_id: UUID
     status: Literal["open", "inReview", "closed", "cancelled"] = "open"
 
-class ComplianceReviewRead(ComplianceReviewCreate):
+class ComplianceReviewRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    jurisdiction_id: UUID
+    status: Literal["open", "inReview", "closed", "cancelled"] = "open"
     id: UUID
     review_identifier: str
     created_at: datetime
@@ -40,7 +43,7 @@ class ComplianceReviewStatusUpdate(BaseModel):
             raise ValueError("reason is required when closing a compliance review")
         return self
 
-@router.post("", response_model=ComplianceReviewRead, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ComplianceReviewRead, status_code=status.HTTP_201_CREATED, responses=error_responses(422))
 async def create_review(payload: ComplianceReviewCreate, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("complianceReview:manage"))) -> ComplianceReview:
     jurisdiction = await session.get(Jurisdiction, payload.jurisdiction_id)
     if jurisdiction is None or not jurisdiction.is_active:
@@ -62,7 +65,7 @@ async def create_review(payload: ComplianceReviewCreate, session: AsyncSession =
     await session.refresh(review)
     return review
 
-@router.get("/{review_id}", response_model=ComplianceReviewRead)
+@router.get("/{review_id}", response_model=ComplianceReviewRead, responses=error_responses(404, 422))
 async def get_review(review_id: UUID, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("complianceReview:read"))) -> ComplianceReview:
     authorize_compliance_review_read(actor)
     review = await session.get(ComplianceReview, review_id)
@@ -71,7 +74,7 @@ async def get_review(review_id: UUID, session: AsyncSession = Depends(get_sessio
     return review
 
 
-@router.patch("/{review_id}/status", response_model=ComplianceReviewRead)
+@router.patch("/{review_id}/status", response_model=ComplianceReviewRead, responses=error_responses(404, 409, 422))
 async def update_review_status(
     review_id: UUID,
     payload: ComplianceReviewStatusUpdate,

@@ -17,6 +17,7 @@ from app.management.audit import ManagementAuditEvent
 from app.main import app
 from app.reference_data.models import AffectedSystem, Clinic, affected_system_jurisdiction
 from tests.reference_fixtures import reference_ids
+from tests.test_response_contracts import CATALOG_FIELDS, REFERENCE_FIELDS
 
 
 pytestmark = pytest.mark.integration
@@ -79,13 +80,21 @@ def test_http_authorization_enforces_area_capability_and_audit_access() -> None:
             assert invalid_system_jurisdiction.status_code == 422
 
             admin_id = uuid4()
+            injected_id = str(uuid4())
             created = await client.post(
                 "/incidents",
                 headers={"Authorization": f"Bearer {create_access_token(admin_id, ADMIN)}"},
-                json={**base_payload, "title": "HTTP authorization test"},
+                json={**base_payload, "title": "HTTP authorization test",
+                      "id": injected_id, "reporter_id": injected_id,
+                      "created_by": injected_id, "updated_by": injected_id,
+                      "created_at": "2000-01-01T00:00:00Z"},
             )
             assert created.status_code == 201
             assert created.json()["reporter_id"] == str(admin_id)
+            assert created.json()["id"] != injected_id
+            assert created.json()["created_by"] == str(admin_id)
+            assert created.json()["updated_by"] == str(admin_id)
+            assert not created.json()["created_at"].startswith("2000-")
             incident_id = UUID(created.json()["id"])
 
             # Exercise server-side ordering before pagination. The just-created
@@ -293,6 +302,13 @@ def test_admin_manages_catalog_values_with_audit_and_no_physical_delete() -> Non
             assert created.status_code == 201
             created_id = UUID(created.json()["id"])
             assert created.json()["key"] == "m3Synthetic"
+            assert set(created.json()) == CATALOG_FIELDS
+            for field in ("id", "created_by", "updated_by", "created_at", "updated_at"):
+                protected_write = await client.patch(
+                    f"/management/catalogs/severity/values/{created_id}",
+                    headers=_bearer(ADMIN), json={field: created.json()[field]},
+                )
+                assert protected_write.status_code == 422
 
             duplicate = await client.post(
                 "/management/catalogs/severity/values", headers=_bearer(ADMIN), json=payload
@@ -313,6 +329,7 @@ def test_admin_manages_catalog_values_with_audit_and_no_physical_delete() -> Non
             )
             assert updated.status_code == 200
             assert updated.json()["label"] == "M3 Synthetic Updated"
+            assert set(updated.json()) == CATALOG_FIELDS
 
             missing_reason = await client.post(
                 f"/management/catalogs/severity/values/{created_id}/activation",
@@ -331,10 +348,45 @@ def test_admin_manages_catalog_values_with_audit_and_no_physical_delete() -> Non
             public_values = await client.get("/catalogs/severity", headers=_bearer(ADMIN))
             assert public_values.status_code == 200
             assert "m3Synthetic" not in {item["key"] for item in public_values.json()["values"]}
+            assert set(deactivated.json()) == CATALOG_FIELDS
             managed_values = await client.get(
                 "/management/catalogs/severity/values", headers=_bearer(ADMIN)
             )
             assert any(item["id"] == str(created_id) and not item["is_active"] for item in managed_values.json()["items"])
+            assert managed_values.status_code == 200
+            assert set(managed_values.json()) == {"items", "total"}
+            assert all(set(item) == CATALOG_FIELDS for item in managed_values.json()["items"])
+            catalogs = await client.get("/management/catalogs?limit=100", headers=_bearer(ADMIN))
+            assert catalogs.status_code == 200
+            assert set(catalogs.json()) == {"items", "total"}
+            assert catalogs.json()["items"]
+            assert all(set(item) == {"id", "catalog_name", "version", "is_active"} for item in catalogs.json()["items"])
+            for path in ("/management/catalogs", "/management/catalogs/severity/values"):
+                full = await client.get(f"{path}?limit=100", headers=_bearer(ADMIN))
+                page = await client.get(f"{path}?offset=1&limit=1", headers=_bearer(ADMIN))
+                assert page.status_code == 200
+                assert page.json()["items"] == full.json()["items"][1:2]
+                assert page.json()["total"] == full.json()["total"]
+            audit = await client.get(
+                f"/management/audit-events?resource_type=catalogValue&resource_id={created_id}&limit=100",
+                headers=_bearer(ADMIN),
+            )
+            assert audit.status_code == 200
+            assert set(audit.json()) == {"items", "total"}
+            assert audit.json()["total"] == 3
+            expected_audit_fields = {
+                "id", "resource_type", "resource_id", "action", "actor_id",
+                "before_data", "after_data", "reason", "correlation_id", "occurred_at",
+            }
+            assert all(set(item) == expected_audit_fields for item in audit.json()["items"])
+            assert all(item["resource_id"] == str(created_id) for item in audit.json()["items"])
+            audit_page = await client.get(
+                f"/management/audit-events?resource_type=catalogValue&resource_id={created_id}&offset=1&limit=1",
+                headers=_bearer(ADMIN),
+            )
+            assert audit_page.status_code == 200
+            assert audit_page.json()["items"] == audit.json()["items"][1:2]
+            assert audit_page.json()["total"] == 3
 
         assert created_id is not None
         async with SessionLocal() as session:
@@ -393,6 +445,13 @@ def test_admin_manages_reference_data_without_invalidating_history() -> None:
             assert clinic.status_code == 201
             clinic_id = UUID(clinic.json()["id"])
             assert clinic.json()["jurisdiction_id"] == str(refs["US"])
+            assert set(clinic.json()) == REFERENCE_FIELDS
+            for field in ("id", "created_by", "updated_by", "created_at", "updated_at"):
+                protected_write = await client.patch(
+                    f"/management/reference-data/clinics/{clinic_id}",
+                    headers=_bearer(ADMIN), json={field: clinic.json()[field]},
+                )
+                assert protected_write.status_code == 422
 
             system = await client.post(
                 "/management/reference-data/affected-systems",
@@ -400,6 +459,7 @@ def test_admin_manages_reference_data_without_invalidating_history() -> None:
                 json={"key": "m4SyntheticSystem", "label": "M4 Synthetic System"},
             )
             assert system.status_code == 201
+            assert set(system.json()) == REFERENCE_FIELDS
             system_id = UUID(system.json()["id"])
             coverage = await client.put(
                 f"/management/affected-systems/{system_id}/jurisdictions",
@@ -407,6 +467,31 @@ def test_admin_manages_reference_data_without_invalidating_history() -> None:
                 json={"jurisdiction_ids": [str(refs["US"])]},
             )
             assert coverage.status_code == 200
+            assert coverage.json() == [str(refs["US"])]
+
+            updated_reference = await client.patch(
+                f"/management/reference-data/clinics/{clinic_id}",
+                headers=_bearer(ADMIN),
+                json={"label": "M4 Synthetic Clinic Updated"},
+            )
+            assert updated_reference.status_code == 200
+            assert set(updated_reference.json()) == REFERENCE_FIELDS
+            assert updated_reference.json()["label"] == "M4 Synthetic Clinic Updated"
+            for resource in ("clinics", "jurisdictions", "affected-systems", "responsible-areas"):
+                reference_list = await client.get(
+                    f"/management/reference-data/{resource}", headers=_bearer(ADMIN)
+                )
+                assert reference_list.status_code == 200
+                assert set(reference_list.json()) == {"items", "total"}
+                assert reference_list.json()["items"]
+                assert all(set(item) == REFERENCE_FIELDS for item in reference_list.json()["items"])
+                reference_page = await client.get(
+                    f"/management/reference-data/{resource}?offset=1&limit=1",
+                    headers=_bearer(ADMIN),
+                )
+                assert reference_page.status_code == 200
+                assert reference_page.json()["items"] == reference_list.json()["items"][1:2]
+                assert reference_page.json()["total"] == reference_list.json()["total"]
 
             incident_payload = {
                 "title": "M4 compatibility incident",
@@ -448,6 +533,7 @@ def test_admin_manages_reference_data_without_invalidating_history() -> None:
                 "/incidents", headers=_bearer(ADMIN), json=incident_payload
             )
             assert rejected_inactive.status_code == 422
+            assert set(deactivated.json()) == REFERENCE_FIELDS
 
         assert clinic_id is not None and system_id is not None and incident_id is not None
         async with SessionLocal() as session:

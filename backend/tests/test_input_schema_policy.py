@@ -72,10 +72,11 @@ def test_write_models_ignore_extra_fields(
         (SystemJurisdictionsUpdate, {"jurisdiction_ids": []}),
     ],
 )
+@pytest.mark.parametrize("extra_field", ["unexpected_field", "id", "created_by", "updated_by", "created_at", "updated_at"])
 def test_write_models_forbid_extra_fields(
-    model: type[BaseModel], payload: dict[str, object]
+    model: type[BaseModel], payload: dict[str, object], extra_field: str
 ) -> None:
     with pytest.raises(ValidationError) as error:
-        model.model_validate({**payload, "unexpected_field": "rejected"})
+        model.model_validate({**payload, extra_field: "rejected"})
 
     assert any(item["type"] == "extra_forbidden" for item in error.value.errors())

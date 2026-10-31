@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from app.error_contracts import error_responses
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -17,7 +18,7 @@ from app.management.schemas import ManagementAuditEventListResponse, ReferenceVa
 from app.management.audit import ManagementAuditEvent
 
 
-router = APIRouter(prefix="/management", tags=["management"])
+router = APIRouter(prefix="/management", tags=["management"], responses=error_responses(401, 403))
 
 REFERENCE_RESOURCES = {
     "jurisdictions": Jurisdiction,
@@ -73,14 +74,14 @@ async def validate_active_jurisdiction(session: AsyncSession, jurisdiction_id: U
     return jurisdiction
 
 
-@router.get("/catalogs", response_model=CatalogListResponse)
+@router.get("/catalogs", response_model=CatalogListResponse, responses=error_responses(422))
 async def list_catalogs(offset: int = Query(default=0, ge=0), limit: int = Query(default=50, ge=1, le=100), session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("catalog:read"))) -> CatalogListResponse:
     total = (await session.execute(select(func.count()).select_from(Catalog))).scalar_one()
     items = (await session.execute(select(Catalog).order_by(Catalog.catalog_name).offset(offset).limit(limit))).scalars().all()
     return CatalogListResponse(items=items, total=total)
 
 
-@router.get("/catalogs/{catalog_name}/values", response_model=CatalogValueListResponse)
+@router.get("/catalogs/{catalog_name}/values", response_model=CatalogValueListResponse, responses=error_responses(404, 422))
 async def list_catalog_values(catalog_name: str, offset: int = Query(default=0, ge=0), limit: int = Query(default=50, ge=1, le=100), session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("catalog:read"))) -> CatalogValueListResponse:
     catalog = await get_catalog_or_404(session, catalog_name)
     filters = [CatalogValue.catalog_id == catalog.id]
@@ -89,7 +90,7 @@ async def list_catalog_values(catalog_name: str, offset: int = Query(default=0, 
     return CatalogValueListResponse(items=items, total=total)
 
 
-@router.post("/catalogs/{catalog_name}/values", response_model=ManagedCatalogValueResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/catalogs/{catalog_name}/values", response_model=ManagedCatalogValueResponse, status_code=status.HTTP_201_CREATED, responses=error_responses(404, 409, 422))
 async def create_catalog_value(catalog_name: str, payload: CatalogValueCreate, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("catalog:manage"))) -> CatalogValue:
     catalog = await get_catalog_or_404(session, catalog_name)
     existing = (await session.execute(select(CatalogValue.id).where(CatalogValue.catalog_id == catalog.id, CatalogValue.key == payload.key))).scalar_one_or_none()
@@ -108,7 +109,7 @@ async def create_catalog_value(catalog_name: str, payload: CatalogValueCreate, s
     return value
 
 
-@router.patch("/catalogs/{catalog_name}/values/{value_id}", response_model=ManagedCatalogValueResponse)
+@router.patch("/catalogs/{catalog_name}/values/{value_id}", response_model=ManagedCatalogValueResponse, responses=error_responses(404, 422))
 async def update_catalog_value(catalog_name: str, value_id: UUID, payload: CatalogValueUpdate, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("catalog:manage"))) -> CatalogValue:
     catalog = await get_catalog_or_404(session, catalog_name)
     value = await get_catalog_value_or_404(session, catalog, value_id)
@@ -134,7 +135,7 @@ async def update_catalog_value(catalog_name: str, value_id: UUID, payload: Catal
     return value
 
 
-@router.post("/catalogs/{catalog_name}/values/{value_id}/activation", response_model=ManagedCatalogValueResponse)
+@router.post("/catalogs/{catalog_name}/values/{value_id}/activation", response_model=ManagedCatalogValueResponse, responses=error_responses(404, 422))
 async def set_catalog_value_activation(catalog_name: str, value_id: UUID, payload: ActivationRequest, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("catalog:manage"))) -> CatalogValue:
     catalog = await get_catalog_or_404(session, catalog_name)
     value = await get_catalog_value_or_404(session, catalog, value_id)
@@ -152,7 +153,7 @@ async def set_catalog_value_activation(catalog_name: str, value_id: UUID, payloa
     return value
 
 
-@router.get("/reference-data/{resource}", response_model=ReferenceValueListResponse)
+@router.get("/reference-data/{resource}", response_model=ReferenceValueListResponse, responses=error_responses(404, 422))
 async def list_reference_values(resource: str, offset: int = Query(default=0, ge=0), limit: int = Query(default=50, ge=1, le=100), session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("referenceData:read"))) -> ReferenceValueListResponse:
     model = reference_model_or_404(resource)
     total = (await session.execute(select(func.count()).select_from(model))).scalar_one()
@@ -160,7 +161,7 @@ async def list_reference_values(resource: str, offset: int = Query(default=0, ge
     return ReferenceValueListResponse(items=items, total=total)
 
 
-@router.post("/reference-data/{resource}", response_model=ReferenceValueResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/reference-data/{resource}", response_model=ReferenceValueResponse, status_code=status.HTTP_201_CREATED, responses=error_responses(404, 409, 422))
 async def create_reference_value(resource: str, payload: ReferenceValueCreate, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("referenceData:manage"))) -> ReferenceValue:
     model = reference_model_or_404(resource)
     if resource == "clinics":
@@ -183,7 +184,7 @@ async def create_reference_value(resource: str, payload: ReferenceValueCreate, s
     return value
 
 
-@router.patch("/reference-data/{resource}/{resource_id}", response_model=ReferenceValueResponse)
+@router.patch("/reference-data/{resource}/{resource_id}", response_model=ReferenceValueResponse, responses=error_responses(404, 409, 422))
 async def update_reference_value(resource: str, resource_id: UUID, payload: ReferenceValueUpdate, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("referenceData:manage"))) -> ReferenceValue:
     model = reference_model_or_404(resource)
     value = await get_reference_or_404(session, model, resource_id)
@@ -213,7 +214,7 @@ async def update_reference_value(resource: str, resource_id: UUID, payload: Refe
     return value
 
 
-@router.post("/reference-data/{resource}/{resource_id}/activation", response_model=ReferenceValueResponse)
+@router.post("/reference-data/{resource}/{resource_id}/activation", response_model=ReferenceValueResponse, responses=error_responses(404, 422))
 async def set_reference_value_activation(resource: str, resource_id: UUID, payload: ActivationRequest, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("referenceData:manage"))) -> ReferenceValue:
     model = reference_model_or_404(resource)
     value = await get_reference_or_404(session, model, resource_id)
@@ -228,7 +229,7 @@ async def set_reference_value_activation(resource: str, resource_id: UUID, paylo
     return value
 
 
-@router.put("/affected-systems/{system_id}/jurisdictions", response_model=list[UUID])
+@router.put("/affected-systems/{system_id}/jurisdictions", response_model=list[UUID], responses=error_responses(404, 409, 422))
 async def set_system_jurisdictions(system_id: UUID, payload: SystemJurisdictionsUpdate, session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("referenceData:manage"))) -> list[UUID]:
     system = await get_reference_or_404(session, AffectedSystem, system_id)
     requested = payload.jurisdiction_ids
@@ -254,7 +255,7 @@ async def set_system_jurisdictions(system_id: UUID, payload: SystemJurisdictions
     return sorted(requested, key=str)
 
 
-@router.get("/audit-events", response_model=ManagementAuditEventListResponse)
+@router.get("/audit-events", response_model=ManagementAuditEventListResponse, responses=error_responses(422))
 async def list_management_audit_events(
     resource_type: str | None = Query(default=None, max_length=100),
     resource_id: UUID | None = Query(default=None),

@@ -92,3 +92,31 @@ el proyecto. La etapa test incluye las dependencias de desarrollo.
 Pruebas de estado sin PostgreSQL: `uv run --no-sync pytest tests/test_status.py -q`.
 Suite completa desde la raíz: `docker compose --profile test run --rm test`.
 La suite modifica registros sintéticos: usar solo la base local de desarrollo.
+
+Los contratos de lectura de Incident y ComplianceReview son independientes de
+los esquemas de entrada y conservan los campos publicados. Las pruebas de
+contrato comprueban los campos exactos, el filtrado de atributos ORM y los
+esquemas de las rutas; las pruebas HTTP de Management también comprueban los
+contenedores de colecciones y las respuestas de escritura.
+Las comprobaciones de Management cubren las once operaciones OpenAPI,
+paginación y filtros de auditoría, además del rechazo de campos gestionados
+por servidor en los PATCH de valores de catálogo y clínicas.
+
+## Política de respuesta de auditoría
+
+La política aprobada para el entorno sintético conserva identificadores,
+referencias y timestamps. Los snapshots utilizan allowlists por evento y
+validación estricta de Pydantic. Los valores no nulos de title, description y
+label en snapshots, y los motivos de auditoría Management e historiales de
+incidencias, se devuelven como `[REDACTED]`; null sigue siendo null. Se excluyen
+campos desconocidos o inválidos. `_redacted: true` dentro del snapshot señala
+contenido ocultado. Eventos desconocidos o listas raíz devuelven sólo ese
+marcador; se conservan listas jurisdiction_ids en eventos de cobertura. Las
+referencias históricas de revisión `"None"` conservan su representación original.
+La misma proyección se aplica a eventos actuales e históricos, sin reescribir
+registros ni cambiar retención o permisos. Las claves técnicas siguen visibles
+bajo el acceso existente; validar su sintaxis no detecta de forma general
+secretos incorporados en valores de identificadores. El backoffice conserva
+la presentación de motivos, ahora como el marcador de redacción.
+
+Cierre de serialización (2026-10-31): 145 pruebas superadas con PostgreSQL sintética; 28 operaciones y rutas de documentación verificadas. Las anotaciones OpenAPI describen errores existentes (detail string o lista de validación), sin cambiar su ejecución. Véase ../docs/serialization-audit.md para redacción aprobada, mediciones, pruebas manuales Swagger y límites. No implica aprobación de producción.

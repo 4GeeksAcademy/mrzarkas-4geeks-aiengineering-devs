@@ -1,3 +1,4 @@
+from app.error_contracts import error_responses
 from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -9,10 +10,10 @@ from app.auth.dependencies import Actor, require_capability
 from app.db.models.catalog import Catalog, CatalogValue
 from app.db.session import get_session
 
-router = APIRouter(prefix="/catalogs", tags=["catalogs"])
+router = APIRouter(prefix="/catalogs", tags=["catalogs"], responses=error_responses(401, 403))
 
 
-@router.get("/{catalog_name}", response_model=CatalogResponse)
+@router.get("/{catalog_name}", response_model=CatalogResponse, responses=error_responses(404))
 async def get_catalog(
     catalog_name: str,
     session: AsyncSession = Depends(get_session),

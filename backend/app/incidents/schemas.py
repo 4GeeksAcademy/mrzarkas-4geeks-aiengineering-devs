@@ -1,7 +1,9 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator
+
+from app.audit_serialization import project_snapshot, redact_text
 
 
 class IncidentCreate(BaseModel):
@@ -19,9 +21,19 @@ class IncidentCreate(BaseModel):
     compliance_review_id: UUID | None = None
 
 
-class IncidentResponse(IncidentCreate):
+class IncidentResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(min_length=1, max_length=10000)
+    clinic_id: UUID
+    jurisdiction_id: UUID
+    affected_system_id: UUID
+    entry_channel_value_id: UUID
+    incident_type_value_id: UUID
+    severity_value_id: UUID
+    responsible_area_id: UUID
+    compliance_review_id: UUID | None = None
     id: UUID
     incident_identifier: str
     reporter_id: UUID
@@ -91,6 +103,8 @@ class StatusHistoryResponse(BaseModel):
     reason: str | None
     changed_at: datetime
 
+    _redact_reason = field_validator("reason", mode="before")(redact_text)
+
 
 class AssignmentHistoryResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -101,6 +115,8 @@ class AssignmentHistoryResponse(BaseModel):
     changed_by: UUID
     reason: str | None
     changed_at: datetime
+
+    _redact_reason = field_validator("reason", mode="before")(redact_text)
 
 
 class OpenIncidentsBySeverityResponse(BaseModel):
@@ -121,3 +137,8 @@ class AuditEventResponse(BaseModel):
     before_data: dict | None
     after_data: dict | None
     occurred_at: datetime
+
+    @field_validator("before_data", "after_data", mode="before")
+    @classmethod
+    def project_audit_snapshot(cls, value: object, info: ValidationInfo) -> dict | None:
+        return project_snapshot(info.data.get("entity_type", ""), info.data.get("action", ""), value)

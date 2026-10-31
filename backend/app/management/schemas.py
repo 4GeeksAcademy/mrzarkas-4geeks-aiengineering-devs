@@ -3,7 +3,9 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, field_validator, model_validator
+
+from app.audit_serialization import project_snapshot, redact_text
 
 
 class CatalogListItem(BaseModel):
@@ -180,6 +182,13 @@ class ManagementAuditEventResponse(BaseModel):
     reason: str | None
     correlation_id: UUID | None
     occurred_at: datetime
+
+    _redact_reason = field_validator("reason", mode="before")(redact_text)
+
+    @field_validator("before_data", "after_data", mode="before")
+    @classmethod
+    def project_audit_snapshot(cls, value: object, info: ValidationInfo) -> dict | None:
+        return project_snapshot(info.data.get("resource_type", ""), info.data.get("action", ""), value)
 
 
 class ManagementAuditEventListResponse(BaseModel):
