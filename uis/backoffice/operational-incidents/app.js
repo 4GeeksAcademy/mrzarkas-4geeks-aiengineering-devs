@@ -7,6 +7,31 @@ const connectionMessage = document.querySelector('#connectionMessage');
 const disconnectButton = document.querySelector('#disconnectButton');
 
 const session = { apiUrl: '', token: '', claims: null, catalogs: {}, references: {} };
+
+let telemetry = null, telemetryPromise = null, telemetryEpoch = 0;
+let telemetryRoute = { view: null, clinicId: '' };
+async function recordTelemetryRoute() {
+  if (!telemetry) return;
+  const snapshot = telemetryRoute;
+  if (!await telemetry.activateClinic(snapshot.clinicId)) return;
+  if (snapshot !== telemetryRoute || !snapshot.view) return;
+  telemetry.navigate(snapshot.view);
+}
+function selectTelemetryRoute(view, clinicId = null) {
+  telemetryRoute = { view, clinicId };
+  void recordTelemetryRoute();
+}
+async function startTelemetry(apiUrl, token) {
+  const epoch = ++telemetryEpoch;
+  try {
+    telemetryPromise ??= import('./telemetry/runtime.js').then(module => module.bootstrapTelemetry('incidents')).catch(() => null);
+    const service = await telemetryPromise;
+    if (!service || epoch !== telemetryEpoch) return;
+    telemetry = service;
+    if (await service.connect(apiUrl, token) && epoch === telemetryEpoch) void recordTelemetryRoute();
+  } catch { /* Telemetry never changes business connection outcomes. */ }
+}
+
 const catalogNames = ['incidentStatus', 'severity', 'entryChannel', 'incidentType'];
 const allowedTransitions = {
   new: ['underAnalysis', 'cancelled'],
@@ -115,10 +140,12 @@ async function connect(apiUrl, token) {
   }
   showConnectionState(true);
   setMessage(`Conectado como ${session.claims.role}. Los controles de la interfaz no sustituyen los permisos de la API.`, 'success');
+  void startTelemetry(session.apiUrl, session.token);
   await renderRoute();
 }
 
 function disconnect() {
+  telemetryEpoch++; telemetry?.disconnect(); selectTelemetryRoute(null, '');
   session.apiUrl = '';
   session.token = '';
   session.claims = null;
@@ -217,6 +244,7 @@ function routeQuery() {
 }
 
 function showError(error, heading = 'No se pudo completar la operación') {
+  telemetry?.error(error.status === undefined ? 'unexpected' : 'load');
   app.replaceChildren();
   const panel = element('section', 'panel error-state');
   panel.append(element('h2', '', heading), element('p', '', error.message));
@@ -237,9 +265,10 @@ async function renderRoute() {
     return;
   }
   const [section, id] = routeParts();
-  if (section === 'summary') return renderMetrics();
-  if (section !== 'incidents' || !id) return renderList();
-  if (id === 'new') return renderCreate();
+  if (section === 'summary') { selectTelemetryRoute(null, ''); return renderMetrics(); }
+  if (section !== 'incidents' || !id) { selectTelemetryRoute('incident_queue'); return renderList(); }
+  if (id === 'new') { selectTelemetryRoute('incident_create'); return renderCreate(); }
+  selectTelemetryRoute(null, ''); // No general fallback while the clinic is unknown.
   return renderDetail(id);
 }
 
@@ -593,6 +622,7 @@ async function renderDetail(id) {
       api(`/incidents/${encodeURIComponent(id)}/history`).then(value => ({ value })).catch(error => ({ error })),
       api(`/incidents/${encodeURIComponent(id)}/assignment-history`).then(value => ({ value })).catch(error => ({ error })),
     ]);
+    if (routeParts()[1] === id) selectTelemetryRoute('incident_detail', typeof incident.clinic_id === 'string' ? incident.clinic_id : '');
     const historyErrors = [statusHistoryResult.error, assignmentHistoryResult.error].filter(Boolean);
     const blockingHistoryError = historyErrors.find(error => error.status === 403 || error.status === 404);
     if (blockingHistoryError) throw blockingHistoryError;

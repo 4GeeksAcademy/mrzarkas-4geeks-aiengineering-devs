@@ -30,3 +30,14 @@ HTTP checks confirmed both pages and CSS match local files. Both initial
 screens were reviewed on desktop, and Management at 393px. Authenticated
 data views, full keyboard traversal and mobile incidents review remain
 pending; no development JWT was supplied for the data views.
+
+
+## Telemetry
+
+Optional shared capture is disabled by default. See [telemetry documentation](../operational-incidents/telemetry/README.md).
+
+## Local Compose telemetry configuration
+
+The root Compose injects server telemetry settings/keys only into the backend. Backoffice receives only TELEMETRY_ENABLED, APP_ENVIRONMENT and BACKOFFICE_TELEMETRY_ENDPOINT (default http://localhost:8000/telemetry/events). The official Nginx envsubst entrypoint renders operational-incidents/nginx/default.conf.template and serves /telemetry/config.json with exactly enabled/endpoint/environment and Cache-Control:no-store. Incidents and Management use that same configuration/API. No HMAC or JWT key is passed to Nginx or the browser. Update the public URL if API_PORT changes; the existing CORS policy supports local backoffice port8080.
+
+Static serving outside Compose retains telemetry/config.json disabled by default. Enable only with synthetic data and valid server keyrings; a missing context keeps capture inactive. Endpoint references for external collection still do not forward or persist. Apply local configuration with podman compose up --no-deps --build -d backend backoffice; this restarts these two services without rerunning db-init or changing database records. No production approval.

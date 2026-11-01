@@ -66,3 +66,14 @@ revisaron las pantallas iniciales en escritorio y Management a 393px.
 Quedan pendientes las vistas con datos autenticados, el recorrido completo
 por teclado y las incidencias en móvil; no se proporcionó JWT de desarrollo
 para revisar las vistas con datos.
+
+
+## Telemetry
+
+Optional shared capture is disabled by default. See [documentación de telemetría](./telemetry/README.es.md). Captura compartida opcional, desactivada por defecto.
+
+## Configuración local de telemetría en Compose
+
+Compose raíz inyecta configuración/claves telemetry sólo al backend. Backoffice recibe únicamente TELEMETRY_ENABLED, APP_ENVIRONMENT y BACKOFFICE_TELEMETRY_ENDPOINT (por defecto http://localhost:8000/telemetry/events). El entrypoint envsubst oficial de Nginx renderiza nginx/default.conf.template y sirve /telemetry/config.json con sólo enabled/endpoint/environment y Cache-Control:no-store. Incidencias y Management usan esa misma configuración/API. Ninguna clave HMAC ni JWT pasa a Nginx o navegador. Actualizar la URL pública si cambia API_PORT; CORS vigente admite backoffice local8080.
+
+Fuera de Compose se conserva telemetry/config.json desactivado por defecto. Activar sólo con datos sintéticos y claves servidor válidas; sin contexto no hay captura. Referencias a colectores externos siguen sin forwarding/persistencia. Aplicar configuración local con podman compose up --no-deps --build -d backend backoffice; reinicia sólo estos servicios, sin ejecutar db-init ni modificar registros de base de datos. No autoriza producción.

@@ -44,13 +44,32 @@
       </section>
     <footer><strong>HealthCore Digital</strong> · Soluciones digitales para nuestros equipos<br />Entorno de desarrollo · Datos sintéticos</footer>
     </main>
-    <script>
+    <script type="module">
       const byId = id => document.getElementById(id);
       const message = text => { byId('message').textContent = text; };
+      let telemetry = null, telemetryPromise = null, telemetryEpoch = 0, telemetryCredentials = null;
+      function stopTelemetry() { telemetryEpoch++; telemetry?.disconnect(); telemetryCredentials = null; }
+      async function startTelemetry(apiUrl, bearer) {
+        if (telemetryCredentials?.apiUrl === apiUrl && telemetryCredentials?.bearer === bearer) return;
+        const epoch = ++telemetryEpoch;
+        telemetryCredentials = { apiUrl, bearer };
+        try {
+          telemetryPromise ??= import('../telemetry/runtime.js').then(module => module.bootstrapTelemetry('management')).catch(() => null);
+          const service = await telemetryPromise;
+          if (!service || epoch !== telemetryEpoch) return;
+          telemetry = service;
+          if (await service.connect(apiUrl, bearer) && epoch === telemetryEpoch) service.navigate('management');
+        } catch { /* No telemetry error may interrupt a Management read. */ }
+      }
+      byId('apiUrl').addEventListener('input', stopTelemetry);
+      byId('token').addEventListener('input', stopTelemetry);
+
       const request = async path => {
         const response = await fetch(`${byId('apiUrl').value.replace(/\/$/, '')}${path}`, { headers: { Authorization: `Bearer ${byId('token').value}` } });
-        if (!response.ok) throw new Error(`${response.status}: ${await response.text()}`);
-        return response.json();
+        if (!response.ok) { if (response.status === 401) stopTelemetry(); throw new Error(`${response.status}: ${await response.text()}`); }
+        const data = await response.json();
+        void startTelemetry(byId('apiUrl').value.replace(/\/$/, ''), byId('token').value);
+        return data;
       };
       const table = (rows, columns) => !rows.length ? '<p class="empty">Sin resultados.</p>' : `<table><thead><tr>${columns.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr>${columns.map(c => `<td>${row[c] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
       byId('load').onclick = async () => { try { const data = await request('/management/catalogs'); byId('catalogs').innerHTML = table(data.items, ['catalog_name','version','is_active']); message(`Catálogos cargados: ${data.total}.`); } catch (error) { message(error.message); byId('catalogs').textContent = 'Error al cargar.'; } };
