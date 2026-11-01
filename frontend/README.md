@@ -116,3 +116,18 @@ tools and About, preserving section IDs, heading levels and CSS Modules.
 Audit follow-up: automated browser checks completed for 1350/393px layouts,
 keyboard skip navigation, both destinations, image loading and uncaught errors;
 see `../audit/steps/05-section-heading/browser-checks.json` and `../REPORT.md`.
+
+## Internal incident history
+
+`/internal/incident-history` is a separate read-only synthetic-development view.
+Enter a development JWT and incident UUID; the existing API authorizes both
+history reads. The same-origin `/api/incident-history` read-through avoids
+changing CORS and uses private/no-store responses. Credentials stay in memory;
+disconnect clears them and cancels pending requests. No patient data is allowed.
+Timeline and event details use next/dynamic only after querying/selecting an
+event. Timeline memoizes the immutable status/assignment-history merge and sort;
+selection changes reuse it. The public homepage and native backoffice are unchanged.
+A lazy-load failure offers a reload; credentials must be entered again.
+Build: `podman compose build frontend`. Pure calculation/private forwarding tests:
+`node --experimental-default-type=module scripts/test_caching_frontend.mjs` from
+root. Chrome loading/recovery and React Profiler reuse checks passed with synthetic fixtures; see ../docs/CACHING_REPORT.md for comparison results and limitations.

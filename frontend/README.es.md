@@ -117,3 +117,18 @@ y presentación institucional, conservando ids, niveles y CSS Modules.
 En esta auditoría se completaron comprobaciones de navegador a 1350/393 px,
 salto con teclado, ambos destinos, imagen y excepciones no controladas;
 evidencia en `../audit/steps/05-section-heading/browser-checks.json` y `../REPORT.md`.
+
+## Cronología interna de incidencias
+
+`/internal/incident-history` es una vista separada, de lectura y desarrollo sintético.
+Introducir JWT de desarrollo y UUID; la API existente autoriza ambas lecturas de
+historial. `/api/incident-history` reenvía las lecturas en el mismo origen sin
+cambiar CORS y responde private/no-store. El token queda en memoria; desconectar
+lo elimina y cancela consultas pendientes. No se permiten datos de pacientes.
+Timeline y detalle usan next/dynamic tras consultar/seleccionar un evento.
+useMemo combina y ordena historiales inmutables; cambiar la selección reutiliza
+el cálculo. Portada y backoffice nativo se conservan. Si falla la carga diferida,
+se ofrece recargar; hay que introducir el token otra vez.
+Build: `podman compose build frontend`. Pruebas desde raíz:
+`node --experimental-default-type=module scripts/test_caching_frontend.mjs`.
+Carga/recuperación en Chrome y reutilización con React Profiler verificadas con fixtures sintéticos; comparativas y límites en ../docs/CACHING_REPORT.md.

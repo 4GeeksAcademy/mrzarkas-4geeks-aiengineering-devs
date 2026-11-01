@@ -1,0 +1,11 @@
+const fs=require('fs');
+const base='/app/app/internal/incident-history/';
+const direct = process.env.CACHING_PROFILE_MODE === 'direct';
+let s=fs.readFileSync(base+'workspace.js','utf8');
+s=s.replace("{ useRef, useState }", "{ Profiler, useRef, useState }");
+s=s.replace('<Timeline statusHistory={data.statusHistory} assignmentHistory={data.assignmentHistory} />', '<Profiler id="Timeline" onRender={(id,phase,actualDuration,baseDuration)=>{globalThis.__cachingCommits ??=[];globalThis.__cachingCommits.push({id,phase,actualDuration,baseDuration});}}><Timeline statusHistory={data.statusHistory} assignmentHistory={data.assignmentHistory} /></Profiler>');
+fs.writeFileSync(base+'workspace.js',s);
+s=fs.readFileSync(base+'timeline.js','utf8');
+s=s.replace('() => chronology(statusHistory, assignmentHistory)', '() => {globalThis.__cachingMemoCalls=(globalThis.__cachingMemoCalls??0)+1;return chronology(statusHistory, assignmentHistory);}');
+if (direct) s=s.replace('useMemo(() => {globalThis.__cachingMemoCalls=(globalThis.__cachingMemoCalls??0)+1;return chronology(statusHistory, assignmentHistory);}, [statusHistory, assignmentHistory])', '(() => {globalThis.__cachingMemoCalls=(globalThis.__cachingMemoCalls??0)+1;return chronology(statusHistory, assignmentHistory);})()');
+fs.writeFileSync(base+'timeline.js',s);
