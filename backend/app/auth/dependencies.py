@@ -5,7 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from uuid import UUID
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
+from jwt import ExpiredSignatureError
+
+from app.telemetry.security_producer import mark_success, mark_failure, mark_denial
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.auth.roles import AREA_SCOPED_CAPABILITIES, RESPONSIBLE_AREA, has_capability
@@ -23,8 +26,10 @@ class Actor:
 
 async def get_current_actor(
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
+    request: Request = None,
 ) -> Actor:
     if credentials is None:
+        mark_failure(request, "missing")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing bearer token",
@@ -33,17 +38,20 @@ async def get_current_actor(
     try:
         payload = decode_access_token(credentials.credentials)
     except InvalidTokenError as error:
+        mark_failure(request, "expired" if isinstance(error.__cause__, ExpiredSignatureError) else "invalid")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid token: {error}",
         ) from error
 
     area_id = payload.get("area_id")
-    return Actor(
+    actor = Actor(
         id=UUID(payload["sub"]),
         role=payload["role"],
         area_id=UUID(area_id) if area_id else None,
     )
+    mark_success(request, actor, credentials.credentials, payload.get("exp"))
+    return actor
 
 
 def require_capability(capability: str):
@@ -54,8 +62,9 @@ def require_capability(capability: str):
     check happens in the router, since it needs the loaded incident.
     """
 
-    async def dependency(actor: Actor = Depends(get_current_actor)) -> Actor:
+    async def dependency(actor: Actor = Depends(get_current_actor), request: Request = None) -> Actor:
         if not has_capability(actor.role, capability):
+            mark_denial(request, actor, capability)
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Role '{actor.role}' lacks capability '{capability}'",

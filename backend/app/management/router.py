@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+from app.telemetry.audit_producer import mark_audit
+from app.telemetry.management_producer import capture_management
+
 from app.catalogs.cache import catalog_cache
 from app.error_contracts import error_responses
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -189,8 +192,11 @@ async def create_reference_value(resource: str, payload: ReferenceValueCreate, s
     value = model(**data, is_active=True, created_at=now, created_by=actor.id, updated_at=now, updated_by=actor.id)
     session.add(value)
     await session.flush()
-    add_audit_event(session, resource_type=resource, resource_id=value.id, action="created", actor_id=actor.id, before_data=None, after_data=reference_snapshot(value))
+    audit = add_audit_event(session, resource_type=resource, resource_id=value.id, action="created", actor_id=actor.id, before_data=None, after_data=reference_snapshot(value))
+    telemetry_audit_id = audit.id
     await session.commit()
+    if resource == "clinics":
+        capture_management(actor, telemetry_audit_id)
     await session.refresh(value)
     return value
 
@@ -219,8 +225,11 @@ async def update_reference_value(resource: str, resource_id: UUID, payload: Refe
     now = now_utc()
     value.updated_at = now
     value.updated_by = actor.id
-    add_audit_event(session, resource_type=resource, resource_id=value.id, action="updated", actor_id=actor.id, before_data=before, after_data=reference_snapshot(value))
+    audit = add_audit_event(session, resource_type=resource, resource_id=value.id, action="updated", actor_id=actor.id, before_data=before, after_data=reference_snapshot(value))
+    telemetry_audit_id = audit.id
     await session.commit()
+    if resource == "clinics":
+        capture_management(actor, telemetry_audit_id)
     await session.refresh(value)
     return value
 
@@ -234,8 +243,11 @@ async def set_reference_value_activation(resource: str, resource_id: UUID, paylo
     now = now_utc()
     value.updated_at = now
     value.updated_by = actor.id
-    add_audit_event(session, resource_type=resource, resource_id=value.id, action="activated" if payload.is_active else "deactivated", actor_id=actor.id, before_data=before, after_data=reference_snapshot(value), reason=payload.reason)
+    audit = add_audit_event(session, resource_type=resource, resource_id=value.id, action="activated" if payload.is_active else "deactivated", actor_id=actor.id, before_data=before, after_data=reference_snapshot(value), reason=payload.reason)
+    telemetry_audit_id = audit.id
     await session.commit()
+    if resource == "clinics":
+        capture_management(actor, telemetry_audit_id)
     await session.refresh(value)
     return value
 
@@ -274,6 +286,7 @@ async def list_management_audit_events(
     limit: int = Query(default=50, ge=1, le=100),
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("audit:read")),
+    request: Request = None,
 ) -> ManagementAuditEventListResponse:
     filters = []
     if resource_type:
@@ -294,4 +307,7 @@ async def list_management_audit_events(
             .limit(limit)
         )
     ).scalars().all()
-    return ManagementAuditEventListResponse(items=items, total=total)
+    response = ManagementAuditEventListResponse(items=items, total=total)
+    if resource_type == "clinics" and resource_id is not None:
+        mark_audit(request, actor, resource_id, "management")
+    return response

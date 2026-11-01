@@ -19,6 +19,32 @@ class Settings(BaseSettings):
     app_environment: Literal["development", "test", "staging", "production"] = "development"
     database_url: SecretStr | None = None
 
+    # Telemetry is opt-in. No key falls back to the login JWT key.
+    telemetry_enabled: bool = False
+    telemetry_processing_region: Literal["US", "UK"] | None = None
+    telemetry_endpoint: str | None = None
+    telemetry_key_version: str = "v1"
+    telemetry_user_key: SecretStr | None = None
+    telemetry_subject_key: SecretStr | None = None
+    telemetry_clinic_key: SecretStr | None = None
+    telemetry_context_key: SecretStr | None = None
+    telemetry_resource_key: SecretStr | None = None
+    telemetry_context_ttl_seconds: int = 300
+
+    # Shared backend: separate server-side keyrings selected from validated clinics.
+    telemetry_us_user_key: SecretStr | None = None
+    telemetry_us_subject_key: SecretStr | None = None
+    telemetry_us_clinic_key: SecretStr | None = None
+    telemetry_us_context_key: SecretStr | None = None
+    telemetry_us_resource_key: SecretStr | None = None
+    telemetry_us_endpoint: str | None = None
+    telemetry_uk_user_key: SecretStr | None = None
+    telemetry_uk_subject_key: SecretStr | None = None
+    telemetry_uk_clinic_key: SecretStr | None = None
+    telemetry_uk_context_key: SecretStr | None = None
+    telemetry_uk_resource_key: SecretStr | None = None
+    telemetry_uk_endpoint: str | None = None
+
     # Temporary self-issued JWT auth (see memory-bank/proposals.md).
     # Replace with the client's SSO/OIDC provider before production.
     jwt_secret_key: SecretStr = SecretStr("insecure-development-secret-change-me")
@@ -28,6 +54,11 @@ class Settings(BaseSettings):
     @field_validator("database_url", mode="before")
     @classmethod
     def empty_database_url_is_unset(cls, value: object) -> object:
+        return None if value == "" else value
+
+    @field_validator("telemetry_processing_region", mode="before")
+    @classmethod
+    def empty_region_is_shared(cls, value: object) -> object:
         return None if value == "" else value
 
     def require_database_url(self) -> str:

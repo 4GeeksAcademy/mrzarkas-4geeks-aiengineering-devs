@@ -1,8 +1,11 @@
+from app.telemetry.request_producer import mark_request
+from app.telemetry.audit_producer import mark_audit
+from app.telemetry.incident_producer import capture_incident
 from app.error_contracts import error_responses
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import aliased
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -156,7 +159,8 @@ async def create_incident(
         reason="Incident created",
         changed_at=now,
     ))
-    session.add(AuditEvent(
+    audit = AuditEvent(
+        id=uuid4(),
         entity_type="OperationalIncident",
         entity_id=incident.id,
         action="created",
@@ -164,7 +168,8 @@ async def create_incident(
         before_data=None,
         after_data={"status_value_id": str(new_status.id)},
         occurred_at=now,
-    ))
+    )
+    session.add(audit)
     if payload.compliance_review_id:
         add_audit_event(
             session,
@@ -175,7 +180,9 @@ async def create_incident(
             before_data=None,
             after_data={"incident_id": str(incident.id)},
         )
+    telemetry_ids = (incident.clinic_id, incident.id, audit.id)
     await session.commit()
+    capture_incident("incident_created", actor, *telemetry_ids)
     await session.refresh(incident)
     return incident
 
@@ -274,11 +281,13 @@ async def get_incident(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("incident:read")),
+    request: Request = None,
 ) -> OperationalIncident:
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
     require_incident_area_scope(actor, "incident:read", incident.responsible_area_id)
+    mark_request(request, actor, incident.clinic_id)
     return incident
 
 
@@ -402,15 +411,19 @@ async def transition_incident(
         to_status_value_id=target.id, changed_by=actor.id,
         reason=payload.reason, changed_at=now,
     ))
-    session.add(AuditEvent(
+    audit = AuditEvent(
+        id=uuid4(),
         entity_type="OperationalIncident", entity_id=incident.id, action="status_changed",
         actor_id=actor.id, before_data={"status_value_id": str(current.id)},
         after_data={"status_value_id": str(target.id)}, occurred_at=now,
-    ))
+    )
+    session.add(audit)
     incident.status_value_id = target.id
     incident.updated_at = now
     incident.updated_by = actor.id
+    telemetry_ids = (incident.clinic_id, incident.id, audit.id)
     await session.commit()
+    capture_incident("incident_transitioned", actor, *telemetry_ids)
     await session.refresh(incident)
     return incident
 
@@ -439,7 +452,8 @@ async def assign_incident(
         reason=payload.reason,
         changed_at=now,
     ))
-    session.add(AuditEvent(
+    audit = AuditEvent(
+        id=uuid4(),
         entity_type="OperationalIncident",
         entity_id=incident.id,
         action="assigned",
@@ -447,11 +461,14 @@ async def assign_incident(
         before_data={"responsible_area_id": str(previous_area_id)},
         after_data={"responsible_area_id": str(payload.responsible_area_id)},
         occurred_at=now,
-    ))
+    )
+    session.add(audit)
     incident.responsible_area_id = payload.responsible_area_id
     incident.updated_at = now
     incident.updated_by = actor.id
+    telemetry_ids = (incident.clinic_id, incident.id, audit.id)
     await session.commit()
+    capture_incident("incident_assigned", actor, *telemetry_ids)
     await session.refresh(incident)
     return incident
 
@@ -461,14 +478,17 @@ async def incident_history(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("incident:read")),
+    request: Request = None,
 ) -> list[IncidentStatusHistory]:
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
     require_incident_area_scope(actor, "incident:read", incident.responsible_area_id)
-    return list((await session.execute(
+    items = list((await session.execute(
         select(IncidentStatusHistory).where(IncidentStatusHistory.incident_id == incident_id).order_by(IncidentStatusHistory.changed_at)
     )).scalars().all())
+    mark_request(request, actor, incident.clinic_id)
+    return items
 
 
 @router.get("/{incident_id}/assignment-history", response_model=list[AssignmentHistoryResponse], responses=error_responses(404, 422))
@@ -476,16 +496,19 @@ async def incident_assignment_history(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("incident:read")),
+    request: Request = None,
 ) -> list[IncidentAssignmentHistory]:
     incident = await session.get(OperationalIncident, incident_id)
     if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
     require_incident_area_scope(actor, "incident:read", incident.responsible_area_id)
-    return list((await session.execute(
+    items = list((await session.execute(
         select(IncidentAssignmentHistory)
         .where(IncidentAssignmentHistory.incident_id == incident_id)
         .order_by(IncidentAssignmentHistory.changed_at)
     )).scalars().all())
+    mark_request(request, actor, incident.clinic_id)
+    return items
 
 
 @router.get("/{incident_id}/audit", response_model=list[AuditEventResponse], responses=error_responses(404, 422))
@@ -493,9 +516,14 @@ async def incident_audit(
     incident_id: UUID,
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("audit:read")),
+    request: Request = None,
 ) -> list[AuditEvent]:
-    if await session.get(OperationalIncident, incident_id) is None:
+    incident = await session.get(OperationalIncident, incident_id)
+    if incident is None:
         raise HTTPException(status_code=404, detail="Incident not found")
-    return list((await session.execute(
+    items = list((await session.execute(
         select(AuditEvent).where(AuditEvent.entity_type == "OperationalIncident", AuditEvent.entity_id == incident_id).order_by(AuditEvent.occurred_at)
     )).scalars().all())
+    mark_audit(request, actor, incident.clinic_id, "incident")
+    mark_request(request, actor, incident.clinic_id)
+    return items

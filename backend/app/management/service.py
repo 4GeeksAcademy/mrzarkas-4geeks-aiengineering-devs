@@ -22,6 +22,8 @@ def add_audit_event(
     before_data: dict | None,
     after_data: dict | None,
     reason: str | None = None,
-) -> None:
+) -> ManagementAuditEvent:
     """Append an audit record to the caller's transaction."""
-    session.add(ManagementAuditEvent(resource_type=resource_type, resource_id=resource_id, action=action, actor_id=actor_id, before_data=before_data, after_data=after_data, reason=reason, correlation_id=uuid4(), occurred_at=now_utc()))
+    audit = ManagementAuditEvent(id=uuid4(), resource_type=resource_type, resource_id=resource_id, action=action, actor_id=actor_id, before_data=before_data, after_data=after_data, reason=reason, correlation_id=uuid4(), occurred_at=now_utc())
+    session.add(audit)
+    return audit

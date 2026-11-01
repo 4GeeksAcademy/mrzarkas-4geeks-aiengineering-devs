@@ -1,0 +1,2693 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HealthCore telemetry contracts 1.2.0 — general technical scope",
+  "description": "Contract 1.2.0: explicit general technical events may have null jurisdiction; clinical scope remains server-authoritative. Does not enable producers or production.",
+  "definitions": {
+    "envelope": {
+      "type": "object",
+      "required": [
+        "eventId",
+        "timestamp",
+        "sessionId",
+        "userId",
+        "event_type",
+        "schemaVersion",
+        "requestId",
+        "properties"
+      ],
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "sessionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "userId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^ps_[0-9a-f]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "event_type": {
+          "type": "string",
+          "pattern": "^[a-z]+(?:_[a-z]+)+$"
+        },
+        "schemaVersion": {
+          "const": "1.2.0"
+        },
+        "requestId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "properties": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "inbound_order_completed": {
+      "description": "Commit confirmado de movimiento de entrada asociado a operación lógica de entrada",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "inbound_order_completed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "operationId",
+                "movementId",
+                "itemId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "operationId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "operationId: contrat technique proposé; voir catalogue inbound_order_completed."
+                },
+                "movementId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "movementId: contrat technique proposé; voir catalogue inbound_order_completed."
+                },
+                "itemId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "itemId: contrat technique proposé; voir catalogue inbound_order_completed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "outbound_order_completed": {
+      "description": "Commit confirmado de movimiento de salida asociado a operación lógica de salida",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "outbound_order_completed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "operationId",
+                "movementId",
+                "itemId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "operationId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "operationId: contrat technique proposé; voir catalogue outbound_order_completed."
+                },
+                "movementId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "movementId: contrat technique proposé; voir catalogue outbound_order_completed."
+                },
+                "itemId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "itemId: contrat technique proposé; voir catalogue outbound_order_completed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "inventory_validation_failed": {
+      "description": "Validador rechaza una operación antes de persistir",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "inventory_validation_failed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "operationId",
+                "reasonCode"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "operationId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "operationId: contrat technique proposé; voir catalogue inventory_validation_failed."
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "enum": [
+                    "reference",
+                    "quantity",
+                    "unit",
+                    "scope",
+                    "lot",
+                    "insufficient_stock",
+                    "conflict"
+                  ],
+                  "description": "reasonCode: contrat technique proposé; voir catalogue inventory_validation_failed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "stock_direct_update_rejected": {
+      "description": "Detector explícito de campo stock rechaza escritura sin movimiento; nunca inferirlo de cualquier 422",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "stock_direct_update_rejected"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "operationId",
+                "channel"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "operationId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "operationId: contrat technique proposé; voir catalogue stock_direct_update_rejected."
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "api",
+                    "ui"
+                  ],
+                  "description": "channel: contrat technique proposé; voir catalogue stock_direct_update_rejected."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "inventory_threshold_activated": {
+      "description": "Stock derivado cruza de >= a < umbral aprobado, después de commit",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "inventory_threshold_activated"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "itemId",
+                "scopeId",
+                "episodeId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "itemId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "itemId: contrat technique proposé; voir catalogue inventory_threshold_activated."
+                },
+                "scopeId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "scopeId: contrat technique proposé; voir catalogue inventory_threshold_activated."
+                },
+                "episodeId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "episodeId: contrat technique proposé; voir catalogue inventory_threshold_activated."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "inventory_viewed": {
+      "description": "Consulta autorizada de existencias finaliza",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "inventory_viewed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "view"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "view": {
+                  "type": "string",
+                  "enum": [
+                    "items",
+                    "stock",
+                    "reorder",
+                    "movements"
+                  ],
+                  "description": "view: contrat technique proposé; voir catalogue inventory_viewed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "product_selected": {
+      "description": "Selección explícita de artículo en futuro flujo UI",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "product_selected"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "flowId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "flowId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "flowId: contrat technique proposé; voir catalogue product_selected."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "order_started": {
+      "description": "Inicio explícito de flujo lógico de entrada/salida; no equivale a pedido comercial",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "order_started"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "flowId",
+                "direction"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "flowId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "flowId: contrat technique proposé; voir catalogue order_started."
+                },
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "inbound",
+                    "outbound"
+                  ],
+                  "description": "direction: contrat technique proposé; voir catalogue order_started."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "order_abandoned": {
+      "description": "Procesador cierra flujo sin terminal tras 30 min de inactividad propuesta",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "order_abandoned"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "flowId",
+                "lastStep",
+                "durationMs"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "flowId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "flowId: contrat technique proposé; voir catalogue order_abandoned."
+                },
+                "lastStep": {
+                  "type": "string",
+                  "enum": [
+                    "selection",
+                    "validation",
+                    "confirmation"
+                  ],
+                  "description": "lastStep: contrat technique proposé; voir catalogue order_abandoned."
+                },
+                "durationMs": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "durationMs: contrat technique proposé; voir catalogue order_abandoned."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "inventory_adjustment_completed": {
+      "description": "Commit de ajuste materializado como movimiento",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "inventory_adjustment_completed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "movementId",
+                "operationId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "movementId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "movementId: contrat technique proposé; voir catalogue inventory_adjustment_completed."
+                },
+                "operationId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "operationId: contrat technique proposé; voir catalogue inventory_adjustment_completed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "inventory_threshold_cleared": {
+      "description": "Cruce de < a >= umbral comparable tras movimiento",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "inventory_threshold_cleared"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "episodeId",
+                "itemId",
+                "scopeId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "episodeId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "episodeId: contrat technique proposé; voir catalogue inventory_threshold_cleared."
+                },
+                "itemId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "itemId: contrat technique proposé; voir catalogue inventory_threshold_cleared."
+                },
+                "scopeId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "scopeId: contrat technique proposé; voir catalogue inventory_threshold_cleared."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "inventory_reconciliation_failed": {
+      "description": "Verificador encuentra proyección distinta a suma de movimientos comparables",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "inventory_reconciliation_failed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "checkId",
+                "check"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "checkId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "checkId: contrat technique proposé; voir catalogue inventory_reconciliation_failed."
+                },
+                "check": {
+                  "type": "string",
+                  "enum": [
+                    "stock_projection"
+                  ],
+                  "description": "check: contrat technique proposé; voir catalogue inventory_reconciliation_failed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "authentication_failed": {
+      "description": "Dependencia rechaza credenciales; código reducido, sin error JWT literal",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "authentication_failed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "reasonCode"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "enum": [
+                    "missing",
+                    "invalid",
+                    "expired"
+                  ],
+                  "description": "reasonCode: contrat technique proposé; voir catalogue authentication_failed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "authentication_succeeded": {
+      "description": "Primera validación satisfactoria de identidad en una sesión conceptual; no login real",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "authentication_succeeded"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "channel"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "api",
+                    "backoffice",
+                    "internal"
+                  ],
+                  "description": "channel: contrat technique proposé; voir catalogue authentication_succeeded."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "session_started": {
+      "description": "UI conecta credenciales en memoria y primera lectura autorizada confirma acceso",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "session_started"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "application"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "application": {
+                  "type": "string",
+                  "enum": [
+                    "incidents",
+                    "management",
+                    "internal_history"
+                  ],
+                  "description": "application: contrat technique proposé; voir catalogue session_started."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "session_ended": {
+      "description": "Desconexión explícita de UI; cierre del navegador es desconocido, no logout servidor",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "session_ended"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "reasonCode"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "enum": [
+                    "disconnect",
+                    "expired_observed"
+                  ],
+                  "description": "reasonCode: contrat technique proposé; voir catalogue session_ended."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "authorization_denied": {
+      "description": "Dependencia o política devuelve denegación de capacidad/ámbito",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "authorization_denied"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "reasonCode",
+                "operation"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "enum": [
+                    "capability",
+                    "area_scope",
+                    "jurisdiction_scope"
+                  ],
+                  "description": "reasonCode: contrat technique proposé; voir catalogue authorization_denied."
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": [
+                    "read",
+                    "create",
+                    "update",
+                    "transition",
+                    "assign",
+                    "manage"
+                  ],
+                  "description": "operation: contrat technique proposé; voir catalogue authorization_denied."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "navigation_viewed": {
+      "description": "Vista lógica cambia y queda visible; excluir UUID y query string",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "navigation_viewed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "view"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "view": {
+                  "type": "string",
+                  "enum": [
+                    "landing",
+                    "incident_queue",
+                    "incident_create",
+                    "incident_detail",
+                    "management",
+                    "internal_history"
+                  ],
+                  "description": "view: contrat technique proposé; voir catalogue navigation_viewed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "frontend_timing_measured": {
+      "description": "API Performance reporta métrica completa de navegación visible",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "frontend_timing_measured"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "metric",
+                "value",
+                "view"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "metric": {
+                  "type": "string",
+                  "enum": [
+                    "lcp_ms",
+                    "inp_ms",
+                    "cls"
+                  ],
+                  "description": "metric: contrat technique proposé; voir catalogue frontend_timing_measured."
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "value: contrat technique proposé; voir catalogue frontend_timing_measured."
+                },
+                "view": {
+                  "type": "string",
+                  "enum": [
+                    "landing",
+                    "incidents",
+                    "management",
+                    "internal_history"
+                  ],
+                  "description": "view: contrat technique proposé; voir catalogue frontend_timing_measured."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "api_request_completed": {
+      "description": "Respuesta ASGI finaliza; middleware futuro calcula duración monotónica",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "api_request_completed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "route",
+                "statusCode",
+                "durationMs"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "route": {
+                  "type": "string",
+                  "enum": [
+                    "health",
+                    "status",
+                    "auth",
+                    "catalogs",
+                    "incidents",
+                    "management",
+                    "compliance",
+                    "unknown"
+                  ],
+                  "description": "route: contrat technique proposé; voir catalogue api_request_completed."
+                },
+                "statusCode": {
+                  "type": "integer",
+                  "minimum": 100,
+                  "maximum": 599,
+                  "description": "statusCode: contrat technique proposé; voir catalogue api_request_completed."
+                },
+                "durationMs": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "durationMs: contrat technique proposé; voir catalogue api_request_completed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "application_error_observed": {
+      "description": "Excepción no controlada clasificada en frontera; no duplicar HTTP esperado",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "application_error_observed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "component",
+                "reasonCode"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "component": {
+                  "type": "string",
+                  "enum": [
+                    "api",
+                    "frontend",
+                    "backoffice"
+                  ],
+                  "description": "component: contrat technique proposé; voir catalogue application_error_observed."
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "enum": [
+                    "timeout",
+                    "database",
+                    "render",
+                    "load",
+                    "unexpected"
+                  ],
+                  "description": "reasonCode: contrat technique proposé; voir catalogue application_error_observed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "catalog_cache_observed": {
+      "description": "Corte agregado de contadores por worker cada 5 min",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "catalog_cache_observed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "hits",
+                "misses",
+                "bypasses",
+                "windowSeconds"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "hits": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "hits: contrat technique proposé; voir catalogue catalog_cache_observed."
+                },
+                "misses": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "misses: contrat technique proposé; voir catalogue catalog_cache_observed."
+                },
+                "bypasses": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "bypasses: contrat technique proposé; voir catalogue catalog_cache_observed."
+                },
+                "windowSeconds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "windowSeconds: contrat technique proposé; voir catalogue catalog_cache_observed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "service_health_checked": {
+      "description": "Sonda futura invoca /health o /status con timeout",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "service_health_checked"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "check",
+                "outcome",
+                "durationMs"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "check": {
+                  "type": "string",
+                  "enum": [
+                    "liveness",
+                    "database"
+                  ],
+                  "description": "check: contrat technique proposé; voir catalogue service_health_checked."
+                },
+                "outcome": {
+                  "type": "string",
+                  "enum": [
+                    "ok",
+                    "failed",
+                    "timeout"
+                  ],
+                  "description": "outcome: contrat technique proposé; voir catalogue service_health_checked."
+                },
+                "durationMs": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "durationMs: contrat technique proposé; voir catalogue service_health_checked."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "alert_triggered": {
+      "description": "Regla aprobada cruza umbral y crea episodio",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "alert_triggered"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "episodeId",
+                "rule"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "episodeId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "episodeId: contrat technique proposé; voir catalogue alert_triggered."
+                },
+                "rule": {
+                  "type": "string",
+                  "enum": [
+                    "availability",
+                    "inventory",
+                    "security",
+                    "telemetry_quality",
+                    "business"
+                  ],
+                  "description": "rule: contrat technique proposé; voir catalogue alert_triggered."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "notification_delivery_completed": {
+      "description": "Proveedor futuro confirma entrega o fallo terminal sin destinatario",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "notification_delivery_completed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "notificationId",
+                "channel",
+                "outcome"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "notificationId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "notificationId: contrat technique proposé; voir catalogue notification_delivery_completed."
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "email",
+                    "sms",
+                    "app"
+                  ],
+                  "description": "channel: contrat technique proposé; voir catalogue notification_delivery_completed."
+                },
+                "outcome": {
+                  "type": "string",
+                  "enum": [
+                    "delivered",
+                    "failed"
+                  ],
+                  "description": "outcome: contrat technique proposé; voir catalogue notification_delivery_completed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "job_run_completed": {
+      "description": "Job futuro termina con resultado o timeout",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "job_run_completed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "runId",
+                "job",
+                "outcome",
+                "durationMs"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "runId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "runId: contrat technique proposé; voir catalogue job_run_completed."
+                },
+                "job": {
+                  "type": "string",
+                  "enum": [
+                    "health_checks",
+                    "aggregation",
+                    "reconciliation",
+                    "weekly_report"
+                  ],
+                  "description": "job: contrat technique proposé; voir catalogue job_run_completed."
+                },
+                "outcome": {
+                  "type": "string",
+                  "enum": [
+                    "ok",
+                    "failed",
+                    "timeout"
+                  ],
+                  "description": "outcome: contrat technique proposé; voir catalogue job_run_completed."
+                },
+                "durationMs": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "durationMs: contrat technique proposé; voir catalogue job_run_completed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "data_integrity_checked": {
+      "description": "Validador de referencias o futura comprobación completa un resultado",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "data_integrity_checked"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "check",
+                "outcome"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "check": {
+                  "type": "string",
+                  "enum": [
+                    "references",
+                    "historical_coverage",
+                    "event_contract"
+                  ],
+                  "description": "check: contrat technique proposé; voir catalogue data_integrity_checked."
+                },
+                "outcome": {
+                  "type": "string",
+                  "enum": [
+                    "ok",
+                    "failed"
+                  ],
+                  "description": "outcome: contrat technique proposé; voir catalogue data_integrity_checked."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "incident_created": {
+      "description": "Commit de incidencia creada",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "incident_created"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "incidentId",
+                "auditId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "incidentId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "incidentId: contrat technique proposé; voir catalogue incident_created."
+                },
+                "auditId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "auditId: contrat technique proposé; voir catalogue incident_created."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "incident_transitioned": {
+      "description": "Commit de transición autorizada",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "incident_transitioned"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "incidentId",
+                "auditId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "incidentId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "incidentId: contrat technique proposé; voir catalogue incident_transitioned."
+                },
+                "auditId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "auditId: contrat technique proposé; voir catalogue incident_transitioned."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "incident_assigned": {
+      "description": "Commit de asignación autorizada",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "incident_assigned"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "incidentId",
+                "auditId"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "incidentId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "incidentId: contrat technique proposé; voir catalogue incident_assigned."
+                },
+                "auditId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "auditId: contrat technique proposé; voir catalogue incident_assigned."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "management_mutation_completed": {
+      "description": "Commit de mutación con ManagementAuditEvent persistido",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "management_mutation_completed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "auditId",
+                "resource",
+                "action"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "auditId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "auditId: contrat technique proposé; voir catalogue management_mutation_completed."
+                },
+                "resource": {
+                  "type": "string",
+                  "enum": [
+                    "catalog",
+                    "reference",
+                    "coverage",
+                    "compliance_review"
+                  ],
+                  "description": "resource: contrat technique proposé; voir catalogue management_mutation_completed."
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "created",
+                    "updated",
+                    "activated",
+                    "deactivated",
+                    "coverage_changed",
+                    "state_changed",
+                    "associated"
+                  ],
+                  "description": "action: contrat technique proposé; voir catalogue management_mutation_completed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "audit_accessed": {
+      "description": "Consulta autorizada de auditoría finaliza, sin exportar snapshots",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "audit_accessed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "surface"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "surface": {
+                  "type": "string",
+                  "enum": [
+                    "incident",
+                    "management"
+                  ],
+                  "description": "surface: contrat technique proposé; voir catalogue audit_accessed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "telemetry_contract_rejected": {
+      "description": "Validador futuro rechaza envelope o propiedades; diagnóstico sin payload",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "telemetry_contract_rejected"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "reasonCode",
+                "producer"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "enum": [
+                    "schema",
+                    "version",
+                    "privacy",
+                    "timestamp"
+                  ],
+                  "description": "reasonCode: contrat technique proposé; voir catalogue telemetry_contract_rejected."
+                },
+                "producer": {
+                  "type": "string",
+                  "enum": [
+                    "api",
+                    "frontend",
+                    "worker"
+                  ],
+                  "description": "producer: contrat technique proposé; voir catalogue telemetry_contract_rejected."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "telemetry_delivery_failed": {
+      "description": "Productor futuro agota reintentos acotados",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "telemetry_delivery_failed"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "producer",
+                "reasonCode"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "US",
+                    "UK",
+                    null
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "producer": {
+                  "type": "string",
+                  "enum": [
+                    "api",
+                    "frontend",
+                    "worker"
+                  ],
+                  "description": "producer: contrat technique proposé; voir catalogue telemetry_delivery_failed."
+                },
+                "reasonCode": {
+                  "type": "string",
+                  "enum": [
+                    "timeout",
+                    "queue_full",
+                    "unavailable"
+                  ],
+                  "description": "reasonCode: contrat technique proposé; voir catalogue telemetry_delivery_failed."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "appointment_period_aggregated": {
+      "description": "Adaptador local aprobado cierra día con totales reconciliados",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "appointment_period_aggregated"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "aggregateId",
+                "periodStart",
+                "periodEnd",
+                "eligibleAppointments",
+                "noShows",
+                "attended",
+                "booked"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "aggregateId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "aggregateId: contrat technique proposé; voir catalogue appointment_period_aggregated."
+                },
+                "periodStart": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodStart: contrat technique proposé; voir catalogue appointment_period_aggregated."
+                },
+                "periodEnd": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodEnd: contrat technique proposé; voir catalogue appointment_period_aggregated."
+                },
+                "eligibleAppointments": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "eligibleAppointments: contrat technique proposé; voir catalogue appointment_period_aggregated."
+                },
+                "noShows": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "noShows: contrat technique proposé; voir catalogue appointment_period_aggregated."
+                },
+                "attended": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "attended: contrat technique proposé; voir catalogue appointment_period_aggregated."
+                },
+                "booked": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "booked: contrat technique proposé; voir catalogue appointment_period_aggregated."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "billing_period_aggregated": {
+      "description": "Adaptador local cierra periodo contable con cohorte reconciliada",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "billing_period_aggregated"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "aggregateId",
+                "periodStart",
+                "periodEnd",
+                "adjudicatedClaims",
+                "rejectedClaims",
+                "collectedMinor",
+                "dueMinor",
+                "currency",
+                "stream"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "aggregateId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "aggregateId: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "periodStart": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodStart: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "periodEnd": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodEnd: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "adjudicatedClaims": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "adjudicatedClaims: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "rejectedClaims": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "rejectedClaims: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "collectedMinor": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "collectedMinor: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "dueMinor": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "dueMinor: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "currency": {
+                  "type": "string",
+                  "enum": [
+                    "USD",
+                    "GBP"
+                  ],
+                  "description": "currency: contrat technique proposé; voir catalogue billing_period_aggregated."
+                },
+                "stream": {
+                  "type": "string",
+                  "enum": [
+                    "us_claims",
+                    "uk_private",
+                    "uk_nhs"
+                  ],
+                  "description": "stream: contrat technique proposé; voir catalogue billing_period_aggregated."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "experience_period_aggregated": {
+      "description": "Encuestas locales aprobadas cierran día con agregado protegido",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "experience_period_aggregated"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "aggregateId",
+                "periodStart",
+                "periodEnd",
+                "validResponses",
+                "satisfiedResponses"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "aggregateId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "aggregateId: contrat technique proposé; voir catalogue experience_period_aggregated."
+                },
+                "periodStart": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodStart: contrat technique proposé; voir catalogue experience_period_aggregated."
+                },
+                "periodEnd": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodEnd: contrat technique proposé; voir catalogue experience_period_aggregated."
+                },
+                "validResponses": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "validResponses: contrat technique proposé; voir catalogue experience_period_aggregated."
+                },
+                "satisfiedResponses": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "satisfiedResponses: contrat technique proposé; voir catalogue experience_period_aggregated."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "workforce_period_aggregated": {
+      "description": "Fuente RRHH autorizada produce cohorte semanal agregada",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "workforce_period_aggregated"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "aggregateId",
+                "periodStart",
+                "periodEnd",
+                "hiringDaysSum",
+                "filledRoles",
+                "departures",
+                "averageHeadcount",
+                "absenceHours",
+                "scheduledHours",
+                "expiredTraining",
+                "trainingEligible"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "aggregateId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "aggregateId: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "periodStart": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodStart: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "periodEnd": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodEnd: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "hiringDaysSum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "hiringDaysSum: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "filledRoles": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "filledRoles: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "departures": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "departures: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "averageHeadcount": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "averageHeadcount: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "absenceHours": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "absenceHours: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "scheduledHours": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "scheduledHours: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "expiredTraining": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "expiredTraining: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                },
+                "trainingEligible": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "trainingEligible: contrat technique proposé; voir catalogue workforce_period_aggregated."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    },
+    "clinical_workload_aggregated": {
+      "description": "Fuente clínica autorizada produce sumas diarias sin notas ni personas",
+      "allOf": [
+        {
+          "$ref": "#/definitions/envelope"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "event_type": {
+              "const": "clinical_workload_aggregated"
+            },
+            "properties": {
+              "type": "object",
+              "required": [
+                "jurisdiction",
+                "environment",
+                "aggregateId",
+                "periodStart",
+                "periodEnd",
+                "documentationMinutes",
+                "operatorDays"
+              ],
+              "properties": {
+                "jurisdiction": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "UK"
+                  ]
+                },
+                "environment": {
+                  "type": "string",
+                  "enum": [
+                    "development",
+                    "test",
+                    "production"
+                  ]
+                },
+                "aggregateId": {
+                  "type": "string",
+                  "pattern": "^ps_[0-9a-f]{64}$",
+                  "description": "aggregateId: contrat technique proposé; voir catalogue clinical_workload_aggregated."
+                },
+                "periodStart": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodStart: contrat technique proposé; voir catalogue clinical_workload_aggregated."
+                },
+                "periodEnd": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                  "description": "periodEnd: contrat technique proposé; voir catalogue clinical_workload_aggregated."
+                },
+                "documentationMinutes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "documentationMinutes: contrat technique proposé; voir catalogue clinical_workload_aggregated."
+                },
+                "operatorDays": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "operatorDays: contrat technique proposé; voir catalogue clinical_workload_aggregated."
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/definitions/inbound_order_completed"
+    },
+    {
+      "$ref": "#/definitions/outbound_order_completed"
+    },
+    {
+      "$ref": "#/definitions/inventory_validation_failed"
+    },
+    {
+      "$ref": "#/definitions/stock_direct_update_rejected"
+    },
+    {
+      "$ref": "#/definitions/inventory_threshold_activated"
+    },
+    {
+      "$ref": "#/definitions/inventory_viewed"
+    },
+    {
+      "$ref": "#/definitions/product_selected"
+    },
+    {
+      "$ref": "#/definitions/order_started"
+    },
+    {
+      "$ref": "#/definitions/order_abandoned"
+    },
+    {
+      "$ref": "#/definitions/inventory_adjustment_completed"
+    },
+    {
+      "$ref": "#/definitions/inventory_threshold_cleared"
+    },
+    {
+      "$ref": "#/definitions/inventory_reconciliation_failed"
+    },
+    {
+      "$ref": "#/definitions/authentication_failed"
+    },
+    {
+      "$ref": "#/definitions/authentication_succeeded"
+    },
+    {
+      "$ref": "#/definitions/session_started"
+    },
+    {
+      "$ref": "#/definitions/session_ended"
+    },
+    {
+      "$ref": "#/definitions/authorization_denied"
+    },
+    {
+      "$ref": "#/definitions/navigation_viewed"
+    },
+    {
+      "$ref": "#/definitions/frontend_timing_measured"
+    },
+    {
+      "$ref": "#/definitions/api_request_completed"
+    },
+    {
+      "$ref": "#/definitions/application_error_observed"
+    },
+    {
+      "$ref": "#/definitions/catalog_cache_observed"
+    },
+    {
+      "$ref": "#/definitions/service_health_checked"
+    },
+    {
+      "$ref": "#/definitions/alert_triggered"
+    },
+    {
+      "$ref": "#/definitions/notification_delivery_completed"
+    },
+    {
+      "$ref": "#/definitions/job_run_completed"
+    },
+    {
+      "$ref": "#/definitions/data_integrity_checked"
+    },
+    {
+      "$ref": "#/definitions/incident_created"
+    },
+    {
+      "$ref": "#/definitions/incident_transitioned"
+    },
+    {
+      "$ref": "#/definitions/incident_assigned"
+    },
+    {
+      "$ref": "#/definitions/management_mutation_completed"
+    },
+    {
+      "$ref": "#/definitions/audit_accessed"
+    },
+    {
+      "$ref": "#/definitions/telemetry_contract_rejected"
+    },
+    {
+      "$ref": "#/definitions/telemetry_delivery_failed"
+    },
+    {
+      "$ref": "#/definitions/appointment_period_aggregated"
+    },
+    {
+      "$ref": "#/definitions/billing_period_aggregated"
+    },
+    {
+      "$ref": "#/definitions/experience_period_aggregated"
+    },
+    {
+      "$ref": "#/definitions/workforce_period_aggregated"
+    },
+    {
+      "$ref": "#/definitions/clinical_workload_aggregated"
+    }
+  ]
+}

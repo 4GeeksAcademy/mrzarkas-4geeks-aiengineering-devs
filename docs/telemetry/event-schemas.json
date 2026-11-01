@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "HealthCore proposed telemetry contracts 1.0.0",
-  "description": "Design only. Strict envelope and event properties. Semantic and governance checks in telemetry-plan.md.",
+  "title": "HealthCore telemetry contracts 1.2.0 — general technical scope",
+  "description": "Contract 1.2.0: explicit general technical events may have null jurisdiction; clinical scope remains server-authoritative. Does not enable producers or production.",
   "definitions": {
     "envelope": {
       "type": "object",
@@ -52,7 +52,7 @@
           "pattern": "^[a-z]+(?:_[a-z]+)+$"
         },
         "schemaVersion": {
-          "const": "1.0.0"
+          "const": "1.2.0"
         },
         "requestId": {
           "anyOf": [
@@ -771,10 +771,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -822,10 +826,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -873,11 +881,16 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
-                  ]
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
                 },
                 "environment": {
                   "type": "string",
@@ -924,11 +937,16 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
-                  ]
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
                 },
                 "environment": {
                   "type": "string",
@@ -975,10 +993,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -1038,11 +1060,16 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
-                  ]
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
                 },
                 "environment": {
                   "type": "string",
@@ -1094,11 +1121,16 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
-                  ]
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
                 },
                 "environment": {
                   "type": "string",
@@ -1162,10 +1194,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -1230,11 +1266,16 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
-                  ]
+                    "UK",
+                    null
+                  ],
+                  "description": "Required. Null only for a genuinely general event without clinic context; clinic resolution failure must be rejected by the producer/server. Processing region comes from trusted installation context, not this value."
                 },
                 "environment": {
                   "type": "string",
@@ -1295,10 +1336,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -1359,10 +1404,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -1623,10 +1672,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -1964,10 +2017,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
@@ -2026,10 +2083,14 @@
               ],
               "properties": {
                 "jurisdiction": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "US",
-                    "UK"
+                    "UK",
+                    null
                   ]
                 },
                 "environment": {
