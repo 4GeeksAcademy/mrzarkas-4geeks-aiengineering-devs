@@ -130,3 +130,27 @@ validation is not a general detector of secrets embedded in identifier values.
 The backoffice continues to display reasons, now as the redaction marker.
 
 Final serialization audit (2026-10-31): 145 tests passed against synthetic PostgreSQL; all 28 operations and documentation routes verified. OpenAPI annotations describe existing errors (detail string or validation list), without changing exception handling. See ../docs/serialization-audit.md for approved redaction, measurements, manual Swagger checks and scope limitations. No production approval is implied.
+
+## Catalog TTL caching (synthetic development)
+
+Active catalog reads use a 60-second per-worker JSON TTL; managed value pages use
+30 seconds. Every request authenticates/authorizes and reads catalog metadata.
+Keys digest identity/role/area, catalog, version+updated_at, namespace and page.
+Existing create/update/activation advance the generation; old entries are no
+longer addressable. All effective dates/active flags are cached for the active
+catalog and projected at current UTC on each hit, including future activation.
+No ORM session/request is stored. Limits: 256 entries, 8 MiB JSON payload total,
+256 KiB per entry; fixed 64 lock stripes and 2-second wait before source bypass.
+Source errors remain errors. External writes must advance metadata or bypass;
+this is not production approval. No Redis, auth, audit or migration change.
+Test: `podman compose --profile test run --no-deps --build --rm test`.
+Explicit transactional benchmark: `podman compose --profile test run --no-deps --rm test uv run --no-sync python tests/benchmark_caching.py` (one shell line).
+It inserts 200 synthetic values, never commits, rolls back and verifies counts.
+See docs/CACHING_REPORT.md for measurements and limitations.
+
+
+Explicit multi-process caching validation (synthetic, isolated database):
+`podman compose --profile test run --no-deps --build --rm test uv run --no-sync python tests/validate_caching_workers.py`.
+This requires PostgreSQL CREATE/DROP DATABASE permission and creates/drops only
+an ephemeral validation database. It does not run during pytest collection.
+Evidence: `docs/caching-workers.json` and `docs/CACHING_REPORT.md`.

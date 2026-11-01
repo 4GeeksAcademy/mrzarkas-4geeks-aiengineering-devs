@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from app.catalogs.cache import catalog_cache
 from app.error_contracts import error_responses
 from uuid import UUID
 
@@ -84,10 +85,20 @@ async def list_catalogs(offset: int = Query(default=0, ge=0), limit: int = Query
 @router.get("/catalogs/{catalog_name}/values", response_model=CatalogValueListResponse, responses=error_responses(404, 422))
 async def list_catalog_values(catalog_name: str, offset: int = Query(default=0, ge=0), limit: int = Query(default=50, ge=1, le=100), session: AsyncSession = Depends(get_session), actor: Actor = Depends(require_capability("catalog:read"))) -> CatalogValueListResponse:
     catalog = await get_catalog_or_404(session, catalog_name)
-    filters = [CatalogValue.catalog_id == catalog.id]
-    total = (await session.execute(select(func.count()).select_from(CatalogValue).where(*filters))).scalar_one()
-    items = (await session.execute(select(CatalogValue).where(*filters).order_by(CatalogValue.sort_order, CatalogValue.key).offset(offset).limit(limit))).scalars().all()
-    return CatalogValueListResponse(items=items, total=total)
+    generation = (catalog.version, catalog.updated_at.isoformat())
+    key = catalog_cache.key("managed-values", actor, catalog.id, generation, offset, limit)
+
+    async def load():
+        filters = [CatalogValue.catalog_id == catalog.id]
+        total = (await session.execute(select(func.count()).select_from(CatalogValue).where(*filters))).scalar_one()
+        items = (await session.execute(select(CatalogValue).where(*filters).order_by(CatalogValue.sort_order, CatalogValue.key).offset(offset).limit(limit))).scalars().all()
+        return CatalogValueListResponse(items=items, total=total).model_dump(mode="json")
+
+    async def still_current():
+        row = (await session.execute(select(Catalog.version, Catalog.updated_at).where(Catalog.id == catalog.id))).one_or_none()
+        return row is not None and (row.version, row.updated_at.isoformat()) == generation
+
+    return CatalogValueListResponse.model_validate(await catalog_cache.read(key, 30, load, still_current))
 
 
 @router.post("/catalogs/{catalog_name}/values", response_model=ManagedCatalogValueResponse, status_code=status.HTTP_201_CREATED, responses=error_responses(404, 409, 422))

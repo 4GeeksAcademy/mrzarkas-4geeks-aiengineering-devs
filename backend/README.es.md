@@ -120,3 +120,27 @@ secretos incorporados en valores de identificadores. El backoffice conserva
 la presentación de motivos, ahora como el marcador de redacción.
 
 Cierre de serialización (2026-10-31): 145 pruebas superadas con PostgreSQL sintética; 28 operaciones y rutas de documentación verificadas. Las anotaciones OpenAPI describen errores existentes (detail string o lista de validación), sin cambiar su ejecución. Véase ../docs/serialization-audit.md para redacción aprobada, mediciones, pruebas manuales Swagger y límites. No implica aprobación de producción.
+
+## Caché TTL de catálogos (desarrollo sintético)
+
+Catálogo activo: 60 s; páginas de valores Management: 30 s, JSON por worker.
+Cada petición autentica/autoriza y consulta metadata del catálogo. Claves digest
+de identidad/rol/área, catálogo, version+updated_at, namespace y página.
+Create/update/activation existentes avanzan generación; entradas antiguas quedan
+inaccesibles. Fechas/flags del catálogo activo se filtran en UTC en cada hit,
+incluso activaciones futuras. No se almacenan sesiones ORM ni peticiones.
+Límites: 256 entradas, 8 MiB de payload JSON y 256 KiB por entrada; 64 locks fijos,
+espera máxima 2 s antes de bypass al origen. Errores fuente se conservan.
+Escrituras externas deben avanzar metadata o usar bypass. Sin aprobación de
+producción, Redis, cambios de auth/auditoría/migraciones.
+Pruebas: `podman compose --profile test run --no-deps --build --rm test`.
+Benchmark explícito (una línea): `podman compose --profile test run --no-deps --rm test uv run --no-sync python tests/benchmark_caching.py`.
+Inserta 200 valores sintéticos sin commit, revierte y verifica conteos.
+Ver docs/CACHING_REPORT.md para resultados y límites.
+
+
+Validación explícita de caché entre procesos (datos sintéticos, base aislada):
+`podman compose --profile test run --no-deps --build --rm test uv run --no-sync python tests/validate_caching_workers.py`.
+Requiere permiso PostgreSQL CREATE/DROP DATABASE; crea y elimina únicamente una
+base temporal de validación. No se ejecuta durante la colección de pytest.
+Evidencia: `docs/caching-workers.json` y `docs/CACHING_REPORT.md`.
