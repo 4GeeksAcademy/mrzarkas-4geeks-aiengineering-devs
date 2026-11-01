@@ -1,0 +1,188 @@
+{
+  "commit": "8b3e3380824b7e22b912ac318e5cdfbea9423f50",
+  "method": "Static inventory, source bytes only; not transferred/compressed bytes or timings",
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/auth/tokens",
+      "source": "backend/app/auth/router.py",
+      "handler": "issue_token"
+    },
+    {
+      "method": "GET",
+      "path": "/catalogs/{catalog_name}",
+      "source": "backend/app/catalogs/router.py",
+      "handler": "get_catalog"
+    },
+    {
+      "method": "POST",
+      "path": "/compliance-reviews",
+      "source": "backend/app/compliance/router.py",
+      "handler": "create_review"
+    },
+    {
+      "method": "GET",
+      "path": "/compliance-reviews/{review_id}",
+      "source": "backend/app/compliance/router.py",
+      "handler": "get_review"
+    },
+    {
+      "method": "PATCH",
+      "path": "/compliance-reviews/{review_id}/status",
+      "source": "backend/app/compliance/router.py",
+      "handler": "update_review_status"
+    },
+    {
+      "method": "POST",
+      "path": "/incidents",
+      "source": "backend/app/incidents/router.py",
+      "handler": "create_incident"
+    },
+    {
+      "method": "GET",
+      "path": "/incidents",
+      "source": "backend/app/incidents/router.py",
+      "handler": "list_incidents"
+    },
+    {
+      "method": "GET",
+      "path": "/incidents/metrics/open-by-severity",
+      "source": "backend/app/incidents/router.py",
+      "handler": "open_incidents_by_severity"
+    },
+    {
+      "method": "GET",
+      "path": "/incidents/{incident_id}",
+      "source": "backend/app/incidents/router.py",
+      "handler": "get_incident"
+    },
+    {
+      "method": "PATCH",
+      "path": "/incidents/{incident_id}",
+      "source": "backend/app/incidents/router.py",
+      "handler": "update_incident"
+    },
+    {
+      "method": "POST",
+      "path": "/incidents/{incident_id}/transitions",
+      "source": "backend/app/incidents/router.py",
+      "handler": "transition_incident"
+    },
+    {
+      "method": "POST",
+      "path": "/incidents/{incident_id}/assignments",
+      "source": "backend/app/incidents/router.py",
+      "handler": "assign_incident"
+    },
+    {
+      "method": "GET",
+      "path": "/incidents/{incident_id}/history",
+      "source": "backend/app/incidents/router.py",
+      "handler": "incident_history"
+    },
+    {
+      "method": "GET",
+      "path": "/incidents/{incident_id}/assignment-history",
+      "source": "backend/app/incidents/router.py",
+      "handler": "incident_assignment_history"
+    },
+    {
+      "method": "GET",
+      "path": "/incidents/{incident_id}/audit",
+      "source": "backend/app/incidents/router.py",
+      "handler": "incident_audit"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "source": "backend/app/main.py",
+      "handler": "health"
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "source": "backend/app/main.py",
+      "handler": "status"
+    },
+    {
+      "method": "GET",
+      "path": "/management/catalogs",
+      "source": "backend/app/management/router.py",
+      "handler": "list_catalogs"
+    },
+    {
+      "method": "GET",
+      "path": "/management/catalogs/{catalog_name}/values",
+      "source": "backend/app/management/router.py",
+      "handler": "list_catalog_values"
+    },
+    {
+      "method": "POST",
+      "path": "/management/catalogs/{catalog_name}/values",
+      "source": "backend/app/management/router.py",
+      "handler": "create_catalog_value"
+    },
+    {
+      "method": "PATCH",
+      "path": "/management/catalogs/{catalog_name}/values/{value_id}",
+      "source": "backend/app/management/router.py",
+      "handler": "update_catalog_value"
+    },
+    {
+      "method": "POST",
+      "path": "/management/catalogs/{catalog_name}/values/{value_id}/activation",
+      "source": "backend/app/management/router.py",
+      "handler": "set_catalog_value_activation"
+    },
+    {
+      "method": "GET",
+      "path": "/management/reference-data/{resource}",
+      "source": "backend/app/management/router.py",
+      "handler": "list_reference_values"
+    },
+    {
+      "method": "POST",
+      "path": "/management/reference-data/{resource}",
+      "source": "backend/app/management/router.py",
+      "handler": "create_reference_value"
+    },
+    {
+      "method": "PATCH",
+      "path": "/management/reference-data/{resource}/{resource_id}",
+      "source": "backend/app/management/router.py",
+      "handler": "update_reference_value"
+    },
+    {
+      "method": "POST",
+      "path": "/management/reference-data/{resource}/{resource_id}/activation",
+      "source": "backend/app/management/router.py",
+      "handler": "set_reference_value_activation"
+    },
+    {
+      "method": "PUT",
+      "path": "/management/affected-systems/{system_id}/jurisdictions",
+      "source": "backend/app/management/router.py",
+      "handler": "set_system_jurisdictions"
+    },
+    {
+      "method": "GET",
+      "path": "/management/audit-events",
+      "source": "backend/app/management/router.py",
+      "handler": "list_management_audit_events"
+    }
+  ],
+  "assets": {
+    "uis/backoffice/operational-incidents/app.js": {
+      "source_bytes": 39763,
+      "sha256": "155729e4f48908eb37c3bcda1ea07ad8541f84c7eb8c37ca5e2c4bf77df0c480"
+    },
+    "uis/backoffice/operational-incidents/select-field.js": {
+      "source_bytes": 422,
+      "sha256": "51374ec0d5bb4ead607da33b635c75d6b1f6b1cb91009d30c520461311e6b3bc"
+    },
+    "frontend/app/page.js": {
+      "source_bytes": 7379,
+      "sha256": "74d4415a1e5f0a9b801f175f01dedc15dc1b30004f04231aa08657834caac654"
+    }
+  }
+}

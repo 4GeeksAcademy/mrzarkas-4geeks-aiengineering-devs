@@ -21,3 +21,24 @@ This folder contains **helper scripts** for the monorepo: development automation
 - **Recommendation**: document each script (what it does, parameters, requirements, usage examples) and keep them reproducible (and safe) across environments.
 
 > _Spanish version: [README.es.md](./README.es.md)._
+
+## Caching baseline
+
+`python3 scripts/caching_inventory.py` reads repository sources and prints the
+API operation inventory and source sizes without starting services or querying
+the database. `node scripts/caching_calculation_profile.mjs` profiles an extracted
+native chronology calculation with synthetic in-memory events; it is not a
+browser or React measurement. Results and limitations: `docs/CACHING_REPORT.md`.
+
+
+`node scripts/profile_react_chronology.mjs` measures the real React chronology
+calculation with synthetic inputs, without measuring React renders.
+`node --experimental-default-type=module scripts/test_caching_frontend.mjs`
+checks the calculation and private proxy using a mocked network.
+`caching_profile_setup.cjs` instruments `/app` in a disposable frontend build
+container only; mount it read-only and run `node /tmp/setup.cjs` followed by
+`pnpm exec next build --profile`. It is not intended to run on the checkout.
+Browser observations and temporary-container measurements are documented in
+`docs/caching-browser.json`; no application instrumentation is shipped.
+
+Set `CACHING_PROFILE_MODE=direct` only in the disposable build to compare the same calculation without useMemo. Results: `docs/caching-react-comparison.json`.

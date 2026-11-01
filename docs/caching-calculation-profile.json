@@ -1,0 +1,23 @@
+{
+  "method": "Extracted map+sort from native renderDetail; Node calculation only, not browser/React profiling. Synthetic input, 20 warmup and 200 measured samples; nearest-rank percentiles. Counts are scenarios, not observed production volumes.",
+  "runtime": "v18.20.3",
+  "platform": "darwin",
+  "cpu": "Apple M2 Pro",
+  "results": [
+    {
+      "synthetic_events": 20,
+      "p50_ms": 0.02645796537399292,
+      "p95_ms": 0.03320801258087158
+    },
+    {
+      "synthetic_events": 200,
+      "p50_ms": 0.4582499861717224,
+      "p95_ms": 0.5442500114440918
+    },
+    {
+      "synthetic_events": 2000,
+      "p50_ms": 4.228916049003601,
+      "p95_ms": 6.206625044345856
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "method": "Chrome native UI + DevTools, production next build --profile variants inside disposable containers, source unchanged except removal of useMemo in direct variant",
+  "events": 2000,
+  "warmup_per_round": 20,
+  "samples_per_round": 200,
+  "rounds": 3,
+  "interaction": "Toggle first event selection; two requestAnimationFrame callbacks between clicks; sum actualDuration for commits caused by each click",
+  "percentile": "nearest rank",
+  "memo": [
+    {
+      "round": 1,
+      "p50_ms": 3.599999964237213,
+      "p95_ms": 4.5,
+      "calculation_calls": 0
+    },
+    {
+      "round": 2,
+      "p50_ms": 3.5,
+      "p95_ms": 4.199999988079071,
+      "calculation_calls": 0
+    },
+    {
+      "round": 3,
+      "p50_ms": 3.5000000298023224,
+      "p95_ms": 4.300000041723251,
+      "calculation_calls": 0
+    }
+  ],
+  "direct": [
+    {
+      "round": 1,
+      "p50_ms": 4.60000005364418,
+      "p95_ms": 5.399999916553497,
+      "calculation_calls": 200
+    },
+    {
+      "round": 2,
+      "p50_ms": 4.5999999940395355,
+      "p95_ms": 5.200000017881393,
+      "calculation_calls": 200
+    },
+    {
+      "round": 3,
+      "p50_ms": 4.600000023841858,
+      "p95_ms": 5.300000041723251,
+      "calculation_calls": 200
+    }
+  ],
+  "limitations": [
+    "Synthetic scale does not demonstrate typical incident size",
+    "React profiling adds overhead; DOM/render cost included",
+    "Three rounds per variant, no randomized interleaving",
+    "Fetch mocked for browser fixture; real API auth tested separately"
+  ]
+}

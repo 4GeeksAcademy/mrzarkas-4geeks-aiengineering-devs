@@ -1,0 +1,64 @@
+{
+  "method": "Native Chrome UI + DevTools, synthetic fetch fixture for visual tests; API authorization tested separately, not authenticated browser E2E",
+  "production_image": "a866a9b25c23",
+  "initial_lazy_resources": 0,
+  "resources": [
+    {
+      "path": "/_next/static/chunks/3c521zfh0xrol.js",
+      "startTime_ms": 46996.30000001192,
+      "duration_ms": 10.599999994039536,
+      "transferSize_bytes": 1038
+    },
+    {
+      "path": "/_next/static/chunks/05lvmxfxifxgz.js",
+      "startTime_ms": 59347.5,
+      "duration_ms": 12,
+      "transferSize_bytes": 933
+    }
+  ],
+  "keyboard_event_selection": "PASS",
+  "loading_timeline_and_details": "PASS",
+  "lazy_failure": "Forced script error via temporary document.head.appendChild interception; error boundary displayed and reload returned empty form",
+  "storage_keys": {
+    "localStorage": 0,
+    "sessionStorage": 0
+  },
+  "mobile": {
+    "emulated_device": "iPhone 16",
+    "width": 393,
+    "height": 852,
+    "main_scrollWidth": 393,
+    "innerWidth_initial": 393,
+    "innerWidth_after_devtools_reopen": 800,
+    "limitation": "DevTools viewport zoom changed when reopening; no full responsive certification"
+  },
+  "profiler": {
+    "build": "Temporary next build --profile instrumented inside disposable container; delivered source unchanged",
+    "synthetic_events": 2,
+    "commits_actualDuration_ms": [
+      0.6,
+      8.2,
+      1.3,
+      1.3,
+      0.9
+    ],
+    "calculation_calls_after_selection": 1,
+    "fetch_calls_after_selection": 1,
+    "calculation_calls_after_new_query": 2,
+    "fetch_calls_after_new_query": 2,
+    "limitation": "No uncached React before/after render comparison; actualDuration includes lazy and selection updates, not pure calculation cost"
+  },
+  "mobile_followup": {
+    "viewport_setting": "Responsive 393x852",
+    "browser_zoom_reset": "Chrome address field focused, Cmd+0 outside DevTools",
+    "initial_width": 393,
+    "initial_scale": 1,
+    "main_scrollWidth": 393,
+    "body_scrollWidth": 393,
+    "descendants_overflow": 0,
+    "loaded_and_details_visual_review": "PASS with synthetic fixture",
+    "extra_script_downloads_after_four_selections": 0,
+    "storage_entries": 0,
+    "limitation": "Native AX clicks on emulated-page inputs misrouted to console; controlled DOM input events via DevTools used to load fixture. Desktop keyboard checked separately."
+  }
+}

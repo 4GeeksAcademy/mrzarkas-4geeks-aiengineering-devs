@@ -1,0 +1,191 @@
+{
+  "method": "ASGI + PostgreSQL in Podman; single transaction/session; 200 synthetic catalog values, rollback; sequential only. Before=current code cache disabled, after=warm cache, not old implementation or network traffic.",
+  "rows_before": 28,
+  "rows_during": 228,
+  "warmup": 20,
+  "samples_per_round": 200,
+  "concurrency": 1,
+  "results": [
+    {
+      "endpoint": "active-catalog",
+      "round": 1,
+      "cache": false,
+      "p50_ms": 3.0959149880800396,
+      "p95_ms": 3.651705977972597,
+      "selects_per_request": [
+        2
+      ],
+      "response_bytes": [
+        41560
+      ],
+      "hits_including_warmup": 0,
+      "misses_including_warmup": 0
+    },
+    {
+      "endpoint": "active-catalog",
+      "round": 1,
+      "cache": true,
+      "p50_ms": 1.2817909882869571,
+      "p95_ms": 1.3769159850198776,
+      "selects_per_request": [
+        1
+      ],
+      "response_bytes": [
+        41560
+      ],
+      "hits_including_warmup": 219,
+      "misses_including_warmup": 1
+    },
+    {
+      "endpoint": "active-catalog",
+      "round": 2,
+      "cache": false,
+      "p50_ms": 3.0487480107694864,
+      "p95_ms": 3.387289005331695,
+      "selects_per_request": [
+        2
+      ],
+      "response_bytes": [
+        41560
+      ],
+      "hits_including_warmup": 0,
+      "misses_including_warmup": 0
+    },
+    {
+      "endpoint": "active-catalog",
+      "round": 2,
+      "cache": true,
+      "p50_ms": 1.3064989761915058,
+      "p95_ms": 1.655623986152932,
+      "selects_per_request": [
+        1
+      ],
+      "response_bytes": [
+        41560
+      ],
+      "hits_including_warmup": 219,
+      "misses_including_warmup": 1
+    },
+    {
+      "endpoint": "active-catalog",
+      "round": 3,
+      "cache": false,
+      "p50_ms": 3.163123008562252,
+      "p95_ms": 5.381289025535807,
+      "selects_per_request": [
+        2
+      ],
+      "response_bytes": [
+        41560
+      ],
+      "hits_including_warmup": 0,
+      "misses_including_warmup": 0
+    },
+    {
+      "endpoint": "active-catalog",
+      "round": 3,
+      "cache": true,
+      "p50_ms": 1.2870830250903964,
+      "p95_ms": 1.3929569977335632,
+      "selects_per_request": [
+        1
+      ],
+      "response_bytes": [
+        41560
+      ],
+      "hits_including_warmup": 219,
+      "misses_including_warmup": 1
+    },
+    {
+      "endpoint": "managed-values",
+      "round": 1,
+      "cache": false,
+      "p50_ms": 2.460706979036331,
+      "p95_ms": 2.6303729973733425,
+      "selects_per_request": [
+        3
+      ],
+      "response_bytes": [
+        41293
+      ],
+      "hits_including_warmup": 0,
+      "misses_including_warmup": 0
+    },
+    {
+      "endpoint": "managed-values",
+      "round": 1,
+      "cache": true,
+      "p50_ms": 1.1614159739110619,
+      "p95_ms": 1.537999021820724,
+      "selects_per_request": [
+        1
+      ],
+      "response_bytes": [
+        41293
+      ],
+      "hits_including_warmup": 219,
+      "misses_including_warmup": 1
+    },
+    {
+      "endpoint": "managed-values",
+      "round": 2,
+      "cache": false,
+      "p50_ms": 2.4548319925088435,
+      "p95_ms": 2.651123999385163,
+      "selects_per_request": [
+        3
+      ],
+      "response_bytes": [
+        41293
+      ],
+      "hits_including_warmup": 0,
+      "misses_including_warmup": 0
+    },
+    {
+      "endpoint": "managed-values",
+      "round": 2,
+      "cache": true,
+      "p50_ms": 1.1434159823693335,
+      "p95_ms": 1.2887489865534008,
+      "selects_per_request": [
+        1
+      ],
+      "response_bytes": [
+        41293
+      ],
+      "hits_including_warmup": 219,
+      "misses_including_warmup": 1
+    },
+    {
+      "endpoint": "managed-values",
+      "round": 3,
+      "cache": false,
+      "p50_ms": 2.4628739920444787,
+      "p95_ms": 2.654747979249805,
+      "selects_per_request": [
+        3
+      ],
+      "response_bytes": [
+        41293
+      ],
+      "hits_including_warmup": 0,
+      "misses_including_warmup": 0
+    },
+    {
+      "endpoint": "managed-values",
+      "round": 3,
+      "cache": true,
+      "p50_ms": 1.1436239874456078,
+      "p95_ms": 1.2167069944553077,
+      "selects_per_request": [
+        1
+      ],
+      "response_bytes": [
+        41293
+      ],
+      "hits_including_warmup": 219,
+      "misses_including_warmup": 1
+    }
+  ],
+  "rows_after_rollback": 28
+}

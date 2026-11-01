@@ -1,0 +1,205 @@
+{
+  "workers": [
+    8,
+    9
+  ],
+  "distinct_processes": true,
+  "both_warm_before_write": true,
+  "cross_process_update_create_activation": "PASS",
+  "concurrent_reads": {
+    "requests": 20,
+    "concurrency": 10,
+    "hits": 14,
+    "misses": 6,
+    "consistent": true
+  },
+  "concurrent_benchmark": {
+    "transport": "Loopback HTTP + Uvicorn + real PostgreSQL; independent request sessions",
+    "dataset": "Two synthetic values, one inactive after mutation validation",
+    "warmup_per_mode": 20,
+    "results": [
+      {
+        "path": "/catalogs/syntheticWorkers",
+        "round": 1,
+        "cache": false,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 45.00814899802208,
+        "p95_ms": 108.50574099458754,
+        "selects_per_request_average": 2.0,
+        "response_bytes": [
+          271
+        ],
+        "hits": 0,
+        "misses": 0
+      },
+      {
+        "path": "/catalogs/syntheticWorkers",
+        "round": 1,
+        "cache": true,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 43.95635600667447,
+        "p95_ms": 59.36346098314971,
+        "selects_per_request_average": 1.0,
+        "response_bytes": [
+          271
+        ],
+        "hits": 200,
+        "misses": 0
+      },
+      {
+        "path": "/catalogs/syntheticWorkers",
+        "round": 2,
+        "cache": false,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 44.25543901743367,
+        "p95_ms": 77.97015499090776,
+        "selects_per_request_average": 2.0,
+        "response_bytes": [
+          271
+        ],
+        "hits": 0,
+        "misses": 0
+      },
+      {
+        "path": "/catalogs/syntheticWorkers",
+        "round": 2,
+        "cache": true,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 43.02398001891561,
+        "p95_ms": 51.01361600100063,
+        "selects_per_request_average": 1.0,
+        "response_bytes": [
+          271
+        ],
+        "hits": 200,
+        "misses": 0
+      },
+      {
+        "path": "/catalogs/syntheticWorkers",
+        "round": 3,
+        "cache": false,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 43.99343900149688,
+        "p95_ms": 66.38313800795004,
+        "selects_per_request_average": 2.0,
+        "response_bytes": [
+          271
+        ],
+        "hits": 0,
+        "misses": 0
+      },
+      {
+        "path": "/catalogs/syntheticWorkers",
+        "round": 3,
+        "cache": true,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 43.952022009762004,
+        "p95_ms": 51.522157998988405,
+        "selects_per_request_average": 1.0,
+        "response_bytes": [
+          271
+        ],
+        "hits": 200,
+        "misses": 0
+      },
+      {
+        "path": "/management/catalogs/syntheticWorkers/values",
+        "round": 1,
+        "cache": false,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 44.979898986639455,
+        "p95_ms": 71.60485399072058,
+        "selects_per_request_average": 3.0,
+        "response_bytes": [
+          855
+        ],
+        "hits": 0,
+        "misses": 0
+      },
+      {
+        "path": "/management/catalogs/syntheticWorkers/values",
+        "round": 1,
+        "cache": true,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 43.96331397583708,
+        "p95_ms": 62.19600699841976,
+        "selects_per_request_average": 1.0,
+        "response_bytes": [
+          855
+        ],
+        "hits": 200,
+        "misses": 0
+      },
+      {
+        "path": "/management/catalogs/syntheticWorkers/values",
+        "round": 2,
+        "cache": false,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 44.04464800609276,
+        "p95_ms": 67.10197200300172,
+        "selects_per_request_average": 3.0,
+        "response_bytes": [
+          855
+        ],
+        "hits": 0,
+        "misses": 0
+      },
+      {
+        "path": "/management/catalogs/syntheticWorkers/values",
+        "round": 2,
+        "cache": true,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 43.165395996766165,
+        "p95_ms": 62.302965990966186,
+        "selects_per_request_average": 1.0,
+        "response_bytes": [
+          855
+        ],
+        "hits": 200,
+        "misses": 0
+      },
+      {
+        "path": "/management/catalogs/syntheticWorkers/values",
+        "round": 3,
+        "cache": false,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 44.033521990058944,
+        "p95_ms": 72.47143899439834,
+        "selects_per_request_average": 3.0,
+        "response_bytes": [
+          855
+        ],
+        "hits": 0,
+        "misses": 0
+      },
+      {
+        "path": "/management/catalogs/syntheticWorkers/values",
+        "round": 3,
+        "cache": true,
+        "samples": 200,
+        "concurrency": 10,
+        "p50_ms": 43.67081300006248,
+        "p95_ms": 56.69237399706617,
+        "selects_per_request_average": 1.0,
+        "response_bytes": [
+          855
+        ],
+        "hits": 200,
+        "misses": 0
+      }
+    ]
+  },
+  "application_database_untouched": true,
+  "isolated_database_dropped": true
+}

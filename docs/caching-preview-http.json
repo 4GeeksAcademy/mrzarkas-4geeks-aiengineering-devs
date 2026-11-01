@@ -1,0 +1,8 @@
+{
+  "internal_status": 200,
+  "heading": true,
+  "anonymous_status": 401,
+  "private_header": "private, no-store",
+  "home_status": 200,
+  "note": "HTTP only; no browser/React render or authenticated visual review"
+}

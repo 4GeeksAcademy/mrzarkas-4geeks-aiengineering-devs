@@ -1,0 +1,82 @@
+Sending build context to Docker daemon  106.5kB
+
+[1/3] STEP 1/7: FROM python:3.12-slim AS base
+Resolving %!q(<nil>) to docker.io (enforced by caller)
+Trying to pull docker.io/library/python:3.12-slim...
+[1/3] STEP 2/7: RUN pip install --no-cache-dir uv==0.8.22
+--> Using cache 68faab1f0f49f7ac14b57765e831fa5271cc98c53c5c7391143629a93fc03c61
+--> 68faab1f0f49
+[1/3] STEP 3/7: WORKDIR /app
+--> Using cache 86cd391ee24a13a04013bb6ee53f924777e8851db515b802e3b9608ed47e54a3
+--> 86cd391ee24a
+[1/3] STEP 4/7: COPY pyproject.toml uv.lock requirements.txt ./
+--> Using cache f89f7294a43024f64701e7e1c768870549f257d79a6204e5adcdcbcdbfe7d39a
+--> f89f7294a430
+[1/3] STEP 5/7: COPY app ./app
+--> Using cache 8ec23f5714080dc1a020efa969b1134ad2cb07027801c50c14b81987f953ae85
+--> 8ec23f571408
+[1/3] STEP 6/7: COPY alembic.ini ./alembic.ini
+--> Using cache 6d8dbb6ba115ae164b5f0a01c62b47e6b10c25cde221451772ca82bf884eff18
+--> 6d8dbb6ba115
+[1/3] STEP 7/7: COPY alembic ./alembic
+--> Using cache b5f43020c5fc59d71f978d5d26330d8b5211dd75db6a530e5b7d6adc70455813
+--> b5f43020c5fc
+[3/3] STEP 1/5: FROM b5f43020c5fc59d71f978d5d26330d8b5211dd75db6a530e5b7d6adc70455813 AS test
+[3/3] STEP 2/5: COPY tests ./tests
+--> cb34454e25c8
+[3/3] STEP 3/5: RUN uv sync --frozen
+Using CPython 3.12.13 interpreter at: /usr/local/bin/python3
+Creating virtual environment at: .venv
+   Building healthcore-central-api @ file:///app
+Downloading asyncpg (3.3MiB)
+Downloading sqlalchemy (4.4MiB)
+Downloading pygments (1.2MiB)
+Downloading pydantic-core (1.9MiB)
+ Downloading pygments
+ Downloading pydantic-core
+ Downloading asyncpg
+ Downloading sqlalchemy
+      Built healthcore-central-api @ file:///app
+Prepared 31 packages in 711ms
+Installed 31 packages in 13ms
+ + alembic==1.20.0
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + asyncpg==0.31.0
+ + certifi==2026.7.22
+ + click==8.5.0
+ + fastapi==0.141.1
+ + greenlet==3.5.6
+ + h11==0.16.0
+ + healthcore-central-api==0.1.0 (from file:///app)
+ + httpcore==1.0.9
+ + httpx==0.28.1
+ + idna==3.20
+ + iniconfig==2.3.0
+ + mako==1.4.3
+ + markupsafe==3.0.3
+ + packaging==26.3
+ + pluggy==1.6.0
+ + pydantic==2.13.5
+ + pydantic-core==2.46.5
+ + pydantic-settings==2.15.0
+ + pygments==2.21.0
+ + pyjwt==2.15.0
+ + pytest==8.4.2
+ + python-dotenv==1.2.3
+ + sqlalchemy==2.1.1
+ + starlette==1.7.0
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + uvicorn==0.54.0
+--> c96cfed95b0f
+[3/3] STEP 4/5: CMD ["uv", "run", "--no-sync", "pytest", "-q"]
+--> 3b9eef8d3051
+[3/3] STEP 5/5: LABEL "com.docker.compose.image.builder"="classic"
+[3/3] COMMIT docker.io/library/healthcore-stack-test:latest
+--> a8c4d3e293b1
+Successfully tagged docker.io/library/healthcore-stack-test:latest
+a8c4d3e293b16be59094f31cd81c488c4dd51dfa7604ad8cf424dbc554e6b638
+Successfully built a8c4d3e293b1
+Successfully tagged healthcore-stack-test

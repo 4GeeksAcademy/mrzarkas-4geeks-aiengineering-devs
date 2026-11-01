@@ -1,0 +1,21 @@
+{
+  "method": "Actual chronology.mjs map/merge/sort, Node only, 20 warmup/200 samples, nearest rank. Synthetic scenarios, not observed history volumes; no React commit measurements.",
+  "runtime": "v18.20.3",
+  "results": [
+    {
+      "synthetic_events": 20,
+      "p50_ms": 0.03725004196166992,
+      "p95_ms": 0.04691600799560547
+    },
+    {
+      "synthetic_events": 200,
+      "p50_ms": 0.5554999709129333,
+      "p95_ms": 0.8038750290870667
+    },
+    {
+      "synthetic_events": 2000,
+      "p50_ms": 5.26529198884964,
+      "p95_ms": 6.207791030406952
+    }
+  ]
+}
