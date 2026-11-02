@@ -29,3 +29,11 @@
 ## Próximo paso
 
 Completar M0 con Tecnología y Cumplimiento: validar formalmente el criterio de matriz registrado en `proposals.md`, aprobar la política no-PHI, definir retención de auditoría y el proceso de promoción de maestros aprobados. Retomar también las dos observaciones técnicas anotadas en `proposals.md` (campos PATCH desconocidos y motivo obligatorio para cancelar). Después, validar el backoffice de escritura antes de piloto. Las demás capacidades sólo se revisarán si las partes interesadas lo solicitan.
+
+## Inventory Manager — actualización 2026-11-02
+
+API implementada en `backend/app/inventory/`, migraciones nuevas `0010` y `0011`: catálogo, presentaciones, lotes opcionales, stock por clínica calculado desde movimientos, entradas/salidas/conteos/compensaciones, reorden obligatorio y consultas regionales por país. Roles independientes, scopes JWT de desarrollo firmados, auditoría append-only con país histórico y denegaciones duraderas. Retención declarada de 24 meses; purga/disposición ejecutable pendiente. Aprobación simulada de Claire Whitfield `HC-INV-APPROVAL-2026-11-02`; no autorización real de piloto/producción.
+
+Validación más reciente: **418 pruebas superadas sin skips** en PostgreSQL aislado con Python 3.12, incluyendo 21 de inventario/política; migraciones fresh/upgrade/rollback desechable y legacy verificadas. Los números/rutas de validaciones anteriores permanecen como historia, no el estado más reciente. Metadata inventory sin diferencias; discrepancias globales preexistentes de Alembic/Compliance no reparadas.
+
+Entorno Python local reparado con uv/lockfile. API local disponible en `http://localhost:8000/docs` sobre base sintética aislada en `/private/tmp`; 3 artículos, 2 clínicas de desarrollo US/UK, 6 aperturas, 1 lote y 3 alertas. Carga repetida crea 0 aperturas; permisos regionales y auditoría comprobados por HTTP. Podman sigue bloqueado por error overlay y fallo de arranque; no se borraron datos ni se validó Compose. Sin interfaz de inventario ni reposición automática. Detalles y trazabilidad: `specs/inventory-manager/{spec,plan,tasks}.md`.
