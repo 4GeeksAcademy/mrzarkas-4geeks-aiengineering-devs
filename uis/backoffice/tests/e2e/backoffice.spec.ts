@@ -146,7 +146,8 @@ test("Management read parity, safe table text and responsive accessibility", asy
   await expect(
     page
       .getByRole("table")
-      .or(page.getByText("Sin resultados.", { exact: true })),
+      .or(page.getByText(/Sin resultados/))
+      .first(),
   ).toBeVisible();
   for (const width of [1350, 393, 320]) {
     await page.setViewportSize({ width, height: 900 });
@@ -402,6 +403,10 @@ test("Manager configuration, pack movements, count and unique compensation prese
   await page
     .getByRole("button", { name: "Configurar punto de reorden", exact: true })
     .click();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Confirmar", exact: true })
+    .click();
   await expect(
     page.getByText("Punto de reorden clínico: 20 · Bajo reorden: Sí"),
   ).toBeVisible();
@@ -409,6 +414,10 @@ test("Manager configuration, pack movements, count and unique compensation prese
   await page.getByLabel("Unidad del movimiento").selectOption("pack");
   await page
     .getByRole("button", { name: "Registrar entrada o salida", exact: true })
+    .click();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Confirmar", exact: true })
     .click();
   await expect(
     page.getByText("Punto de reorden clínico: 20 · Bajo reorden: No"),
@@ -432,7 +441,7 @@ test("Manager configuration, pack movements, count and unique compensation prese
   );
   const count = history.find((r) => r.kind === "adjust")!;
   expect(count.delta).toBe(-1);
-  await page.getByLabel("UUID del movimiento original").fill(count.id);
+  await page.getByLabel("UUID del movimiento original").selectOption(count.id);
   await page.getByLabel("Motivo de compensación").fill("Synthetic correction");
   await page
     .getByRole("button", { name: "Compensar movimiento", exact: true })
@@ -472,7 +481,8 @@ test("Operator, regional and auditor retain scopes and durable denials", async (
   await expect(
     page
       .getByRole("table")
-      .or(page.getByText("Sin resultados.", { exact: true })),
+      .or(page.getByText(/Sin resultados/))
+      .first(),
   ).toBeVisible();
   expect(
     await page.getByRole("cell", { name: s.uk.id, exact: true }).count(),
@@ -503,7 +513,8 @@ test("Operator, regional and auditor retain scopes and durable denials", async (
   await expect(
     page
       .getByRole("table")
-      .or(page.getByText("Sin resultados.", { exact: true })),
+      .or(page.getByText(/Sin resultados/))
+      .first(),
   ).toBeVisible();
   const first = (await get<Item[]>(request, "/inventory/items", operator))[0];
   const adjust = await request.post(`${api}/inventory/movements`, {
@@ -542,7 +553,7 @@ test("Lost response after accepted write never creates an automatic duplicate", 
   await page
     .getByRole("button", { name: "Crear artículo", exact: true })
     .click();
-  await expect(page.locator("main").getByRole("alert")).toContainText(
+  await expect(page.locator("main").getByRole("alert").first()).toContainText(
     "Resultado incierto",
   );
   await expect(
