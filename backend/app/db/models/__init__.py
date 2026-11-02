@@ -5,8 +5,12 @@ from app.management.audit import ManagementAuditEvent
 from app.reference_data.models import AffectedSystem, Clinic, Jurisdiction, ResponsibleArea
 
 from app.inventory.models import InventoryItem, InventoryClinicItem, InventoryLot, InventoryMovement, InventoryAudit, InventoryAccessDenial
+from app.inventory.flow_models import InventoryTelemetryFlow
+from app.inventory.threshold_models import InventoryThresholdState, InventoryThresholdTransition
 
 __all__ = [
+    "InventoryTelemetryFlow",
+    "InventoryThresholdState", "InventoryThresholdTransition",
     "InventoryAccessDenial",
     "InventoryItem", "InventoryClinicItem", "InventoryLot", "InventoryMovement", "InventoryAudit",
     "AuditEvent",
