@@ -95,7 +95,7 @@ rollback fully on failure. Actor and UTC timestamps originate on the server.
 PostgreSQL triggers reject UPDATE/DELETE of inventory movements and audit rows.
 Audit snapshots and historical reasons are redacted on read; database records
 remain intact. Text must never contain PHI, secrets or actual patient identifiers.
-No business telemetry producer is enabled by this module.
+Optional server capture observes committed HTTP in/out/adjust movements. It revalidates persisted actor, inventory permissions, clinic scope and historical country independently. Regional purpose-separated HMAC identifiers exclude operational UUIDs, quantities, reasons and snapshots. Rollback emits nothing; capture failure preserves the response. Corrections and direct service/demo calls are excluded. Browser ingestion cannot assert these facts. Delivery remains ephemeral best effort. No production activation. See [scope and validation](../../../docs/specs/telemetry-event-capture/inventory-producers.md).
 
 ## Migration and tests
 
@@ -211,3 +211,43 @@ Creates three SYN-INV products, one lot and six opening movements in dev-us-clin
 ## Local Compose validation — 2026-11-02
 
 Root Compose was built and started as isolated project `healthcore-inventory-validation`, preserving previous volumes. Migrations, seeds, repeated demo (6/0 openings), regional permissions, reorder and audited denials passed HTTP verification. Test image suite: 418 passed without skips on databases separate from the demo; temporary NullPool adapter for legacy tests. Validation API: `http://localhost:18080/docs`; website 13000 and backoffice 18081. Commands and temporary-environment limits: `memory-bank/specs/inventory-manager/plan.md`. Podman was repaired by restoring empty metadata with prior backups, without deleting data. Synthetic local environment only.
+
+
+## Inventory validation telemetry — 2026-11-02
+
+The optional inventory_validation_failed producer captures typed movement rejections for missing reorder configuration (reference), incompatible/missing lots (lot), unavailable pack presentation (unit), and insufficient stock. Capture is attempted only after rollback. It independently revalidates actor permissions, clinic scope and active country; failed context never falls back to general scope. Payload contains only regional HMAC operationId and allowlisted reasonCode plus jurisdiction/environment. Schema errors and unrelated HTTP errors do not emit. Status/detail, denial audit and browser rejection remain unchanged. See [validation lot](../../../docs/specs/telemetry-event-capture/inventory-validation-producer.md).
+
+
+## Inventory view telemetry — 2026-11-02
+
+The optional inventory_viewed producer observes completed stock, movement-history and reorder reads with an explicit clinic. It emits once after the final successful HTTP response send, including authorized empty results. It revalidates existing read permissions, clinic scope and active country independently; properties contain only jurisdiction/environment/view and user identity uses regional HMAC. Failed/incomplete responses do not capture. Global/unfiltered reads and items catalogue remain excluded; inactive history still returns according to existing policy but does not capture. Browser cannot assert these facts. See [view scope](../../../docs/specs/telemetry-event-capture/inventory-view-producer.md).
+
+
+## Inventory UI-flow telemetry — 2026-11-02
+
+Synthetic UI-flow telemetry adds POST /telemetry/inventory-flow with a closed request (action, clinicId, itemId, optional direction/flowToken). Selection requires stock:read; start requires movement:write and clinic-item configuration. Both revalidate active resources and actor scope. The server issues a regional HMAC flowId and signed credential bound to actor/clinic/item/direction, expiring within 300s and Bearer lifetime without extension. Declared UI gestures use the internal queue; POST /telemetry/events still rejects these types. The credential is not a stock operation or evidence that a human clicked. No persistence or durable dedup. Next captures trusted stock-link clicks and first movement-field interaction using bounded session memory, without delaying business actions. See [UI-flow lot](../../../docs/specs/telemetry-event-capture/inventory-ui-flow-producers.md).
+
+
+## Comparable threshold episodes — 2026-11-02
+
+Comparable threshold episodes now follow HTTP movements and compensations over aggregate article/clinic stock. Activation is >=→< reorder point; clearance is <→>= with the same known episode and unchanged threshold. Equality is clear; per-lot reads, zero-delta counts and configuration changes do not emit crossings. New migration0012 creates internal state and append-only transition tables without backfill. Tracking uses a savepoint under existing domain locks; an ordinary tracking failure omits capture while preserving the business movement. Post-commit regional HMAC events export no quantities or operational UUIDs. Persistent state does not guarantee event delivery. Legacy lows and changed thresholds do not receive fictitious paired closes; retention/disposition and Compliance review remain pending. See [threshold lot](../../../docs/specs/telemetry-event-capture/inventory-threshold-producers.md).
+
+
+## Rejected direct stock writes — 2026-11-03
+
+Optional stock_direct_update_rejected telemetry recognizes only a top-level JSON stock field rejected as extra_forbidden on movement and item/clinic configuration POSTs. The original HTTP422 response is preserved. Active item/clinic/country, permission and scope are revalidated before queueing channel=api and regional HMAC operationId; stock, body and errors are never exported. Legitimate movement quantity/count inputs are excluded. Global CRUD without clinic context, aliases and external SQL remain uninstrumented. Capture is best effort, with no new tables or policy changes. See docs/specs/telemetry-event-capture/inventory-direct-stock-producer.md; Compliance review remains pending.
+
+
+## Inventory flow abandonment — 2026-11-03
+
+order_abandoned follows persisted UI selection/start flows. Authenticated activity and confirmation update stages without extending the300s credential; an internal processor scans up to100 rows every60s and closes open flows with≥30min of server-observed inactivity. An in/out movement may supply X-Inventory-Flow-Id: only the exact actor/item/clinic/direction/country binding becomes completed; other matching open flows become uncertain and emit no abandonment. Savepoints and a conservative fallback isolate ordinary tracking failures from business writes. No quantities, reasons, tokens or form contents in the table/events. Migration0013 creates only inventory_telemetry_flow. Retention/disposition and Compliance review remain pending; durable state does not imply durable delivery. See docs/specs/telemetry-event-capture/inventory-abandonment-producer.md for limits and evidence.
+
+
+## Projection reconciliation — 2026-11-03
+
+POST /inventory/items/{item_id}/clinics/{clinic_id}/reconciliation (optional lot_id, no body) requires existing audit:read and stock:read permissions. The auditor compares service.stock with an independent delta sum in the same REPEATABLE READ READ ONLY transaction, bounded to10000 movements/1s. Result is matched/mismatched/inconclusive, without quantities. Legacy/non-comparable country history, limit or timeout does not emit failure. Only a completed mismatch attempts inventory_reconciliation_failed with regional HMAC checkId and check=stock_projection; the producer revalidates context and may discard. telemetryAccepted acknowledges preparation admission, not delivery. No repair, new table or UI. This does not establish physical inventory accuracy. Evidence/limits: docs/specs/telemetry-event-capture/inventory-reconciliation-producer.md; Compliance review pending.
+
+
+## Bounded telemetry closure — 2026-11-03
+
+The current contract is 1.3.0 (39 types, 14 nullable). Clinic-explicit inventory audit reads now emit server-only `audit_accessed` with `surface=inventory` after a completed 2xx response. Active clinic/country, auditor scope and comparable historical country are independently revalidated; unknown/mixed history is discarded without changing the business response. API and consumers must use 1.3.0 together; 1.2.0 is rejected. The approved synthetic scope is technically validated, with 31 types partially instrumented and 8 without producers. Full coverage, durable delivery/retention and Compliance review remain pending. See `docs/specs/telemetry-event-capture/inventory-audit-and-close.md`; earlier version/coverage notes are historical.

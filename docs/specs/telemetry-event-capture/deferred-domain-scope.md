@@ -2,6 +2,8 @@
 
 Estado: aplazamiento aprobado expresamente por el desarrollador («apruebo»). Rama feature/telemetryEventCapture. Contrato1.2.0 conserva los39 tipos. No código, claves, datos, infraestructura ni Memory Bank/Rules modificados por esta propuesta.
 
+**Reentrada 2026-11-02:** inventario ya tiene implementación. TASK-TEL-030 se reabre con fuentes y diseño en [inventory-producers.md](./inventory-producers.md); no se declara captura implementada. La ausencia de inventario descrita debajo corresponde a la decisión histórica. Los motores/agregadores siguen sin fuente; la reentrada no satisface TEL-FR-018 ni extiende las aprobaciones anteriores a cambios protegidos futuros.
+
 ## Evidencia actual
 
 Revisión del árbol completo con rg --files y de los routers/modelos backend/app, backoffice y catálogo SDD. Hay incidencias, maestros, Compliance, catálogos, auth y telemetría; no inventario/pedidos, motores de alertas/notificaciones/jobs ni fuentes de KPI clínicos/departamentales. memory-bank/specs/inventory-manager contiene spec/plan/tasks, sin implementación. scripts/caching_inventory.py es un inventario técnico de caché, no existencias de productos. data/pipelines sólo tiene README; no acredita un pipeline ejecutable. La landing frontend no acredita dominios clínicos.

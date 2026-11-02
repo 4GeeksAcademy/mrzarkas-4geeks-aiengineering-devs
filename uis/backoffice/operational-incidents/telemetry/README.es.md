@@ -49,3 +49,13 @@ Buffers comparten total200 eventos/256KiB incluyendo vuelo: normal180/224KiB y r
 ## Evidencia de activación local conjunta
 
 El2026-11-01 terminó la reconstrucción autorizada backend/backoffice sin db-init ni inicialización DB. API health/status200, contrato1.2.0 e integridadok. Chrome verificó lectura de incidencias y cuatro catálogos Management con credenciales sintéticas. Módulo browser real envió20 eventos de navegación,21 diagnósticos de esquema y uno de entrega (403 simulado sólo en adaptador experimental); envíos reales200. Buffers cerrados vacíos, sin exportar claves; pestañas de prueba cerradas. Detalles docs/specs/telemetry-event-capture/local-activation-validation.md. Sólo prototipo local, sin producción ni cobertura completa.
+
+
+## Inventory follow-up — 2026-11-02
+
+Next Inventory dispone de canal dedicado de gestos autenticados product_selected/order_started; el módulo browser compartido de cinco tipos descrito debajo no cambia. Las credenciales de flujo servidor quedan en memoria de sesión acotada. El backend también captura movimientos confirmados, validaciones tipadas y lecturas clínicas explícitas. Alcance actual:26 tipos al menos parciales,13 sin productor; véase lote UI-flow.
+
+
+## Cierre acotado de telemetría — 2026-11-03
+
+Contrato vigente 1.3.0: 39 tipos, 14 nullable. Auditoría de inventario con clínica explícita emite `audit_accessed`, `surface=inventory`, sólo servidor y después de respuesta 2xx completa. Revalida clínica/país activos, scope auditor e historia comparable; descarta historia desconocida/mixta sin alterar respuestas. API y consumidores requieren actualización conjunta: 1.2.0 se rechaza. Alcance sintético autorizado validado técnicamente: 31 tipos instrumentados parcialmente y 8 sin productores. Cobertura integral, entrega durable/retención y Cumplimiento pendientes. Véase `docs/specs/telemetry-event-capture/inventory-audit-and-close.md`; las versiones/matrices anteriores son históricas.

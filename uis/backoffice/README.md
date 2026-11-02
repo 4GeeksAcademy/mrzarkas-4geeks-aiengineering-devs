@@ -72,3 +72,18 @@ An uncertain write blocks all Inventory forms within the current in-memory sessi
 Validation and remaining manual accessibility gates are recorded in `../../memory-bank/specs/inventory-manager-ui/plan.md`. Tests use only the isolated synthetic API harness. Linux container dependencies require running Vitest/build in the matching container; native macOS Chrome runs E2E against the temporary loopback servers. No lint script is configured.
 
 Inventory active field and secondary-button borders use the existing muted token for at least 3:1 contrast against white. Accessible structure, 320px reflow and CSS 200% enlargement have been checked; actual screen-reader and browser zoom review remain pending.
+
+
+## Inventory UI-flow telemetry — 2026-11-02
+
+Synthetic UI-flow telemetry adds POST /telemetry/inventory-flow with a closed request (action, clinicId, itemId, optional direction/flowToken). Selection requires stock:read; start requires movement:write and clinic-item configuration. Both revalidate active resources and actor scope. The server issues a regional HMAC flowId and signed credential bound to actor/clinic/item/direction, expiring within 300s and Bearer lifetime without extension. Declared UI gestures use the internal queue; POST /telemetry/events still rejects these types. The credential is not a stock operation or evidence that a human clicked. No persistence or durable dedup. Next captures trusted stock-link clicks and first movement-field interaction using bounded session memory, without delaying business actions. See [UI-flow lot](../../docs/specs/telemetry-event-capture/inventory-ui-flow-producers.md).
+
+
+## Inventory flow abandonment — 2026-11-03
+
+order_abandoned follows persisted UI selection/start flows. Authenticated activity and confirmation update stages without extending the300s credential; an internal processor scans up to100 rows every60s and closes open flows with≥30min of server-observed inactivity. An in/out movement may supply X-Inventory-Flow-Id: only the exact actor/item/clinic/direction/country binding becomes completed; other matching open flows become uncertain and emit no abandonment. Savepoints and a conservative fallback isolate ordinary tracking failures from business writes. No quantities, reasons, tokens or form contents in the table/events. Migration0013 creates only inventory_telemetry_flow. Retention/disposition and Compliance review remain pending; durable state does not imply durable delivery. See docs/specs/telemetry-event-capture/inventory-abandonment-producer.md for limits and evidence.
+
+
+## Bounded telemetry closure — 2026-11-03
+
+The current contract is 1.3.0 (39 types, 14 nullable). Clinic-explicit inventory audit reads now emit server-only `audit_accessed` with `surface=inventory` after a completed 2xx response. Active clinic/country, auditor scope and comparable historical country are independently revalidated; unknown/mixed history is discarded without changing the business response. API and consumers must use 1.3.0 together; 1.2.0 is rejected. The approved synthetic scope is technically validated, with 31 types partially instrumented and 8 without producers. Full coverage, durable delivery/retention and Compliance review remain pending. See `docs/specs/telemetry-event-capture/inventory-audit-and-close.md`; earlier version/coverage notes are historical.

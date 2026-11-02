@@ -72,3 +72,18 @@ Una escritura incierta bloquea todos los formularios Inventory de la sesión en 
 La validación y las comprobaciones manuales de accesibilidad pendientes constan en `../../memory-bank/specs/inventory-manager-ui/plan.md`. Las pruebas utilizan sólo el harness API sintético aislado. Las dependencias de contenedor Linux requieren Vitest/build dentro del contenedor compatible; Chrome nativo macOS ejecuta E2E contra servidores temporales loopback. No existe script lint configurado.
 
 Los bordes de campos activos y botones secundarios de Inventario usan el token muted existente para superar 3:1 sobre blanco. Se comprobaron estructura accesible, reflow a320px y ampliación CSS200%; siguen pendientes lector de pantalla real y zoom del navegador.
+
+
+## Inventory UI-flow telemetry — 2026-11-02
+
+La telemetría sintética de flujos UI añade POST /telemetry/inventory-flow con request cerrado (action, clinicId, itemId, direction/flowToken opcionales). Selección exige stock:read; inicio exige movement:write y configuración de artículo/clínica. Revalida recursos activos y alcance. El servidor emite flowId HMAC regional y credencial firmada vinculada a actor/clínica/artículo/dirección, caducada en máximo300s y limitada por Bearer sin extensión. Los gestos declarados usan la cola interna; POST /telemetry/events sigue rechazando estos tipos. La credencial no es una operación de stock ni prueba de clic humano. Sin persistencia ni dedup durable. Next captura clics confiables en enlaces de stock y primera interacción en campos de movimiento con memoria de sesión acotada, sin bloquear negocio. Véase [lote UI-flow](../../docs/specs/telemetry-event-capture/inventory-ui-flow-producers.md).
+
+
+## Abandono de flujos de inventario — 2026-11-03
+
+order_abandoned sigue flujos UI persistidos por selección/inicio. Actividad y confirmación autenticadas actualizan etapas sin ampliar la credencial300s; el procesador interno revisa hasta100 filas cada60s y cierra abiertos con≥30min de inactividad del servidor. Un movimiento in/out puede aportar X-Inventory-Flow-Id: sólo el vínculo exacto de actor/artículo/clínica/dirección/pais pasa a completed; otros abiertos coincidentes pasan a uncertain y no emiten abandono. Savepoints y una disposición conservadora separan fallos ordinarios de seguimiento del negocio. Sin cantidades, razones, tokens ni formularios en la tabla/eventos. Migración0013 crea sólo inventory_telemetry_flow. Retención/disposición y revisión de Cumplimiento pendientes; estado durable no implica entrega durable. Véase docs/specs/telemetry-event-capture/inventory-abandonment-producer.md para brechas y evidencia.
+
+
+## Cierre acotado de telemetría — 2026-11-03
+
+Contrato vigente 1.3.0: 39 tipos, 14 nullable. Auditoría de inventario con clínica explícita emite `audit_accessed`, `surface=inventory`, sólo servidor y después de respuesta 2xx completa. Revalida clínica/país activos, scope auditor e historia comparable; descarta historia desconocida/mixta sin alterar respuestas. API y consumidores requieren actualización conjunta: 1.2.0 se rechaza. Alcance sintético autorizado validado técnicamente: 31 tipos instrumentados parcialmente y 8 sin productores. Cobertura integral, entrega durable/retención y Cumplimiento pendientes. Véase `docs/specs/telemetry-event-capture/inventory-audit-and-close.md`; las versiones/matrices anteriores son históricas.

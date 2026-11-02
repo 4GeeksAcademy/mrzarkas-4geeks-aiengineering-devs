@@ -1,5 +1,31 @@
 # Cobertura pendiente y lote 2 implementado
 
+## Aprobación y cierre del alcance — 2026-11-03
+
+**Estado del alcance sintético entregado: PASS / cerrado.** El desarrollador autorizó posteriormente los commits con «haz los commits»: el cierre queda versionado por responsabilidades (almacenamiento, backend/contrato, interfaz y documentación). No push ni despliegue. Las notas anteriores de «sin commits» describen el estado previo a esta autorización. El desarrollador comunica en esta conversación: «autorizado por Claire el 3 de noviembre 2026». Se registra como aprobación de Claire Whitfield, Cumplimiento y Gobierno del Dato, comunicada por el desarrollador para el incremento de telemetría y su cierre acotado. Fuente: mensaje del desarrollador; no se ha consultado un acta o sistema externo ni se atribuye aprobación de datos reales, piloto, producción, nuevas fuentes o despliegue.
+
+Esta evidencia resuelve el bloqueo de Cumplimiento del cierre acotado indicado anteriormente. Se conservan los resultados de pruebas ya ejecutadas; esta actualización sólo modifica documentación. Los ocho tipos sin productor, la cobertura integral TEL-FR-018 y las mejoras de durabilidad/retención/rotación/correlación permanecen como backlog fuera del alcance cerrado. No se han creado commits ni desplegado servicios. Las menciones posteriores a Cumplimiento pendiente/BLOCKED son históricas y quedan sustituidas únicamente para este incremento.
+
+## Estado vigente — cierre técnico acotado (2026-11-03)
+
+**Alcance sintético autorizado implementado y validado; no se inician más ampliaciones.** Contrato **1.3.0**, 39 tipos: **31 instrumentados al menos parcialmente y 8 sin productor**. Los 12 tipos de inventario tienen captura acotada; esto no demuestra cobertura universal de operaciones. `audit_accessed` añade `surface=inventory` para las dos consultas con clínica explícita, sólo tras respuesta 2xx completa y revalidación regional/histórica. Contrato anterior 1.2.0 rechazado; tres copias byteidénticas y consumidores sincronizados.
+
+Evidencia final: 372 pruebas enfocadas aprobadas / 1 omitida por requerir otra base dedicada; 700 generales aprobadas / 38 de integración excluidas; después, 38 pruebas específicas de auditoría aprobadas, incluidas integración real, límites y precedencia. Los recuentos se solapan. 75 pruebas Node de telemetría, 67 Vitest, TypeScript y build aprobados; 1 E2E Chrome aprobado contra servicios temporales. PostgreSQL fresco migrado 0001–0013. No validación sobre servicios compartidos. Detalles en [inventory-audit-and-close.md](./inventory-audit-and-close.md).
+
+Backlog explícito: `alert_triggered`, `notification_delivery_completed`, `job_run_completed`, `appointment_period_aggregated`, `billing_period_aggregated`, `experience_period_aggregated`, `workforce_period_aggregated`, `clinical_workload_aggregated`. Además, cobertura API completa, auditoría global/histórica no comparable, correlación tardía, entrega durable/retención/rotación y revisión de Cumplimiento/Gobierno del Dato. TEL-FR-018 y aprobación global siguen pendientes; no aprobación de piloto/producción ni certificación. No commits, push, PR ni despliegue compartido.
+
+**Las secciones siguientes son cronología:** sus expresiones «vigente», versiones, hashes y matrices describen el momento indicado y no sustituyen este estado consolidado.
+
+**Último lote de episodios 2026-11-02:**28 tipos al menos parciales y11 sin productor; activación/cierre en [inventory-threshold-producers.md](./inventory-threshold-producers.md). Inventario pendiente: escritura directa rechazada, abandono y reconciliación. Ocho tipos de otros dominios siguen sin fuente; Cumplimiento/retención pendiente. Notas inferiores históricas.
+
+**Último lote UI 2026-11-02:**26 tipos con productor al menos parcial y13 sin productor; product_selected/order_started en [inventory-ui-flow-producers.md](./inventory-ui-flow-producers.md). Cinco eventos de inventario y ocho de otros dominios pendientes; revisión de Cumplimiento sigue pendiente. Las notas siguientes son cronología.
+
+**Último lote de lecturas 2026-11-02:**24 tipos con productor al menos parcial y15 sin productor. inventory_viewed sólo para stock/movements/reorder con clínica explícita; [evidencia y límites](./inventory-view-producer.md). Siete tipos de inventario restantes, ocho de otros dominios; revisión de Cumplimiento pendiente. Notas inferiores son cronología.
+
+**Último avance 2026-11-02:**23 tipos con productor al menos parcial y16 sin productor. Movimientos in/out/adjust y validaciones tipadas de inventario implementados y probados; ocho eventos de inventario restantes y ocho de otros dominios pendientes. Evidencia: [inventory-producers.md](./inventory-producers.md), [inventory-validation-producer.md](./inventory-validation-producer.md). Revisión de Cumplimiento pendiente; se conserva cronología anterior.
+
+**Actualización 2026-11-02:** inventario ya existe; TASK-TEL-030 reabierta, sin captura implementada todavía. Fuentes, contexto y primer lote propuesto en [inventory-producers.md](./inventory-producers.md). El estado y los lotes del2026-11-01 que siguen conservan su evidencia histórica.
+
 **Estado vigente — revisión final local (2026-11-01):** implementado y validado dentro del alcance reducido autorizado. Contrato1.2.0,39 tipos:19 con fuente al menos parcial y20 DEFERRED_NO_SOURCE aprobado. Un frontend/backoffice compartido y un backend; HMAC exclusivamente servidor, jurisdicción clínica autoritativa y null técnico general. Captura20/10 efímera, recepción no durable. Admisión browser5 + dos diagnósticos internos frontend restringidos; servidor admite sus hechos por canal propio. Backend/backoffice locales actualizados y Chrome sintético validado.
 
 **La cobertura integral original NO está terminada:**9 de los20 diferidos son obligatorios; TEL-FR-018 sigue pendiente. Hay además brechas de los19 tipos actuales, detalladas en [delivery-status.md](./delivery-status.md). La aprobación de aplazamiento no equivale a requisitos satisfechos, producción ni cumplimiento normativo.
@@ -133,3 +159,28 @@ Implementados diagnósticos internos frontend de contrato/entrega, bajo contexto
 ## Activación local conjunta validada
 
 Autorizada mediante «continua», actualización backend/backoffice sin db-init ni cambios DB/env/infra. Chrome real confirma UI incidencias y Management, contrato1.2.0 y recepción200 de navegación20, diagnósticos de esquema20+1 y entrega1 tras fallo controlado en adaptador.22 diagnósticos recibidos,0 retries diagnósticos, buffers vacíos al cerrar; backend check_contract=ok y health/status200. Detalle y límites: [local-activation-validation.md](./local-activation-validation.md). No cierre global ni producción; dominios diferidos/coberturas pendientes conservados.
+
+
+### Avance 2026-11-03 — escritura directa de stock
+
+Implementado stock_direct_update_rejected parcialmente para campo superior stock rechazado en movimientos/configuración clínica. Cobertura29 tipos parcial/10 sin productor; quedan order_abandoned e inventory_reconciliation_failed en inventario. CRUD global sin clínica/aliases/SQL externo pendientes.241 pruebas focalizadas y592 generales superadas, solapadas; [evidencia](./inventory-direct-stock-producer.md). Revisión de Cumplimiento pendiente; no cierre global.
+
+
+### Avance 2026-11-03 — abandono de flujos
+
+order_abandoned instrumentado parcialmente mediante seguimiento persistente,30min de inactividad y terminal vinculado.30 tipos parcial/9 sin productor; inventario sólo inventory_reconciliation_failed.258 pruebas focalizadas/607 generales solapadas;66 UI, build/types y1 Chrome PASS. [Evidencia y límites](./inventory-abandonment-producer.md). Cumplimiento/retención y correlación de señales perdidas pendientes; no cierre global.
+
+
+### Avance 2026-11-03 — conciliación de proyección
+
+inventory_reconciliation_failed instrumentado por checker independiente READ ONLY/REPEATABLE READ y ruta de auditor; sólo mismatch completo emite.31 tipos parcial/8 sin productor, todos ajenos a inventario;12 tipos inventory con alguna captura, mantienen brechas.297 focalizadas/627 generales solapadas;22 del nuevo fichero y contrato/tipos/proxy PASS. [Evidencia](./inventory-reconciliation-producer.md). Cumplimiento pendiente y cobertura parcial; sin cierre global.
+
+
+### Avance 2026-11-03 — requests generales
+
+api_request_completed amplía cuatro lecturas clínicas con /health y /status completos, generales/anónimos y correlacionados con el evento de salud por UUID interno.67 enfocadas/646 generales (solapadas) PASS; [evidencia](./general-request-completion-producer.md).31 tipos parcial/8 sin productor, sin incremento de tipos. Otras rutas/correlación y revisión global siguen pendientes.
+
+
+### Avance 2026-11-03 — requests de catálogos
+
+api_request_completed añade lecturas autorizadas globales de catálogos tras finalsend, con HMAC general y caché intacta.55 enfocadas/664 generales solapadas PASS; [evidencia](./catalog-request-completion-producer.md).31 tipos parcial/8 sin productor sin cambio; otras rutas/correlación y revisión global pendientes.

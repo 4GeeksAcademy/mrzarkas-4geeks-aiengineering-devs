@@ -49,3 +49,13 @@ Buffers share a200-event/256KiB total including flight: normal180/224KiB and res
 ## Joint local activation evidence
 
 On2026-11-01 the authorized backend/backoffice rebuild completed without db-init or database initialization. API health/status200 and contract1.2.0 integrity=ok. Chrome verified incident reads and four Management catalogues using synthetic credentials. Real browser module sent20 navigation events,21 schema diagnostics and one delivery diagnostic (a403 simulated only in the experiment adapter); all real sends200. Buffers closed empty; no keys exported, test tabs closed. Details: docs/specs/telemetry-event-capture/local-activation-validation.md. Local prototype only, no production approval or complete coverage claim.
+
+
+## Inventory follow-up — 2026-11-02
+
+Next inventory now has a dedicated authenticated gesture channel for product_selected/order_started; the shared five-type browser module described below is unchanged. Server-issued flow credentials stay in bounded session memory. The inventory backend also captures committed movements, typed validation and completed explicit-clinic reads. Current scope:26 types at least partially covered,13 without producers; see the UI-flow lot.
+
+
+## Bounded telemetry closure — 2026-11-03
+
+The current contract is 1.3.0 (39 types, 14 nullable). Clinic-explicit inventory audit reads now emit server-only `audit_accessed` with `surface=inventory` after a completed 2xx response. Active clinic/country, auditor scope and comparable historical country are independently revalidated; unknown/mixed history is discarded without changing the business response. API and consumers must use 1.3.0 together; 1.2.0 is rejected. The approved synthetic scope is technically validated, with 31 types partially instrumented and 8 without producers. Full coverage, durable delivery/retention and Compliance review remain pending. See `docs/specs/telemetry-event-capture/inventory-audit-and-close.md`; earlier version/coverage notes are historical.
