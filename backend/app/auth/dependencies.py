@@ -22,6 +22,8 @@ class Actor:
     id: UUID
     role: str
     area_id: UUID | None = None
+    clinic_ids: tuple[UUID, ...] = ()
+    jurisdiction_ids: tuple[UUID, ...] = ()
 
 
 async def get_current_actor(
@@ -44,12 +46,17 @@ async def get_current_actor(
             detail=f"Invalid token: {error}",
         ) from error
 
-    area_id = payload.get("area_id")
-    actor = Actor(
-        id=UUID(payload["sub"]),
-        role=payload["role"],
-        area_id=UUID(area_id) if area_id else None,
-    )
+    try:
+        area_id = payload.get("area_id")
+        actor = Actor(
+            id=UUID(payload["sub"]), role=payload["role"],
+            area_id=UUID(area_id) if area_id else None,
+            clinic_ids=tuple(UUID(value) for value in payload.get("clinic_ids", [])),
+            jurisdiction_ids=tuple(UUID(value) for value in payload.get("jurisdiction_ids", [])),
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        mark_failure(request, "invalid")
+        raise HTTPException(401, "Invalid identity claims") from error
     mark_success(request, actor, credentials.credentials, payload.get("exp"))
     return actor
 

@@ -14,6 +14,7 @@ from app.compliance.router import router as compliance_router
 from app.core.config import get_settings
 from app.incidents.router import router as incidents_router
 from app.management.router import router as management_router
+from app.inventory.router import router as inventory_router
 from app.db.session import engine
 from app.telemetry.router import router as telemetry_router
 from app.telemetry.audit_completion import AuditCompletionMiddleware
@@ -65,6 +66,7 @@ if settings.app_environment in {"development", "test"}:
         allow_methods=["GET", "POST", "PATCH"],
         allow_headers=["Authorization", "Content-Type", "X-Telemetry-Context"],
     )
+app.include_router(inventory_router)
 app.include_router(auth_router)
 app.include_router(catalogs_router)
 app.include_router(compliance_router)

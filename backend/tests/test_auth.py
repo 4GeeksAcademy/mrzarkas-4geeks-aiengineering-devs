@@ -45,10 +45,24 @@ def test_all_operations_have_explicit_contracts_and_documented_errors() -> None:
         "/management/affected-systems/{system_id}/jurisdictions": {"put"},
         "/management/audit-events": {"get"}, "/health": {"get"}, "/status": {"get"},
     }
+    expected.update({
+        "/inventory/items": {"get", "post"},
+        "/inventory/items/{item_id}": {"get", "patch"},
+        "/inventory/items/{item_id}/deactivation": {"post"},
+        "/inventory/items/{item_id}/clinics/{clinic_id}/configuration": {"post"},
+        "/inventory/items/{item_id}/lots": {"get", "post"},
+        "/inventory/movements": {"post"},
+        "/inventory/movements/{movement_id}/correction": {"post"},
+        "/inventory/items/{item_id}/stock": {"get"},
+        "/inventory/items/{item_id}/movements": {"get"},
+        "/inventory/access-denials": {"get"},
+        "/inventory/stock": {"get"}, "/inventory/reorder": {"get"},
+        "/inventory/items/{item_id}/audit": {"get"},
+    })
     openapi = app.openapi()
     observed = {path: set(operations) for path, operations in openapi["paths"].items()}
     assert observed == expected
-    assert sum(map(len, observed.values())) == 30
+    assert sum(map(len, observed.values())) == 46
     routes = [route for route in app.routes if isinstance(route, APIRoute)]
     assert all(route.response_model is not None for route in routes)
     for route in routes:

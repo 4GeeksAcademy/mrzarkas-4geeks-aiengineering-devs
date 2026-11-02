@@ -22,6 +22,8 @@ class TokenRequest(BaseModel):
     actor_id: UUID
     role: str
     area_id: UUID | None = None
+    clinic_ids: list[UUID] = []
+    jurisdiction_ids: list[UUID] = []
 
 
 class TokenResponse(BaseModel):
@@ -43,5 +45,6 @@ def issue_token(payload: TokenRequest) -> TokenResponse:
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=f"Unknown role: {payload.role}",
         )
-    token = create_access_token(payload.actor_id, payload.role, payload.area_id)
+    token = create_access_token(payload.actor_id, payload.role, payload.area_id,
+        clinic_ids=tuple(payload.clinic_ids), jurisdiction_ids=tuple(payload.jurisdiction_ids))
     return TokenResponse(access_token=token)

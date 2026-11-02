@@ -25,6 +25,8 @@ def create_access_token(
     role: str,
     area_id: UUID | None = None,
     expires_minutes: int | None = None,
+    clinic_ids: tuple[UUID, ...] = (),
+    jurisdiction_ids: tuple[UUID, ...] = (),
 ) -> str:
     if role not in ROLES:
         raise ValueError(f"Unknown role: {role}")
@@ -36,6 +38,8 @@ def create_access_token(
         "sub": str(actor_id),
         "role": role,
         "area_id": str(area_id) if area_id else None,
+        "clinic_ids": [str(value) for value in clinic_ids],
+        "jurisdiction_ids": [str(value) for value in jurisdiction_ids],
         "iat": now,
         "exp": now + expires_delta,
     }

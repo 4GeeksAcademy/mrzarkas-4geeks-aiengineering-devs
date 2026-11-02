@@ -14,7 +14,8 @@ COMPLIANCE = "compliance"
 DIRECTION = "direction"
 ADMIN = "admin"
 
-ROLES = {TECHNOLOGY, RESPONSIBLE_AREA, COMPLIANCE, DIRECTION, ADMIN}
+ROLES = {TECHNOLOGY, RESPONSIBLE_AREA, COMPLIANCE, DIRECTION, ADMIN,
+         "inventoryAdmin", "inventoryOperator", "inventoryManager", "inventoryRegional", "inventoryAuditor"}
 
 # Capabilities granted to the technical administrator. Management writes stay
 # exclusive to this role until the M0 matrix is formally approved.
