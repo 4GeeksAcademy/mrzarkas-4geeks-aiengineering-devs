@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useInventoryFlows } from "@/lib/telemetry/provider";
 import type { Item, Schema, Stock } from "@/lib/api/types";
 import { useSession } from "@/lib/auth/session";
 import { Input, Select } from "@/components/ui";
@@ -23,6 +24,8 @@ export function ClinicalActions({
   refresh: () => void;
 }) {
   const { session } = useSession();
+  const flows = useInventoryFlows();
+  useEffect(() => () => flows?.reset(item.id, clinic), [flows, item.id, clinic, lot]);
   const [kind, setKind] = useState<"in" | "out">("in");
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState<"base" | "pack">("base");
@@ -118,6 +121,8 @@ export function ClinicalActions({
             confirm
             context={`${context} · ${kind} · ${quantity || "sin cantidad"} ${unit}`}
             summary={movementSummary}
+            flowBinding={() => flows?.binding(item.id, clinic)}
+            onConfirm={() => flows?.confirmation(item.id, clinic)}
             body={(fd) => ({
               ...bound,
               kind,
@@ -130,7 +135,13 @@ export function ClinicalActions({
               <Select
                 label="Movimiento"
                 value={kind}
-                onChange={(e) => setKind(e.target.value as "in" | "out")}
+                onChange={(e) => {
+                  const next = e.target.value as "in" | "out";
+                  flows?.reset(item.id, clinic);
+                  setKind(next);
+                  if (valid && e.nativeEvent.isTrusted)
+                    flows?.start(item.id, clinic, lot, next === "in" ? "inbound" : "outbound");
+                }}
               >
                 <option value="in">Entrada</option>
                 <option value="out">Salida</option>
@@ -144,13 +155,21 @@ export function ClinicalActions({
                 step={1}
                 required
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) => {
+                  setQuantity(e.target.value);
+                  if (valid && e.nativeEvent.isTrusted)
+                    flows?.start(item.id, clinic, lot, kind === "in" ? "inbound" : "outbound");
+                }}
               />
               <Select
                 label="Unidad del movimiento"
                 name="unit"
                 value={unit}
-                onChange={(e) => setUnit(e.target.value as "base" | "pack")}
+                onChange={(e) => {
+                  setUnit(e.target.value as "base" | "pack");
+                  if (valid && e.nativeEvent.isTrusted)
+                    flows?.start(item.id, clinic, lot, kind === "in" ? "inbound" : "outbound");
+                }}
               >
                 <option value="base">Unidades base ({item.unit})</option>
                 {item.pack_label && (
@@ -159,7 +178,11 @@ export function ClinicalActions({
                   </option>
                 )}
               </Select>
-              <Input label="Motivo (opcional)" name="reason" maxLength={500} />
+              <Input label="Motivo (opcional)" name="reason" maxLength={500}
+                onChange={(e) => {
+                  if (valid && e.nativeEvent.isTrusted)
+                    flows?.start(item.id, clinic, lot, kind === "in" ? "inbound" : "outbound");
+                }} />
             </div>
             {movementSummary}
           </OperationForm>

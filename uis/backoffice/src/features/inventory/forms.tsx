@@ -21,6 +21,8 @@ export function OperationForm<T>({
   canSubmit = true,
   summary,
   context = "",
+  flowBinding,
+  onConfirm,
 }: {
   title: string;
   path: string;
@@ -33,6 +35,8 @@ export function OperationForm<T>({
   canSubmit?: boolean;
   summary?: ReactNode;
   context?: string;
+  flowBinding?: () => string | undefined;
+  onConfirm?: () => void;
 }) {
   const mutation = useMutation();
   const operations = useOperationState();
@@ -144,6 +148,7 @@ export function OperationForm<T>({
         uncertain = error.uncertain;
         if (uncertain) operations?.unknown(`${title} · ${context}`);
       },
+      flowBinding?.(),
     );
     if (!uncertain) operations?.finish();
     if (result !== undefined) {
@@ -244,6 +249,7 @@ export function OperationForm<T>({
             <Button
               onClick={() => {
                 dialog.current?.close();
+                onConfirm?.();
                 void execute();
               }}
             >

@@ -22,6 +22,7 @@ export async function request<T>(
   options: {
     method?: "GET" | "POST" | "PATCH";
     body?: unknown;
+    inventoryFlowId?: string;
     signal?: AbortSignal;
     onUnauthorized?: () => void;
   } = {},
@@ -36,6 +37,8 @@ export async function request<T>(
       redirect: "error",
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(path === "/inventory/movements" && method === "POST" && /^ps_[0-9a-f]{64}$/.test(options.inventoryFlowId ?? "")
+          ? { "X-Inventory-Flow-Id": options.inventoryFlowId! } : {}),
         ...(options.body !== undefined
           ? { "Content-Type": "application/json" }
           : {}),

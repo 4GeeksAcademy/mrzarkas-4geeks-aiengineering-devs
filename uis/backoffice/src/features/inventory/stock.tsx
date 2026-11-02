@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useInventoryFlows } from "@/lib/telemetry/provider";
 import { useQuery } from "@/hooks/use-query";
 import { useSession } from "@/lib/auth/session";
 import { canReadStock } from "@/lib/auth/presentation";
@@ -19,6 +20,7 @@ import { ClinicSelector } from "./context-selector";
 import { ReceivedAt } from "./format";
 export function InventoryStock({ reorder = false }: { reorder?: boolean }) {
   const { session } = useSession();
+  const flows = useInventoryFlows();
   const allowed = !!session && canReadStock(session.claims);
   const [search, setSearch] = useState("");
   const [priority, setPriority] = useState(false);
@@ -140,6 +142,11 @@ export function InventoryStock({ reorder = false }: { reorder?: boolean }) {
                             <Link
                               href={`/inventory/items/${r.item_id}?clinic=${r.clinic_id}`}
                               prefetch={false}
+                              onClick={(event) => {
+                                if (event.nativeEvent.isTrusted && event.button === 0 && !event.metaKey &&
+                                    !event.ctrlKey && !event.shiftKey && !event.altKey)
+                                  flows?.select(r.item_id, r.clinic_id);
+                              }}
                             >
                               {catalog.data?.find(
                                 (item) => item.id === r.item_id,

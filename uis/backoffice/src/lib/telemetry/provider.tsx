@@ -11,6 +11,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth/session";
 import { isInventory } from "@/lib/auth/presentation";
+import { createInventoryFlows, type InventoryFlows } from "./inventory-flow";
 type Service = {
   connect: (api: string, token: string) => Promise<boolean>;
   activateClinic: (id: string | null) => Promise<boolean>;
@@ -19,6 +20,7 @@ type Service = {
   destroy: () => void;
 };
 const Binding = createContext<(clinic: string | null) => void>(() => {});
+const InventoryBinding = createContext<InventoryFlows | null>(null);
 export function TelemetryProvider({ children }: { children: ReactNode }) {
   const { session } = useSession();
   const pathname = usePathname();
@@ -28,6 +30,13 @@ export function TelemetryProvider({ children }: { children: ReactNode }) {
   } | null>(null);
   const [ready, setReady] = useState(0);
   const service = useRef<Service | null>(null);
+  const [flows, setFlows] = useState<InventoryFlows | null>(null);
+  useEffect(() => {
+    if (!session || !isInventory(session.claims)) { setFlows(null); return; }
+    const own = createInventoryFlows(session.token, session.signal);
+    setFlows(own);
+    return () => own.stop();
+  }, [session]);
   const application = pathname.startsWith("/management/")
     ? "management"
     : "incidents";
@@ -100,8 +109,9 @@ export function TelemetryProvider({ children }: { children: ReactNode }) {
     (value: string | null) => setClinic({ path: pathname, clinic: value }),
     [pathname],
   );
-  return <Binding.Provider value={bind}>{children}</Binding.Provider>;
+  return <InventoryBinding.Provider value={flows}><Binding.Provider value={bind}>{children}</Binding.Provider></InventoryBinding.Provider>;
 }
+export function useInventoryFlows() { return useContext(InventoryBinding); }
 export function useTelemetryClinic(clinic: string | null) {
   const bind = useContext(Binding);
   useEffect(() => {

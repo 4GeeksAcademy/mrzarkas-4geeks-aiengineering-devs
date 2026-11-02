@@ -26,6 +26,8 @@ describe("bounded forwarding", () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
   it("allows exactly the reviewed operations", () => {
+    expect(allowedRoute(["telemetry", "inventory-flow"], "POST")).toBe("/telemetry/inventory-flow");
+    expect(allowedRoute(["telemetry", "inventory-flow"], "GET")).toBeNull();
     expect(allowedRoute(["inventory", "items", id, "stock"], "GET")).toBe(
       "/inventory/items/{item_id}/stock",
     );
@@ -104,4 +106,26 @@ describe("bounded forwarding", () => {
     expect(response.status).toBe(503);
     expect(await response.text()).not.toContain("address");
   });
+});
+
+it("forwards only a bounded flow binding on the movement POST", async () => {
+  for (const [path, flow, expected] of [
+    ["/inventory/movements", `ps_${"a".repeat(64)}`, true],
+    ["/inventory/movements", "invalid", false],
+    ["/inventory/items", `ps_${"a".repeat(64)}`, false],
+  ] as const) {
+    const fetcher = vi.fn(async () => Response.json({ result: "accepted" }));
+    const request = req(path, "POST", "{}");
+    request.headers.set("X-Inventory-Flow-Id", flow);
+    await forward(request, path.slice(1).split("/"), fetcher);
+    const options = fetcher.mock.calls[0] as unknown as [URL, RequestInit];
+    expect(new Headers(options[1].headers).has("X-Inventory-Flow-Id")).toBe(expected);
+  }
+});
+
+it("allows only POST for the reviewed reconciliation route", () => {
+  const parts = ["inventory", "items", id, "clinics", id, "reconciliation"];
+  expect(allowedRoute(parts, "POST")).toBe("/inventory/items/{item_id}/clinics/{clinic_id}/reconciliation");
+  expect(allowedRoute(parts, "GET")).toBeNull();
+  expect(allowedRoute(parts, "PATCH")).toBeNull();
 });

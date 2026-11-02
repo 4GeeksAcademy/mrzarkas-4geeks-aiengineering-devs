@@ -121,6 +121,8 @@ export async function forward(
       method: request.method,
       headers: {
         Authorization: bearer,
+        ...(template === "/inventory/movements" && request.method === "POST" && /^ps_[0-9a-f]{64}$/.test(request.headers.get("x-inventory-flow-id") ?? "")
+          ? { "X-Inventory-Flow-Id": request.headers.get("x-inventory-flow-id")! } : {}),
         ...(body ? { "Content-Type": "application/json" } : {}),
         ...(request.headers.has("x-telemetry-context")
           ? {

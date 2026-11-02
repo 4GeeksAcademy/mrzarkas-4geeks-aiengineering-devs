@@ -14,6 +14,7 @@ export function useMutation() {
     method: "POST" | "PATCH" = "POST",
     validate?: (data: unknown) => void,
     onFailure?: (error: ApiError) => void,
+    inventoryFlowId?: string,
   ): Promise<T | undefined> {
     if (!session || gate.current || error?.uncertain) return;
     gate.current = true;
@@ -24,6 +25,7 @@ export function useMutation() {
       const data = await request<T>(path, session.token, {
         method,
         body,
+        inventoryFlowId,
         signal: session.signal,
         onUnauthorized: disconnect,
       });
