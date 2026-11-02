@@ -1,0 +1,37 @@
+# Optional synthetic development coexistence. Legacy hash routes remain owned by Nginx.
+server {
+    listen 80;
+    server_name localhost;
+    access_log off;
+    proxy_next_upstream off;
+    root /usr/share/nginx/html;
+    index index.html;
+    location = /next {
+        proxy_pass http://backoffice-next:3100;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control "private, no-store" always;
+    }
+    location /next/ {
+        proxy_pass http://backoffice-next:3100;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control "private, no-store" always;
+    }
+    # Keep the optional telemetry producer's existing receiver path and contract.
+    location = /telemetry/events { proxy_pass http://backend:8000; }
+    location = /telemetry/context { proxy_pass http://backend:8000; }
+    location /api-core/ {
+        proxy_pass http://backoffice-next:3100/next/api-core/;
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control "private, no-store" always;
+    }
+    location = /telemetry/config.json {
+        default_type application/json;
+        add_header Cache-Control "no-store" always;
+        return 200 '{"enabled":${TELEMETRY_ENABLED},"endpoint":"${BACKOFFICE_TELEMETRY_ENDPOINT}","environment":"${APP_ENVIRONMENT}"}';
+    }
+    location / { try_files $uri $uri/ =404; }
+}

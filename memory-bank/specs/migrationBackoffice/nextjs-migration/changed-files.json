@@ -1,0 +1,397 @@
+[
+  {
+    "path": "docker-compose.backoffice-next.yml",
+    "bytes": 853,
+    "sha256": "9df0fa79df291fa179697b495cd6eb4fe30d496de91e384f4ee6c03c81a48d32"
+  },
+  {
+    "path": "memory-bank/specs/migrationBackoffice/nextjs-migration/execution.md",
+    "bytes": 16394,
+    "sha256": "aaa2220b64f579b00498dcf9fbe0ef840ebd2a95c43ccf6c8e04b6db7bbc9d31"
+  },
+  {
+    "path": "memory-bank/specs/migrationBackoffice/nextjs-migration/performance.json",
+    "bytes": 7914,
+    "sha256": "c23e11535b3434ea8e12037a3c1935b2be8df1fe27fbfe16a5dd905bf65c961b"
+  },
+  {
+    "path": "memory-bank/specs/migrationBackoffice/nextjs-migration/plan.md",
+    "bytes": 52644,
+    "sha256": "963bb5912f18b8d4df398e1668bfada73d02d0ad6e0948ae84142e7b4c26649d"
+  },
+  {
+    "path": "memory-bank/specs/migrationBackoffice/nextjs-migration/spec.md",
+    "bytes": 34817,
+    "sha256": "9c342dc18f67e461f628625b9206f9a36e93527b8ba8bb1eb4885a086aefa6ee"
+  },
+  {
+    "path": "memory-bank/specs/migrationBackoffice/nextjs-migration/tasks.md",
+    "bytes": 33989,
+    "sha256": "d6075925bade07d3cc865d5d6e04887fb1a96af175ec9de250770d84ed72dbb1"
+  },
+  {
+    "path": "uis/backoffice/.dockerignore",
+    "bytes": 85,
+    "sha256": "cc0b9b4b6961fe0037e2d896bdc6759d9c5588c0154c7af1337ea6f2a25fa41a"
+  },
+  {
+    "path": "uis/backoffice/.gitignore",
+    "bytes": 99,
+    "sha256": "b67a06fcc87d79cd8841978efdbdeb41889499bf87a0a3183696fb783f88a6e1"
+  },
+  {
+    "path": "uis/backoffice/Dockerfile",
+    "bytes": 839,
+    "sha256": "6ccf119d1af01bbcaea47fd437c4b3b4e7d4262f94494798d1b5c5929d057389"
+  },
+  {
+    "path": "uis/backoffice/README.es.md",
+    "bytes": 6433,
+    "sha256": "84414fe27c9bbfadc3ccb96b408fcd573742083c984a09a2b7f1e82f3a4df20e"
+  },
+  {
+    "path": "uis/backoffice/README.md",
+    "bytes": 6617,
+    "sha256": "15a69c407bfe123631b976184b084a6bed0b52b2248004c45475a2c9cd4b7ddf"
+  },
+  {
+    "path": "uis/backoffice/contracts/openapi.json",
+    "bytes": 327950,
+    "sha256": "80a0fd1140c250807e0ab95388db823bf55a55316ab07f42ee14d21e321d9a51"
+  },
+  {
+    "path": "uis/backoffice/next-env.d.ts",
+    "bytes": 288,
+    "sha256": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b"
+  },
+  {
+    "path": "uis/backoffice/next.config.ts",
+    "bytes": 461,
+    "sha256": "2f185c0585ba91cea07d48367a840a7569598c108783a317f2693117c68bd03d"
+  },
+  {
+    "path": "uis/backoffice/nginx/next.conf.template",
+    "bytes": 1526,
+    "sha256": "29947d547fdb8241d7ac4eb6d61325c80534cf2f19482a7e37627cb927477810"
+  },
+  {
+    "path": "uis/backoffice/package.json",
+    "bytes": 1250,
+    "sha256": "697e96101a5f14b7f612c4bddbbd27f7c181774a277539e17b3946e1549f7d6b"
+  },
+  {
+    "path": "uis/backoffice/playwright.config.ts",
+    "bytes": 789,
+    "sha256": "eee3824269dbb1aa25280d873d6f56f5e23905b20d67f76de9f005819fa9554c"
+  },
+  {
+    "path": "uis/backoffice/pnpm-lock.yaml",
+    "bytes": 67628,
+    "sha256": "ce9b215103ed8f1e1360b0edb71c2dcd3c84a21670979443ff05df23d163691c"
+  },
+  {
+    "path": "uis/backoffice/scripts/check-contracts.mjs",
+    "bytes": 631,
+    "sha256": "630e79b7aa996a43bd27afae2a79d6a95c3322787d34ba214ff5a9d91166039f"
+  },
+  {
+    "path": "uis/backoffice/scripts/measure.mjs",
+    "bytes": 4792,
+    "sha256": "638513b905bfe02eb51becc0acb70411d4f588b0e61c99d78f3960f3d22afc8e"
+  },
+  {
+    "path": "uis/backoffice/scripts/start.mjs",
+    "bytes": 696,
+    "sha256": "f832f76631aeab689b451ee4a695f752956dd65425910793405810babcd29ad6"
+  },
+  {
+    "path": "uis/backoffice/scripts/sync-assets.mjs",
+    "bytes": 438,
+    "sha256": "599bf211b1c38a1e94f81baf5fb5f4efe5f5a5625f4f524342ef8a2633d86468"
+  },
+  {
+    "path": "uis/backoffice/scripts/validation-api.py",
+    "bytes": 1608,
+    "sha256": "419bf8129626b5191a63ade94ca6c9cd026cbce9565b7ac1b7fabb2012895f81"
+  },
+  {
+    "path": "uis/backoffice/scripts/validation-legacy.py",
+    "bytes": 928,
+    "sha256": "de59c97782f3403027432db721887dda4ba4893c4bc517754e05cda07e5cb9cb"
+  },
+  {
+    "path": "uis/backoffice/scripts/validation-regression.py",
+    "bytes": 1463,
+    "sha256": "055e40330fd52ac05dd279e25a52959617cd6ababe4059f7b3a37ded1f419abb"
+  },
+  {
+    "path": "uis/backoffice/src/app/api-core/[...path]/route.ts",
+    "bytes": 296,
+    "sha256": "5256f83d410ab11918bb6458e0080082477480957f5fe8a1fa8ed2e04f0171ac"
+  },
+  {
+    "path": "uis/backoffice/src/app/connect/page.tsx",
+    "bytes": 35,
+    "sha256": "ed1e1f74060b6ecdcb1b4bd6fc8cb85bb63e3d9305d17e8523d5f7a575cb2bde"
+  },
+  {
+    "path": "uis/backoffice/src/app/error.tsx",
+    "bytes": 291,
+    "sha256": "8f303561ab29cfd65e99ecfa550c60b7e0599ddcec4154b299796ce430469ad5"
+  },
+  {
+    "path": "uis/backoffice/src/app/incidents/[id]/page.tsx",
+    "bytes": 273,
+    "sha256": "0e3a2c92a04f7d7684229114885e8d3d5a0a1350b4e78b0f060fb7e42f10de15"
+  },
+  {
+    "path": "uis/backoffice/src/app/incidents/new/page.tsx",
+    "bytes": 126,
+    "sha256": "ec5a5241960a80868d39eb9f9f483184c963b96e837ac38907d0c6543ee1c7f2"
+  },
+  {
+    "path": "uis/backoffice/src/app/incidents/page.tsx",
+    "bytes": 160,
+    "sha256": "b58ed5a772be5a62dca7b0b99b045b97157d9ee35462e3ce2579a3cac1db6586"
+  },
+  {
+    "path": "uis/backoffice/src/app/inventory/audit/page.tsx",
+    "bytes": 125,
+    "sha256": "22a379dc30554c29ab9a947fef576ce880cc867f131ab1869fe8b7bf94bcf4b7"
+  },
+  {
+    "path": "uis/backoffice/src/app/inventory/items/[id]/page.tsx",
+    "bytes": 275,
+    "sha256": "8f6a890d0ee778c23511f208e7fee8d2fe528f6a3361c1a3430571336d707a1d"
+  },
+  {
+    "path": "uis/backoffice/src/app/inventory/items/page.tsx",
+    "bytes": 125,
+    "sha256": "a1354368ff9f3b53dc9c416b5df7c5f144a71882a991b7494afb141c3992940a"
+  },
+  {
+    "path": "uis/backoffice/src/app/inventory/reorder/page.tsx",
+    "bytes": 133,
+    "sha256": "8f26d16af09fcae206fe2c4da6e7535a50d901e31c9a5fb0e99b95e0d685a186"
+  },
+  {
+    "path": "uis/backoffice/src/app/inventory/stock/page.tsx",
+    "bytes": 125,
+    "sha256": "d83cbf5d14c8ac988c603432064e017ccdf95e383a7e24f3ace0305c10582faf"
+  },
+  {
+    "path": "uis/backoffice/src/app/layout.tsx",
+    "bytes": 742,
+    "sha256": "2a631a59d47f2ae20eba20abbc088e19103966ab62a1eeffeccbedca6cf43f66"
+  },
+  {
+    "path": "uis/backoffice/src/app/management/audit/page.tsx",
+    "bytes": 143,
+    "sha256": "c39ec8986860e5f93544b100debf0c6f5a8be9f297041cf5aed85362b084d3d7"
+  },
+  {
+    "path": "uis/backoffice/src/app/management/catalogs/page.tsx",
+    "bytes": 146,
+    "sha256": "4ee404e7a090adc6491e849e19864a70adb530c4a5ce52d5a2a495dc34ed8314"
+  },
+  {
+    "path": "uis/backoffice/src/app/management/reference-data/page.tsx",
+    "bytes": 152,
+    "sha256": "f1ede7340ff098990c6b5fd20051591bc48e491bed6acf75cfbd757c4e10b85c"
+  },
+  {
+    "path": "uis/backoffice/src/app/not-found.tsx",
+    "bytes": 215,
+    "sha256": "55a5074b625e3aef101703598b572c3c1ebe8c41bce237a38f77c30ae361094d"
+  },
+  {
+    "path": "uis/backoffice/src/app/page.tsx",
+    "bytes": 533,
+    "sha256": "4090e663a710f34ef67f99d07b79956da818a855a156e88d153f915d466026ec"
+  },
+  {
+    "path": "uis/backoffice/src/app/summary/page.tsx",
+    "bytes": 113,
+    "sha256": "5352455e6db91bc6f815c6e523485fe2e083f788511c8725bf959b78f7d0123e"
+  },
+  {
+    "path": "uis/backoffice/src/app/telemetry/config.json/route.ts",
+    "bytes": 466,
+    "sha256": "b17ab9b760fd3f2f8c8864a7ed529ff925f7b00b2d45183a611d865fea810807"
+  },
+  {
+    "path": "uis/backoffice/src/components/app-shell.tsx",
+    "bytes": 5369,
+    "sha256": "741689e5c53b2bd6a622fede087257f430f63b650fd18f5e4c768dd882a5bf25"
+  },
+  {
+    "path": "uis/backoffice/src/components/ui.tsx",
+    "bytes": 7490,
+    "sha256": "ea5c6fa65d05a01871c89dcd180bf6e09f5ca8d7d5a8e99dcef6badce802fb1c"
+  },
+  {
+    "path": "uis/backoffice/src/features/incidents/create.tsx",
+    "bytes": 6961,
+    "sha256": "97823093ea90008782cd728c3d3aa8523607a059254ac88c4a91e1eb545f04a2"
+  },
+  {
+    "path": "uis/backoffice/src/features/incidents/detail.tsx",
+    "bytes": 11634,
+    "sha256": "e445e78eaaf72199f0f10b659a0690e2b965048ad3df42823c7f0a7bd9f8a293"
+  },
+  {
+    "path": "uis/backoffice/src/features/incidents/list.tsx",
+    "bytes": 7211,
+    "sha256": "0b66575e959e6fe5e015fe06f03e9b101c19e8195228259600cf97507fc17c25"
+  },
+  {
+    "path": "uis/backoffice/src/features/incidents/options.tsx",
+    "bytes": 2372,
+    "sha256": "193830c48868838be2998fccd4720dfefef25d427a977956f3ac9cfff2e9cf5c"
+  },
+  {
+    "path": "uis/backoffice/src/features/incidents/summary.tsx",
+    "bytes": 1459,
+    "sha256": "ddd7d74d08ca01edc87716d2315d875a7348225ec5c5bbef0e37ab3bf3550725"
+  },
+  {
+    "path": "uis/backoffice/src/features/incidents/timeline.tsx",
+    "bytes": 1611,
+    "sha256": "c31649626159c45f2a8829d05361b14d5ab58ce1305cf4c983bf2e26dcad0f01"
+  },
+  {
+    "path": "uis/backoffice/src/features/inventory/audit.tsx",
+    "bytes": 5672,
+    "sha256": "bda51c9339e4e68d4d8b7ea09038031c4a1849957a874c1dc7a33ca3f45bb78c"
+  },
+  {
+    "path": "uis/backoffice/src/features/inventory/clinical-actions.tsx",
+    "bytes": 5461,
+    "sha256": "be01b9dbffc38096897c2a45c05265aa8525dd51c423ec601b55ea66d727f705"
+  },
+  {
+    "path": "uis/backoffice/src/features/inventory/detail.tsx",
+    "bytes": 10078,
+    "sha256": "f82baee9d777279baf880d1719568d2427b8ca94973b36fdd77bbf0f0107b56f"
+  },
+  {
+    "path": "uis/backoffice/src/features/inventory/forms.tsx",
+    "bytes": 3884,
+    "sha256": "6c975da7a0c6ff1599bf95d9b608a14d1c6b07bbd6bc13e4d290b0fa2e3c1b69"
+  },
+  {
+    "path": "uis/backoffice/src/features/inventory/items.tsx",
+    "bytes": 4839,
+    "sha256": "33116243aa3e95d9dc80032f341208a882809bbbf754e49088230f0ef9cfe55f"
+  },
+  {
+    "path": "uis/backoffice/src/features/inventory/stock.tsx",
+    "bytes": 3781,
+    "sha256": "14b0b8c7bd689865c82974160062ca2a86670ee9a1923a12d2b2d9410b8054a7"
+  },
+  {
+    "path": "uis/backoffice/src/features/management/read-view.tsx",
+    "bytes": 5546,
+    "sha256": "90bf111028d8c8635bb18b153cb6725e73e3f97316deddf3de9db28ac2bef119"
+  },
+  {
+    "path": "uis/backoffice/src/hooks/use-mutation.ts",
+    "bytes": 1648,
+    "sha256": "c29b34752149fb7591f25eff382daf6b50c14732883ca3fe328767c4b0d8c6dc"
+  },
+  {
+    "path": "uis/backoffice/src/hooks/use-query.ts",
+    "bytes": 1747,
+    "sha256": "ab8c27b288f149fa348b8ed15e7edd8d377721dd8c707397a435ede895ff4f1f"
+  },
+  {
+    "path": "uis/backoffice/src/hooks/use-unsaved-changes.ts",
+    "bytes": 1399,
+    "sha256": "3491fbdd98c801dcbc1e6828295663dae6a2da9113b2687af44fd6ebc51eaafa"
+  },
+  {
+    "path": "uis/backoffice/src/lib/api/client.ts",
+    "bytes": 3162,
+    "sha256": "bbecd274309f616ac93c0c94931ec0c6fbf6e3ed3360781e8aa01b439c600c1e"
+  },
+  {
+    "path": "uis/backoffice/src/lib/api/forward.ts",
+    "bytes": 4644,
+    "sha256": "4e393c86c47540bc89d4d67c9bcaa413a167d1cc6aad6ecd707416700d3ab7f7"
+  },
+  {
+    "path": "uis/backoffice/src/lib/api/generated.ts",
+    "bytes": 206271,
+    "sha256": "2a57f59ccef5d278b7d82b6a40ecc564f5704092be9ebb239437fc26c94f372f"
+  },
+  {
+    "path": "uis/backoffice/src/lib/api/types.ts",
+    "bytes": 431,
+    "sha256": "914713d8f3c4817531c17c62d89cfe4a7f8fce8460189e6fe8a87788f2eac193"
+  },
+  {
+    "path": "uis/backoffice/src/lib/auth/presentation.ts",
+    "bytes": 2995,
+    "sha256": "794b1e55f2ea771fc36e44e23dcea012a92149bcd4afd1d2498790defcd21c28"
+  },
+  {
+    "path": "uis/backoffice/src/lib/auth/session.tsx",
+    "bytes": 2267,
+    "sha256": "8e49838ad38fc3c83e71d86a7e705ed166971d21c83c15b13368c7cfae1978bb"
+  },
+  {
+    "path": "uis/backoffice/src/lib/telemetry/provider.tsx",
+    "bytes": 3461,
+    "sha256": "cb2379617979b957c56ed387f91dafd62fc87429666723f5185aebf203500c80"
+  },
+  {
+    "path": "uis/backoffice/src/styles/tokens.css",
+    "bytes": 6790,
+    "sha256": "e577a9d512fd6277a1a6b17527fb1de134a366196f5bf20c7628bbcc8d379f7b"
+  },
+  {
+    "path": "uis/backoffice/tests/client.test.ts",
+    "bytes": 3112,
+    "sha256": "d4aa8de5843cbe1f4f44d424bf9d647a5fe40b4631f24b1f4c7bfe46876f8640"
+  },
+  {
+    "path": "uis/backoffice/tests/e2e/backoffice.spec.ts",
+    "bytes": 26139,
+    "sha256": "4d57f28528205a06977c143fcddd966a4e6c03549ea5a87d257d1ca314857411"
+  },
+  {
+    "path": "uis/backoffice/tests/forward.test.ts",
+    "bytes": 3485,
+    "sha256": "fe1b036403f5e68bc0d2bf7f78c021ada842786bf703221a48fc282e6ce4b738"
+  },
+  {
+    "path": "uis/backoffice/tests/presentation.test.ts",
+    "bytes": 2230,
+    "sha256": "02f0804b6c9809dfdf76decd518af80de7011f7f8ce230d93450275453aa38cf"
+  },
+  {
+    "path": "uis/backoffice/tests/session.test.tsx",
+    "bytes": 2591,
+    "sha256": "fc5832c4b83e493f2008ad463a029d0a7ba0c9d1b98cee82f530c30498101e41"
+  },
+  {
+    "path": "uis/backoffice/tests/setup.ts",
+    "bytes": 239,
+    "sha256": "a8bb5cdc1a40953129d3ee8c04443410134009b74af1272059ecea449a2a5599"
+  },
+  {
+    "path": "uis/backoffice/tests/ui.test.tsx",
+    "bytes": 1410,
+    "sha256": "199a85dc66951fa14c3670ca0530534797f8ef2d963e873bcf16bf1a748b4b6d"
+  },
+  {
+    "path": "uis/backoffice/tsconfig.json",
+    "bytes": 766,
+    "sha256": "0868c7d7453350c081dc9231963efd8660c6141d5ee2774e8164987e1df5a057"
+  },
+  {
+    "path": "uis/backoffice/vitest.config.ts",
+    "bytes": 325,
+    "sha256": "47a55bf89e73181fb6f9c8c98a0bd9fe60f897fc3c1da8327ee65ca3174ecea9"
+  }
+]
