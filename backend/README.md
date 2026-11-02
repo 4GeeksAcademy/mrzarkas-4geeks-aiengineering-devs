@@ -276,3 +276,11 @@ POST /telemetry/events now additionally admits telemetry_contract_rejected and t
 ## Joint local activation evidence
 
 On2026-11-01 the authorized backend/backoffice rebuild completed without db-init or database initialization. API health/status200 and contract1.2.0 integrity=ok. Chrome verified incident reads and four Management catalogues using synthetic credentials. Real browser module sent20 navigation events,21 schema diagnostics and one delivery diagnostic (a403 simulated only in the experiment adapter); all real sends200. Buffers closed empty; no keys exported, test tabs closed. Details: docs/specs/telemetry-event-capture/local-activation-validation.md. Local prototype only, no production approval or complete coverage claim.
+
+## Clinic inventory
+
+The approved synthetic inventory module provides per-clinic stock and country-scoped
+regional reads, integer presentations, lot-aware movements, physical counts,
+compensations and mandatory reorder thresholds. Stock is derived exclusively from
+movements. See [inventory](app/inventory/README.md) for permissions, API contracts,
+migration safety and isolated tests. No UI or production activation is included.

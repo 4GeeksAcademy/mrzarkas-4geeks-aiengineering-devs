@@ -262,3 +262,11 @@ POST /telemetry/events admite además telemetry_contract_rejected y telemetry_de
 ## Evidencia de activación local conjunta
 
 El2026-11-01 terminó la reconstrucción autorizada backend/backoffice sin db-init ni inicialización DB. API health/status200, contrato1.2.0 e integridadok. Chrome verificó lectura de incidencias y cuatro catálogos Management con credenciales sintéticas. Módulo browser real envió20 eventos de navegación,21 diagnósticos de esquema y uno de entrega (403 simulado sólo en adaptador experimental); envíos reales200. Buffers cerrados vacíos, sin exportar claves; pestañas de prueba cerradas. Detalles docs/specs/telemetry-event-capture/local-activation-validation.md. Sólo prototipo local, sin producción ni cobertura completa.
+
+## Inventario por clínica
+
+El módulo sintético aprobado incorpora stock por clínica y lectura regional por país,
+presentaciones enteras, movimientos con lotes, conteos físicos, compensaciones y
+reorden obligatorio. El stock se deriva exclusivamente de movimientos. Consulta
+[inventario](app/inventory/README.es.md) para permisos, contratos API, seguridad de
+migraciones y pruebas aisladas. No incluye UI ni activación en producción.
