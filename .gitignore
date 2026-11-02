@@ -7,3 +7,8 @@ __pycache__/
 node_modules/
 .next/
 *.tsbuildinfo
+
+# Generated backoffice dependencies, assets and test output
+/uis/backoffice/.pnpm-store/
+/uis/backoffice/public/
+/uis/backoffice/test-results/
