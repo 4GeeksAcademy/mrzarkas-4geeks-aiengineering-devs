@@ -4,7 +4,11 @@ from app.incidents.history import AuditEvent, IncidentAssignmentHistory, Inciden
 from app.management.audit import ManagementAuditEvent
 from app.reference_data.models import AffectedSystem, Clinic, Jurisdiction, ResponsibleArea
 
+from app.inventory.models import InventoryItem, InventoryClinicItem, InventoryLot, InventoryMovement, InventoryAudit, InventoryAccessDenial
+
 __all__ = [
+    "InventoryAccessDenial",
+    "InventoryItem", "InventoryClinicItem", "InventoryLot", "InventoryMovement", "InventoryAudit",
     "AuditEvent",
     "Catalog",
     "CatalogValue",
