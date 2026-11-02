@@ -245,3 +245,47 @@ recibir `incident:update`, que da acceso a cambios operativos más amplios.
    sigue la propuesta de autenticación existente y requiere validación aparte.
 5. Se actualizan las especificaciones y el backoffice antes de habilitar
    escritura fuera de desarrollo.
+
+## Propuesta: validación por módulo del backoffice Next.js
+
+**Fecha:** 2026-11-02.
+
+**Estado:** acciones pendientes registradas por instrucción del desarrollador.
+La tarea actual de implementación sintética en `migration/backofficeMigration`
+se cierra por petición expresa del desarrollador. Este cierre no convierte la
+revisión integral `BLOCKED` en `PASS` ni autoriza activación, retirada del legado,
+datos reales, piloto o producción.
+
+**Objetivo:** incorporar las validaciones siguientes a la entrega de cada
+módulo nuevo o modificado. Aplicarlas también a Management, incidencias e
+Inventory antes de activar sus rutas; registrar cualquier criterio no aplicable
+con motivo y aceptación del responsable de revisión.
+
+| Bloque | Acciones por módulo | Evidencia y condición de cierre | Responsables propuestos |
+| --- | --- | --- | --- |
+| Funcionalidad y accesibilidad | Recorrer acciones con cada rol y ámbito aplicable; comprobar permisos denegados, errores, recuperación, filtros y navegación. Revisar teclado, foco, diálogos, etiquetas, contraste, zoom al 200 % y móvil, incluidos 320 px. Comparar con el legado cuando exista; para NEW UI, aceptar contra contratos vigentes. | Matriz de escenarios con resultado esperado/observado, pruebas automáticas y revisión manual WCAG 2.2 AA. No aceptar un módulo sólo por presencia de código o pruebas backend. | Tecnología/desarrollador y QA; área funcional correspondiente. |
+| Rendimiento | Medir carga fría/caliente y tiempo hasta datos en producción local, con datos sintéticos, navegador/red/caché fijados y tres rondas por perfil. Registrar JS transferido/gzip y latencias API p50/p95. En cronologías, comparar Profiler con 20/200/2000 eventos; justificar carga diferida y memoización. | Baseline y comparación por módulo, límites de medición explícitos y presupuesto aprobado antes de sustituir rutas. El baseline actual sólo cubre Management y no demuestra mejora global. | Tecnología/desarrollador y QA. |
+| Telemetría y rollback | Cuando aplique telemetría, ensayar opt-in, StrictMode, desconexión/401, cancelación y contexto clínico/regional; comprobar que no duplica captura ni mezcla ámbitos. Ensayar restauración de rutas con versión/mapa conocidos, conservando API y datos. | Evidencia de aislamiento y recuperación, sin secretos ni PHI. Telemetría deshabilitada por defecto; eventos nuevos requieren revisión. Inventory carece de UI anterior: desactivar rutas no equivale a fallback legado. Nunca eliminar volúmenes ni revertir BBDD como rollback UI. | Tecnología/desarrollador; Cumplimiento y Gobierno del Dato cuando corresponda. |
+| Revisión y aceptación | Revisar exposición de auditoría/telemetría y los impactos aplicables de privacidad, retención o transferencias con Claire Whitfield. Actualizar evidencias del SDD y ejecutar `validate-delivery` con el cambio completo, incluidos archivos nuevos. | Criterios obligatorios verificados y resultado `PASS` antes de declarar listo el módulo para activación. Despliegue, activación y retirada necesitan autorización expresa aparte. | Cumplimiento y Gobierno del Dato, liderado por Claire Whitfield; Tecnología/desarrollador para la entrega. |
+
+**Condiciones de ejecución:**
+
+- Mantener desarrollo y validación exclusivamente con datos sintéticos aislados
+  hasta disponer de autorización y controles para otro entorno.
+- Conservar contratos, permisos y controles existentes; esta propuesta no
+  autoriza cambios de API/BBDD, dependencias, infraestructura, autenticación,
+  auditoría o tratamiento de datos fuera de un alcance aprobado expresamente.
+- Incorporar escenarios, responsables, decisiones y evidencias al SDD del
+  módulo correspondiente. Las acciones quedan pendientes para futuras tareas;
+  no se ejecutan ni se consideran aprobadas por quedar registradas aquí.
+- Mantener los gates D-05/D-07/D-08 y los criterios pendientes del SDD de
+  migrationBackoffice. El cierre administrativo de la tarea actual no elimina
+  estas condiciones de aceptación técnica.
+
+**Evidencia de la tarea cerrada:**
+[ejecución y matriz de aceptación](specs/migrationBackoffice/nextjs-migration/execution.md),
+[tareas y estados](specs/migrationBackoffice/nextjs-migration/tasks.md) y
+[baseline de Management](specs/migrationBackoffice/nextjs-migration/performance.json).
+Las validaciones ejecutadas pasaron: 40 unitarias, 15 E2E, 64 backend y 74 de
+telemetría, además de build/tipos y comprobaciones locales Docker/Nginx. No se
+creó commit ni se desplegó o retiró el legado.

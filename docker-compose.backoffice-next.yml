@@ -1,0 +1,28 @@
+# Opt-in local configuration; does not alter or replace the default stack.
+services:
+  backoffice-next:
+    build:
+      context: ./uis/backoffice
+    environment:
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:?Set synthetic development or test}
+      BACKEND_URL: http://backend:8000
+      TELEMETRY_ENABLED: ${TELEMETRY_ENABLED:-false}
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - >-
+          fetch('http://127.0.0.1:3100/next').then(r => { if (!r.ok) process.exit(1); }).catch(() => process.exit(1))
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backoffice:
+    volumes:
+      - ./uis/backoffice/nginx/next.conf.template:/etc/nginx/templates/default.conf.template:ro
+    depends_on:
+      backoffice-next:
+        condition: service_healthy

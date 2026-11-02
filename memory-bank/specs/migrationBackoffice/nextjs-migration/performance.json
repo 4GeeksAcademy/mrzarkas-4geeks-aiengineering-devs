@@ -1,0 +1,385 @@
+{
+  "environment": {
+    "node": "v24.21.0",
+    "browser": "system Chrome headless",
+    "network": "loopback; no CPU/network throttling",
+    "api": "fresh isolated PostgreSQL; synthetic catalogs",
+    "next": "production standalone 16.4.3",
+    "trials": 3
+  },
+  "scope": "Management catalogs only; synthetic connection included; no approved retirement budget. JS gzip is recompressed unique script responses, not measured network gzip. CLS here is cumulative observed shifts, not production session windows.",
+  "rows": [
+    {
+      "app": "legacy",
+      "width": 1350,
+      "trial": 1,
+      "cache": "cold",
+      "data_ready_ms": 232,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 2.800000000745058,
+      "lcp_ms": 280,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.099999997764826
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 1350,
+      "trial": 1,
+      "cache": "warm",
+      "data_ready_ms": 47,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0,
+      "lcp_ms": 16,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.599999997764826
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 1350,
+      "trial": 2,
+      "cache": "cold",
+      "data_ready_ms": 47,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0.3999999985098839,
+      "lcp_ms": 40,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        4.199999999254942
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 1350,
+      "trial": 2,
+      "cache": "warm",
+      "data_ready_ms": 56,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0.10000000149011612,
+      "lcp_ms": 16,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.300000000745058
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 1350,
+      "trial": 3,
+      "cache": "cold",
+      "data_ready_ms": 45,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0.3999999985098839,
+      "lcp_ms": 40,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.300000000745058
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 1350,
+      "trial": 3,
+      "cache": "warm",
+      "data_ready_ms": 58,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0,
+      "lcp_ms": 16,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.599999997764826
+      ]
+    },
+    {
+      "app": "next",
+      "width": 1350,
+      "trial": 1,
+      "cache": "cold",
+      "data_ready_ms": 54,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 6,
+      "lcp_ms": 60,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        9.199999999254942,
+        5.600000001490116
+      ]
+    },
+    {
+      "app": "next",
+      "width": 1350,
+      "trial": 1,
+      "cache": "warm",
+      "data_ready_ms": 48,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.5,
+      "lcp_ms": 36,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.699999999254942,
+        5.599999997764826
+      ]
+    },
+    {
+      "app": "next",
+      "width": 1350,
+      "trial": 2,
+      "cache": "cold",
+      "data_ready_ms": 62,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 2.7000000029802322,
+      "lcp_ms": 44,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.899999998509884,
+        5.100000001490116
+      ]
+    },
+    {
+      "app": "next",
+      "width": 1350,
+      "trial": 2,
+      "cache": "warm",
+      "data_ready_ms": 49,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.2000000029802322,
+      "lcp_ms": 20,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.5,
+        5.099999997764826
+      ]
+    },
+    {
+      "app": "next",
+      "width": 1350,
+      "trial": 3,
+      "cache": "cold",
+      "data_ready_ms": 138,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.699999999254942,
+      "lcp_ms": 40,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        48.79999999701977,
+        23.900000002235174
+      ]
+    },
+    {
+      "app": "next",
+      "width": 1350,
+      "trial": 3,
+      "cache": "warm",
+      "data_ready_ms": 54,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.300000000745058,
+      "lcp_ms": 28,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.300000000745058,
+        4.800000000745058
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 393,
+      "trial": 1,
+      "cache": "cold",
+      "data_ready_ms": 52,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0.3999999985098839,
+      "lcp_ms": 40,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.5
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 393,
+      "trial": 1,
+      "cache": "warm",
+      "data_ready_ms": 53,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0.10000000149011612,
+      "lcp_ms": 16,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.399999998509884
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 393,
+      "trial": 2,
+      "cache": "cold",
+      "data_ready_ms": 46,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0.5,
+      "lcp_ms": 40,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.100000001490116
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 393,
+      "trial": 2,
+      "cache": "warm",
+      "data_ready_ms": 60,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0,
+      "lcp_ms": 16,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        2.900000002235174
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 393,
+      "trial": 3,
+      "cache": "cold",
+      "data_ready_ms": 45,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0.6000000014901161,
+      "lcp_ms": 40,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.199999999254942
+      ]
+    },
+    {
+      "app": "legacy",
+      "width": 393,
+      "trial": 3,
+      "cache": "warm",
+      "data_ready_ms": 59,
+      "js_gzip_bytes": 9070,
+      "ttfb_ms": 0,
+      "lcp_ms": 16,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        3.100000001490116
+      ]
+    },
+    {
+      "app": "next",
+      "width": 393,
+      "trial": 1,
+      "cache": "cold",
+      "data_ready_ms": 101,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 2.899999998509884,
+      "lcp_ms": 44,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        6.099999997764826,
+        5.5
+      ]
+    },
+    {
+      "app": "next",
+      "width": 393,
+      "trial": 1,
+      "cache": "warm",
+      "data_ready_ms": 47,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.5,
+      "lcp_ms": 20,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.5,
+        4.699999999254942
+      ]
+    },
+    {
+      "app": "next",
+      "width": 393,
+      "trial": 2,
+      "cache": "cold",
+      "data_ready_ms": 110,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.7000000029802322,
+      "lcp_ms": 40,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        6.100000001490116,
+        6.299999997019768
+      ]
+    },
+    {
+      "app": "next",
+      "width": 393,
+      "trial": 2,
+      "cache": "warm",
+      "data_ready_ms": 111,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.3999999985098839,
+      "lcp_ms": 36,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.699999999254942,
+        5.400000002235174
+      ]
+    },
+    {
+      "app": "next",
+      "width": 393,
+      "trial": 3,
+      "cache": "cold",
+      "data_ready_ms": 111,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 2,
+      "lcp_ms": 44,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.199999999254942,
+        5.5
+      ]
+    },
+    {
+      "app": "next",
+      "width": 393,
+      "trial": 3,
+      "cache": "warm",
+      "data_ready_ms": 45,
+      "js_gzip_bytes": 151868,
+      "ttfb_ms": 1.199999999254942,
+      "lcp_ms": 32,
+      "cls": 0,
+      "overflow": false,
+      "api_ms": [
+        5.5,
+        4.699999999254942
+      ]
+    }
+  ]
+}
