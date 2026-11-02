@@ -13,6 +13,7 @@ import {
   PageHeader,
   Pagination,
 } from "@/components/ui";
+import { EventTime, ReceivedAt } from "./format";
 import { text, uuidPattern } from "./forms";
 export function InventoryAudit() {
   const { session } = useSession();
@@ -80,7 +81,10 @@ export function InventoryAudit() {
                   label="Eventos de auditoría"
                   rowKey={(r) => r.id}
                   columns={[
-                    { label: "UTC", cell: (r) => r.occurred_at },
+                    {
+                      label: "UTC",
+                      cell: (r) => <EventTime value={r.occurred_at} />,
+                    },
                     { label: "Acción", cell: (r) => r.action },
                     { label: "Actor", cell: (r) => r.actor_id },
                     {
@@ -91,10 +95,14 @@ export function InventoryAudit() {
                     { label: "Motivo", cell: (r) => r.reason ?? "—" },
                     {
                       label: "Retención hasta",
-                      cell: (r) => r.retention_until,
+                      cell: (r) => <EventTime value={r.retention_until} />,
                     },
                   ]}
                 />
+                <ReceivedAt data={audit.data} />
+                <Button secondary onClick={audit.refresh}>
+                  Actualizar eventos
+                </Button>
                 <Pagination offset={offset} size={50} onChange={setOffset} />
               </>
             )}
@@ -132,7 +140,10 @@ export function InventoryAudit() {
                   label="Denegaciones autorizadas"
                   rowKey={(r) => r.id}
                   columns={[
-                    { label: "UTC", cell: (r) => r.occurred_at },
+                    {
+                      label: "UTC",
+                      cell: (r) => <EventTime value={r.occurred_at} />,
+                    },
                     { label: "Operación", cell: (r) => r.operation },
                     { label: "Actor", cell: (r) => r.actor_id },
                     { label: "Razón", cell: (r) => r.reason_code },
@@ -143,10 +154,14 @@ export function InventoryAudit() {
                     { label: "Resultado", cell: (r) => r.result },
                     {
                       label: "Retención hasta",
-                      cell: (r) => r.retention_until,
+                      cell: (r) => <EventTime value={r.retention_until} />,
                     },
                   ]}
                 />
+                <ReceivedAt data={denials.data} />
+                <Button secondary onClick={denials.refresh}>
+                  Actualizar denegaciones
+                </Button>
                 <Pagination
                   offset={denialOffset}
                   size={50}

@@ -15,8 +15,11 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
+  Select,
 } from "@/components/ui";
 import { OperationForm, text, uuidPattern } from "./forms";
+import { ClinicSelector } from "./context-selector";
+import { EventTime, ReceivedAt, presentation } from "./format";
 import { ClinicalActions } from "./clinical-actions";
 export function InventoryDetail({ id }: { id: string }) {
   const { session } = useSession();
@@ -78,8 +81,7 @@ function ItemDetail({ item, refresh }: { item: Item; refresh: () => void }) {
             refresh={refresh}
             body={(fd) => ({
               title: text(fd, "title"),
-              pack_label: text(fd, "pack_label") || null,
-              pack_size: Number(fd.get("pack_size")),
+              ...presentation(fd),
             })}
           >
             <div className="form-grid">
@@ -191,8 +193,22 @@ function ClinicalDetail({
   item: Item;
   initialClinic: string;
 }) {
-  const [input, setInput] = useState(initialClinic);
-  const [clinic, setClinic] = useState(initialClinic);
+  const { session } = useSession();
+  const clinical = ["inventoryOperator", "inventoryManager"].includes(
+    session?.claims.role ?? "",
+  );
+  const initial =
+    !clinical || session?.claims.clinic_ids.includes(initialClinic)
+      ? initialClinic
+      : "";
+  const [input, setInput] = useState(initial);
+  const [clinic, setClinic] = useState(initial);
+  const [lotOffset, setLotOffset] = useState(0);
+  const lots = useQuery<Schema<"LotRead">[]>(
+    item.uses_lots
+      ? `/inventory/items/${item.id}/lots?offset=${lotOffset}&limit=50`
+      : null,
+  );
   const [lotInput, setLotInput] = useState("");
   const [lot, setLot] = useState("");
   const [offset, setOffset] = useState(0);
@@ -224,26 +240,71 @@ function ClinicalDetail({
             refresh();
           }}
         >
-          <Input
-            label="Clínica UUID"
-            required
-            pattern={uuidPattern}
+          <ClinicSelector
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            hint="La API valida la clínica y su ámbito. No se utiliza el catálogo de Management con roles Inventory."
+            onChange={(value) => {
+              setInput(value);
+              setClinic("");
+              setLot("");
+              setLotInput("");
+              setOffset(0);
+            }}
           />
           {item.uses_lots && (
-            <Input
-              label="Lote UUID (opcional para lectura, obligatorio para movimientos)"
-              pattern={uuidPattern}
+            <Select
+              label="Lote (saldo y operaciones)"
               value={lotInput}
-              onChange={(e) => setLotInput(e.target.value)}
-            />
+              onChange={(e) => {
+                setLotInput(e.target.value);
+                setLot("");
+                setClinic("");
+              }}
+            >
+              <option value="">Todos los lotes (sólo consulta)</option>
+              {lots.data?.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.code} · {r.id}
+                </option>
+              ))}
+            </Select>
           )}
           <Button type="submit">Consultar stock e historial</Button>
         </form>
+        <p>
+          Clínica activa: {clinic || "sin confirmar"} · Lote:{" "}
+          {lot || "total clínico"}
+        </p>
+        {item.uses_lots && (
+          <>
+            <Pagination
+              offset={lotOffset}
+              size={50}
+              onChange={(n) => {
+                setLotOffset(n);
+                setLotInput("");
+                setLot("");
+                setClinic("");
+              }}
+            />
+            {lots.loading && <LoadingState />}
+            {lots.error && (
+              <ErrorState error={lots.error} retry={lots.refresh} />
+            )}
+          </>
+        )}
         {stock.loading && <LoadingState />}
-        {stock.error && <ErrorState error={stock.error} retry={refresh} />}{" "}
+        {stock.error && (
+          <>
+            <ErrorState error={stock.error} retry={refresh} />
+            {stock.error.status === 409 && (
+              <p className="notice">
+                El stock no está disponible. Puede faltar la configuración
+                obligatoria o existir un conflicto de estado; no equivale a
+                saldo cero. Solicita la configuración a un responsable.
+              </p>
+            )}
+          </>
+        )}{" "}
         {stock.data && (
           <>
             <p>
@@ -261,7 +322,11 @@ function ClinicalDetail({
             </p>
           </>
         )}
-        <h3>Movimientos de la clínica</h3>
+        <ReceivedAt data={stock.data} />
+        <Button secondary onClick={refresh} disabled={!clinic}>
+          Actualizar stock e historial
+        </Button>
+        <h3 id="historial">Movimientos de la clínica</h3>
         {history.loading && <LoadingState />}
         {history.error && (
           <ErrorState error={history.error} retry={refresh} />
@@ -274,10 +339,28 @@ function ClinicalDetail({
               rowKey={(r) => r.id}
               columns={[
                 { label: "UUID", cell: (r) => r.id },
-                { label: "Momento UTC", cell: (r) => r.occurred_at },
+                {
+                  label: "Momento local / UTC",
+                  cell: (r) => <EventTime value={r.occurred_at} />,
+                },
                 { label: "Tipo", cell: (r) => r.kind },
                 { label: "Lote", cell: (r) => r.lot_id ?? "—" },
-                { label: "Delta", cell: (r) => r.delta },
+                { label: "Delta", cell: (r) => `${r.delta} ${r.unit}` },
+                {
+                  label: "Presentación histórica",
+                  cell: (r) =>
+                    r.pack_label
+                      ? `${r.pack_label} × ${r.pack_size}`
+                      : "Sin presentación",
+                },
+                {
+                  label: "Compensa original",
+                  cell: (r) => r.correction_of ?? "—",
+                },
+                {
+                  label: "Retención hasta",
+                  cell: (r) => <EventTime value={r.retention_until} />,
+                },
                 { label: "Saldo previo", cell: (r) => r.previous_quantity },
                 {
                   label: "Saldo resultante",
@@ -297,10 +380,12 @@ function ClinicalDetail({
         {!clinic && <p>Introduce una clínica autorizada para consultar.</p>}
       </section>
       <ClinicalActions
-        key={`${clinic}-${lot}`}
+        key={`${clinic}-${lot}-${item.pack_label}-${item.pack_size}`}
         item={item}
         clinic={clinic}
         lot={lot}
+        stock={stock.data}
+        history={history.data}
         refresh={refresh}
       />
     </>

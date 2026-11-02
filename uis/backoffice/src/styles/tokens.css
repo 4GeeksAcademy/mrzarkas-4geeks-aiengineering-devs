@@ -167,6 +167,13 @@ nav a[aria-current="page"] {
   width: 100%;
   min-width: 0;
 }
+/* Active Inventory controls need a 3:1 boundary against their white surface. */
+.inventory-ui .field input,
+.inventory-ui .field select,
+.inventory-ui .field textarea,
+.inventory-ui .button-secondary {
+  border-color: var(--muted);
+}
 .field textarea {
   min-height: 140px;
   resize: vertical;

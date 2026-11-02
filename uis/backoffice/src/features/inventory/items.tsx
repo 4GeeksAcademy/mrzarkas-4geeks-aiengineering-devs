@@ -13,11 +13,16 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
+  Select,
+  Button,
 } from "@/components/ui";
+import { presentation, ReceivedAt } from "./format";
 import { OperationForm, text } from "./forms";
 export function InventoryItems() {
   const { session } = useSession();
   const allowed = !!session && isInventory(session.claims);
+  const [search, setSearch] = useState("");
+  const [active, setActive] = useState("");
   const [offset, setOffset] = useState(0);
   const query = useQuery<Item[]>(
     allowed ? `/inventory/items?offset=${offset}&limit=50` : null,
@@ -30,6 +35,29 @@ export function InventoryItems() {
       ) : (
         <>
           <section className="panel">
+            <div className="filters">
+              <Input
+                label="Buscar en esta página"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Select
+                label="Estado en esta página"
+                value={active}
+                onChange={(e) => setActive(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="active">Activos</option>
+                <option value="inactive">Inactivos</option>
+              </Select>
+              <Button secondary onClick={query.refresh}>
+                Actualizar catálogo
+              </Button>
+            </div>
+            <p className="notice">
+              Búsqueda y estado filtran únicamente la página recibida. No hay
+              total global.
+            </p>
             {query.loading && <LoadingState />}
             {query.error && (
               <ErrorState error={query.error} retry={query.refresh} />
@@ -37,7 +65,13 @@ export function InventoryItems() {
             {query.data && (
               <>
                 <DataTable
-                  rows={query.data}
+                  rows={query.data.filter(
+                    (r) =>
+                      `${r.product_code} ${r.title}`
+                        .toLocaleLowerCase("es")
+                        .includes(search.toLocaleLowerCase("es")) &&
+                      (!active || r.is_active === (active === "active")),
+                  )}
                   rowKey={(r) => r.id}
                   label="Artículos de inventario"
                   columns={[
@@ -71,9 +105,18 @@ export function InventoryItems() {
                     },
                   ]}
                 />
-                <Pagination offset={offset} size={50} onChange={setOffset} />
+                <Pagination
+                  offset={offset}
+                  size={50}
+                  onChange={(n) => {
+                    setOffset(n);
+                    setSearch("");
+                    setActive("");
+                  }}
+                />
               </>
             )}
+            <ReceivedAt data={query.data} />
           </section>
           {session?.claims.role === "inventoryAdmin" && (
             <OperationForm<Schema<"ItemCreate">>
@@ -85,8 +128,7 @@ export function InventoryItems() {
                 product_code: text(fd, "product_code"),
                 unit: text(fd, "unit"),
                 uses_lots: fd.get("uses_lots") === "on",
-                pack_label: text(fd, "pack_label") || null,
-                pack_size: Number(fd.get("pack_size")),
+                ...presentation(fd),
               })}
             >
               <div className="form-grid">

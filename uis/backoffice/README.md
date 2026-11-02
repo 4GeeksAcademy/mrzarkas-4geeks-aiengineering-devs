@@ -22,6 +22,7 @@ Open `http://127.0.0.1:3100/next`. `pnpm start` copies generated assets to the s
 | --- | --- |
 | `/management/catalogs`, `/management/reference-data`, `/management/audit` | Existing read-only Management queries |
 | `/summary`, `/incidents`, `/incidents/new`, `/incidents/[id]` | Metrics, URL filters/paging, creation, editing, audited state/area changes and partial timeline |
+| `/inventory` | Partial first-page dashboard; no global totals |
 | `/inventory/items`, `/inventory/items/[id]` | NEW UI: catalog, lots, clinical stock/history and authorized actions |
 | `/inventory/stock`, `/inventory/reorder`, `/inventory/audit` | NEW UI: scoped stock, reorder, audit and access denials |
 
@@ -31,7 +32,7 @@ Paste an existing synthetic development JWT. Its input clears after connection; 
 
 Incident permissions remain admin/technology/responsibleArea/compliance/direction. Direction sees summaries only; responsibleArea edits title/description in its own area. Only admin reassigns areas. Inventory roles are independent: inventoryAdmin writes catalog/lots without stock; operator records in/out in its clinics; manager additionally configures reorder, counts and compensates; regional reads its jurisdictions; auditor reads stock/audit within authorized historical country scope. No UI action grants backend permission.
 
-Inventory clinic/lot UUIDs are explicit because the current API offers no clinic lookup to those roles, no configuration GET and no list totals. Next-page remains available on short array pages. Stock is calculated by the API. Writes never retry automatically or optimistically; uncertain results require consulting authoritative data/history and explicit acknowledgement. No drafts or patient data are persisted in browser storage. Use synthetic operational text only.
+Inventory clinical roles select assigned clinic UUIDs; regional/history queries retain API-validated UUID input. Lots are selected by code from the paged item lot list. The current API offers no nominal clinic lookup to these roles, no configuration GET and no list totals. Next-page remains available on short array pages. Stock is calculated by the API. Writes never retry automatically or optimistically; uncertain results require consulting authoritative data/history and explicit acknowledgement. No drafts or patient data are persisted in browser storage. Use synthetic operational text only.
 
 ## Local coexistence and rollback preparation
 
@@ -61,3 +62,13 @@ The suite rejects non-loopback targets and requires the synthetic opt-in. It exe
 The API fixture defaults to 127.0.0.1. For an isolated Podman machine test only, `HC_QA_API_HOST=0.0.0.0` allows the temporary container to reach it; never use this harness on a shared environment.
 
 `python scripts/validation-regression.py` (with temporary QA Python/pgserver available) runs the existing selected auth/incident/inventory/Management tests against a second fresh database, then stops PostgreSQL. It does not replace the E2E suite.
+
+## Inventory UI SDD execution
+
+`/next/inventory` shows partial first-page counts. Catalog search/state and stock priority/grouping operate only on the received page. Read timestamps show local receipt time and UTC reference, not a server snapshot timestamp. Entries/exits, counts and reorder configuration confirm the active context; pack conversion and count differences are previews only. Corrections require an original selected from loaded history, never an arbitrary movement UUID.
+
+An uncertain write blocks all Inventory forms within the current in-memory session, including after navigation. Explicit acknowledgement permits reviewing a new intention; it does not prove that the original write failed. Disconnect/reload clears memory but does not reverse a write. No idempotency, exact reconciliation, new backend endpoint, browser storage, production identity or automatic audit disposal is added.
+
+Validation and remaining manual accessibility gates are recorded in `../../memory-bank/specs/inventory-manager-ui/plan.md`. Tests use only the isolated synthetic API harness. Linux container dependencies require running Vitest/build in the matching container; native macOS Chrome runs E2E against the temporary loopback servers. No lint script is configured.
+
+Inventory active field and secondary-button borders use the existing muted token for at least 3:1 contrast against white. Accessible structure, 320px reflow and CSS 200% enlargement have been checked; actual screen-reader and browser zoom review remain pending.

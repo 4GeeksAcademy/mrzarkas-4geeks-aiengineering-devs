@@ -24,6 +24,7 @@ Abre `http://127.0.0.1:3100/next`. El arranque copia assets generados al standal
 | --- | --- |
 | `/management/catalogs`, `/management/reference-data`, `/management/audit` | Consultas existentes, sólo lectura |
 | `/summary`, `/incidents`, `/incidents/new`, `/incidents/[id]` | Métricas, filtros/página en URL, alta, edición, cambios auditados de estado/área e historia parcial |
+| `/inventory` | Resumen parcial de la primera página; sin totales globales |
 | `/inventory/items`, `/inventory/items/[id]` | NEW UI: catálogo, lotes, stock/historia clínicos y acciones autorizadas |
 | `/inventory/stock`, `/inventory/reorder`, `/inventory/audit` | NEW UI: stock, reorden, auditoría y denegaciones dentro del ámbito |
 
@@ -31,7 +32,7 @@ Introduce un JWT sintético existente. El campo se limpia al conectar y el token
 
 Incidencias conserva admin/technology/responsibleArea/compliance/direction. Direction sólo consulta resúmenes; responsibleArea edita título/descripcion en su área; sólo admin reasigna. Los cinco roles Inventory son independientes: inventoryAdmin escribe catálogo/lotes sin stock; operator registra in/out de sus clínicas; manager añade configuración, conteo y compensación; regional lee sus jurisdicciones; auditor consulta stock/auditoría dentro del país histórico autorizado. Ningún control concede permisos backend.
 
-La clínica y el lote se introducen por UUID: la API actual no ofrece lookup clínico para esos roles, GET configuración ni totales de listas. Siguiente sigue disponible en páginas cortas. El stock lo calcula la API. Las escrituras no reintentan automáticamente ni actualizan saldos optimistas; un resultado incierto exige consultar datos/historial y reconocer la verificación. No se persisten borradores ni datos de pacientes. Usa sólo texto operativo sintético.
+Los roles clínicos seleccionan UUID de clínicas asignadas; las consultas regionales e históricas conservan UUID validado por API. Los lotes se seleccionan por código de la lista paginada del artículo. La API actual no ofrece lookup nominal de clínicas para esos roles, GET configuración ni totales de listas. Siguiente sigue disponible en páginas cortas. El stock lo calcula la API. Las escrituras no reintentan automáticamente ni actualizan saldos optimistas; un resultado incierto exige consultar datos/historial y reconocer la verificación. No se persisten borradores ni datos de pacientes. Usa sólo texto operativo sintético.
 
 ## Convivencia local y preparación de rollback
 
@@ -61,3 +62,13 @@ La suite exige opt-in y loopback. Prueba permisos API reales, denegaciones por �
 La API fixture escucha por defecto en 127.0.0.1. Sólo para probar desde una máquina Podman aislada, `HC_QA_API_HOST=0.0.0.0` permite llegar desde el contenedor temporal; no usar este harness en un entorno compartido.
 
 `python scripts/validation-regression.py` (con Python QA temporal y pgserver) ejecuta las pruebas backend existentes seleccionadas de auth/incidencias/Inventory/Management en otra BD nueva y detiene PostgreSQL. No sustituye la suite E2E.
+
+## Ejecución del SDD de Inventory UI
+
+`/next/inventory` muestra conteos parciales de primera página. Búsqueda/estado del catálogo y agrupación/prioridad de stock actúan sólo sobre la página recibida. Las fechas de consulta indican recepción local con referencia UTC, no timestamp de snapshot del servidor. Entradas/salidas, conteos y configuración de reorden confirman contexto activo; conversión de presentaciones y diferencia de conteo son orientativas. La compensación exige seleccionar un original del historial cargado, sin UUID arbitrario.
+
+Una escritura incierta bloquea todos los formularios Inventory de la sesión en memoria, también después de navegar. El reconocimiento explícito permite revisar una nueva intención; no demuestra que la escritura anterior fallara. Desconectar/recargar limpia memoria sin revertir escrituras. No se añade idempotencia, conciliación exacta, endpoints, almacenamiento de navegador, identidad productiva ni disposición automática de auditoría.
+
+La validación y las comprobaciones manuales de accesibilidad pendientes constan en `../../memory-bank/specs/inventory-manager-ui/plan.md`. Las pruebas utilizan sólo el harness API sintético aislado. Las dependencias de contenedor Linux requieren Vitest/build dentro del contenedor compatible; Chrome nativo macOS ejecuta E2E contra servidores temporales loopback. No existe script lint configurado.
+
+Los bordes de campos activos y botones secundarios de Inventario usan el token muted existente para superar 3:1 sobre blanco. Se comprobaron estructura accesible, reflow a320px y ampliación CSS200%; siguen pendientes lector de pantalla real y zoom del navegador.

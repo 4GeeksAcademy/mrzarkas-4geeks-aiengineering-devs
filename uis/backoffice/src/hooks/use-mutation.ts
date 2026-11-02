@@ -12,6 +12,8 @@ export function useMutation() {
     path: string,
     body: unknown,
     method: "POST" | "PATCH" = "POST",
+    validate?: (data: unknown) => void,
+    onFailure?: (error: ApiError) => void,
   ): Promise<T | undefined> {
     if (!session || gate.current || error?.uncertain) return;
     gate.current = true;
@@ -25,17 +27,20 @@ export function useMutation() {
         signal: session.signal,
         onUnauthorized: disconnect,
       });
+      validate?.(data);
       if (!session.signal.aborted) {
         setSuccess("La API confirmó la operación.");
         return data;
       }
     } catch (e) {
-      if (!session.signal.aborted)
-        setError(
+      if (!session.signal.aborted) {
+        const failure =
           e instanceof ApiError
             ? e
-            : new ApiError(0, "No se pudo completar la operación.", true),
-        );
+            : new ApiError(0, "No se pudo completar la operación.", true);
+        onFailure?.(failure);
+        setError(failure);
+      }
     } finally {
       gate.current = false;
       if (!session.signal.aborted) setPending(false);

@@ -15,6 +15,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const links = session
     ? isInventory(session.claims)
       ? [
+          ["/inventory", "Inventario"],
           ["/inventory/items", "Catálogo"],
           ...(canReadStock(session.claims)
             ? [
