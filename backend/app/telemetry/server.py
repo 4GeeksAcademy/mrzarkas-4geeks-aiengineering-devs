@@ -9,7 +9,10 @@ from app.telemetry.schemas import EVENT_MODELS, TelemetryBatch, TelemetryReceipt
 INCIDENT_EVENTS = frozenset({'incident_created', 'incident_transitioned', 'incident_assigned'})
 SERVER_EVENTS = INCIDENT_EVENTS | {'audit_accessed', 'management_mutation_completed', 'api_request_completed',
                                    'authentication_succeeded', 'authentication_failed', 'authorization_denied',
-                                   'catalog_cache_observed', 'service_health_checked', 'data_integrity_checked'}
+                                   'catalog_cache_observed', 'service_health_checked', 'data_integrity_checked',
+                                   'inbound_order_completed', 'outbound_order_completed', 'inventory_adjustment_completed',
+                                   'inventory_validation_failed', 'inventory_viewed', 'product_selected', 'order_started',
+                                   'inventory_threshold_activated', 'inventory_threshold_cleared', 'stock_direct_update_rejected', 'order_abandoned', 'inventory_reconciliation_failed'}
 logger = logging.getLogger('healthcore.telemetry')
 
 

@@ -132,68 +132,69 @@
         "type": "object"
       },
       "AlertTriggeredEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "alert_triggered",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__24"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -204,72 +205,72 @@
           "requestId",
           "properties"
         ],
-        "title": "AlertTriggeredEvent",
-        "type": "object"
+        "title": "AlertTriggeredEvent"
       },
       "ApiRequestCompletedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "api_request_completed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__20"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -280,72 +281,72 @@
           "requestId",
           "properties"
         ],
-        "title": "ApiRequestCompletedEvent",
-        "type": "object"
+        "title": "ApiRequestCompletedEvent"
       },
       "ApplicationErrorObservedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "application_error_observed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__21"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -356,72 +357,72 @@
           "requestId",
           "properties"
         ],
-        "title": "ApplicationErrorObservedEvent",
-        "type": "object"
+        "title": "ApplicationErrorObservedEvent"
       },
       "AppointmentPeriodAggregatedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "appointment_period_aggregated",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__35"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -432,8 +433,7 @@
           "requestId",
           "properties"
         ],
-        "title": "AppointmentPeriodAggregatedEvent",
-        "type": "object"
+        "title": "AppointmentPeriodAggregatedEvent"
       },
       "AssignmentHistoryResponse": {
         "properties": {
@@ -493,43 +493,22 @@
         "type": "object"
       },
       "AuditAccessedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "audit_accessed",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__32"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -537,24 +516,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "audit_accessed",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__32"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -565,8 +566,7 @@
           "requestId",
           "properties"
         ],
-        "title": "AuditAccessedEvent",
-        "type": "object"
+        "title": "AuditAccessedEvent"
       },
       "AuditEventResponse": {
         "properties": {
@@ -764,68 +764,69 @@
         "type": "object"
       },
       "AuthenticationFailedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "authentication_failed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__13"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -836,72 +837,72 @@
           "requestId",
           "properties"
         ],
-        "title": "AuthenticationFailedEvent",
-        "type": "object"
+        "title": "AuthenticationFailedEvent"
       },
       "AuthenticationSucceededEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "authentication_succeeded",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__14"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -912,72 +913,72 @@
           "requestId",
           "properties"
         ],
-        "title": "AuthenticationSucceededEvent",
-        "type": "object"
+        "title": "AuthenticationSucceededEvent"
       },
       "AuthorizationDeniedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "authorization_denied",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__17"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -988,72 +989,72 @@
           "requestId",
           "properties"
         ],
-        "title": "AuthorizationDeniedEvent",
-        "type": "object"
+        "title": "AuthorizationDeniedEvent"
       },
       "BillingPeriodAggregatedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "billing_period_aggregated",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__36"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -1064,72 +1065,72 @@
           "requestId",
           "properties"
         ],
-        "title": "BillingPeriodAggregatedEvent",
-        "type": "object"
+        "title": "BillingPeriodAggregatedEvent"
       },
       "CatalogCacheObservedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "catalog_cache_observed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__22"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -1140,8 +1141,7 @@
           "requestId",
           "properties"
         ],
-        "title": "CatalogCacheObservedEvent",
-        "type": "object"
+        "title": "CatalogCacheObservedEvent"
       },
       "CatalogListItem": {
         "properties": {
@@ -1608,43 +1608,22 @@
         "type": "object"
       },
       "ClinicalWorkloadAggregatedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "clinical_workload_aggregated",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__39"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -1652,24 +1631,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "clinical_workload_aggregated",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__39"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -1680,8 +1681,7 @@
           "requestId",
           "properties"
         ],
-        "title": "ClinicalWorkloadAggregatedEvent",
-        "type": "object"
+        "title": "ClinicalWorkloadAggregatedEvent"
       },
       "ComplianceReviewCreate": {
         "properties": {
@@ -1810,24 +1810,27 @@
         "type": "object"
       },
       "ContextResponse": {
-        "additionalProperties": false,
         "properties": {
           "contextToken": {
-            "title": "Contexttoken",
-            "type": "string"
+            "type": "string",
+            "title": "Contexttoken"
           },
-          "expiresAt": {
-            "title": "Expiresat",
-            "type": "string"
+          "sessionId": {
+            "type": "string",
+            "title": "Sessionid"
+          },
+          "userId": {
+            "type": "string",
+            "title": "Userid"
           },
           "jurisdiction": {
             "anyOf": [
               {
+                "type": "string",
                 "enum": [
                   "US",
                   "UK"
-                ],
-                "type": "string"
+                ]
               },
               {
                 "type": "null"
@@ -1836,19 +1839,17 @@
             "title": "Jurisdiction"
           },
           "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
           },
-          "sessionId": {
-            "title": "Sessionid",
-            "type": "string"
-          },
-          "userId": {
-            "title": "Userid",
-            "type": "string"
+          "expiresAt": {
+            "type": "string",
+            "title": "Expiresat"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "contextToken",
           "sessionId",
@@ -1857,47 +1858,25 @@
           "schemaVersion",
           "expiresAt"
         ],
-        "title": "ContextResponse",
-        "type": "object"
+        "title": "ContextResponse"
       },
       "DataIntegrityCheckedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "data_integrity_checked",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__27"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -1905,24 +1884,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "data_integrity_checked",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__27"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -1933,8 +1934,7 @@
           "requestId",
           "properties"
         ],
-        "title": "DataIntegrityCheckedEvent",
-        "type": "object"
+        "title": "DataIntegrityCheckedEvent"
       },
       "ErrorResponse": {
         "properties": {
@@ -1961,68 +1961,69 @@
         "type": "object"
       },
       "ExperiencePeriodAggregatedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "experience_period_aggregated",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__37"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2033,72 +2034,72 @@
           "requestId",
           "properties"
         ],
-        "title": "ExperiencePeriodAggregatedEvent",
-        "type": "object"
+        "title": "ExperiencePeriodAggregatedEvent"
       },
       "FrontendTimingMeasuredEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "frontend_timing_measured",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__19"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2109,8 +2110,7 @@
           "requestId",
           "properties"
         ],
-        "title": "FrontendTimingMeasuredEvent",
-        "type": "object"
+        "title": "FrontendTimingMeasuredEvent"
       },
       "HTTPValidationError": {
         "properties": {
@@ -2140,68 +2140,69 @@
         "type": "object"
       },
       "InboundOrderCompletedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "inbound_order_completed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__1"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2212,72 +2213,72 @@
           "requestId",
           "properties"
         ],
-        "title": "InboundOrderCompletedEvent",
-        "type": "object"
+        "title": "InboundOrderCompletedEvent"
       },
       "IncidentAssignedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "incident_assigned",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__30"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2288,8 +2289,7 @@
           "requestId",
           "properties"
         ],
-        "title": "IncidentAssignedEvent",
-        "type": "object"
+        "title": "IncidentAssignedEvent"
       },
       "IncidentAssignmentRequest": {
         "properties": {
@@ -2394,43 +2394,22 @@
         "type": "object"
       },
       "IncidentCreatedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "incident_created",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__28"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -2438,24 +2417,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "incident_created",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__28"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2466,8 +2467,7 @@
           "requestId",
           "properties"
         ],
-        "title": "IncidentCreatedEvent",
-        "type": "object"
+        "title": "IncidentCreatedEvent"
       },
       "IncidentListItem": {
         "description": "Operational summary returned by the queue; excludes sensitive detail.",
@@ -2699,43 +2699,22 @@
         "type": "object"
       },
       "IncidentTransitionedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "incident_transitioned",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__29"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -2743,24 +2722,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "incident_transitioned",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__29"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2771,8 +2772,7 @@
           "requestId",
           "properties"
         ],
-        "title": "IncidentTransitionedEvent",
-        "type": "object"
+        "title": "IncidentTransitionedEvent"
       },
       "IncidentUpdate": {
         "properties": {
@@ -2843,68 +2843,69 @@
         "type": "object"
       },
       "InventoryAdjustmentCompletedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "inventory_adjustment_completed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__10"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2915,72 +2916,72 @@
           "requestId",
           "properties"
         ],
-        "title": "InventoryAdjustmentCompletedEvent",
-        "type": "object"
+        "title": "InventoryAdjustmentCompletedEvent"
       },
       "InventoryReconciliationFailedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "inventory_reconciliation_failed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__12"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -2991,72 +2992,72 @@
           "requestId",
           "properties"
         ],
-        "title": "InventoryReconciliationFailedEvent",
-        "type": "object"
+        "title": "InventoryReconciliationFailedEvent"
       },
       "InventoryThresholdActivatedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "inventory_threshold_activated",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__5"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -3067,72 +3068,72 @@
           "requestId",
           "properties"
         ],
-        "title": "InventoryThresholdActivatedEvent",
-        "type": "object"
+        "title": "InventoryThresholdActivatedEvent"
       },
       "InventoryThresholdClearedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "inventory_threshold_cleared",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__11"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -3143,72 +3144,72 @@
           "requestId",
           "properties"
         ],
-        "title": "InventoryThresholdClearedEvent",
-        "type": "object"
+        "title": "InventoryThresholdClearedEvent"
       },
       "InventoryValidationFailedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "inventory_validation_failed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__3"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -3219,72 +3220,72 @@
           "requestId",
           "properties"
         ],
-        "title": "InventoryValidationFailedEvent",
-        "type": "object"
+        "title": "InventoryValidationFailedEvent"
       },
       "InventoryViewedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "inventory_viewed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__6"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -3295,8 +3296,7 @@
           "requestId",
           "properties"
         ],
-        "title": "InventoryViewedEvent",
-        "type": "object"
+        "title": "InventoryViewedEvent"
       },
       "ItemCreate": {
         "additionalProperties": false,
@@ -3480,43 +3480,22 @@
         "type": "object"
       },
       "JobRunCompletedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "job_run_completed",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__26"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -3524,24 +3503,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "job_run_completed",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__26"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -3552,8 +3553,7 @@
           "requestId",
           "properties"
         ],
-        "title": "JobRunCompletedEvent",
-        "type": "object"
+        "title": "JobRunCompletedEvent"
       },
       "LotCreate": {
         "additionalProperties": false,
@@ -3817,43 +3817,22 @@
         "type": "object"
       },
       "ManagementMutationCompletedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "management_mutation_completed",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__31"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -3861,24 +3840,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "management_mutation_completed",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__31"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -3889,8 +3890,7 @@
           "requestId",
           "properties"
         ],
-        "title": "ManagementMutationCompletedEvent",
-        "type": "object"
+        "title": "ManagementMutationCompletedEvent"
       },
       "MovementCreate": {
         "additionalProperties": false,
@@ -4160,68 +4160,69 @@
         "type": "object"
       },
       "NavigationViewedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "navigation_viewed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__18"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -4232,72 +4233,72 @@
           "requestId",
           "properties"
         ],
-        "title": "NavigationViewedEvent",
-        "type": "object"
+        "title": "NavigationViewedEvent"
       },
       "NotificationDeliveryCompletedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "notification_delivery_completed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__25"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -4308,8 +4309,7 @@
           "requestId",
           "properties"
         ],
-        "title": "NotificationDeliveryCompletedEvent",
-        "type": "object"
+        "title": "NotificationDeliveryCompletedEvent"
       },
       "OpenIncidentsBySeverityResponse": {
         "properties": {
@@ -4341,68 +4341,69 @@
         "type": "object"
       },
       "OrderAbandonedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "order_abandoned",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__9"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -4413,72 +4414,72 @@
           "requestId",
           "properties"
         ],
-        "title": "OrderAbandonedEvent",
-        "type": "object"
+        "title": "OrderAbandonedEvent"
       },
       "OrderStartedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "order_started",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__8"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -4489,72 +4490,72 @@
           "requestId",
           "properties"
         ],
-        "title": "OrderStartedEvent",
-        "type": "object"
+        "title": "OrderStartedEvent"
       },
       "OutboundOrderCompletedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "outbound_order_completed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__2"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -4565,72 +4566,72 @@
           "requestId",
           "properties"
         ],
-        "title": "OutboundOrderCompletedEvent",
-        "type": "object"
+        "title": "OutboundOrderCompletedEvent"
       },
       "ProductSelectedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "product_selected",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__7"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -4641,8 +4642,7 @@
           "requestId",
           "properties"
         ],
-        "title": "ProductSelectedEvent",
-        "type": "object"
+        "title": "ProductSelectedEvent"
       },
       "ReasonRequest": {
         "additionalProperties": false,
@@ -4880,68 +4880,69 @@
         "type": "object"
       },
       "ServiceHealthCheckedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "service_health_checked",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__23"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -4952,72 +4953,72 @@
           "requestId",
           "properties"
         ],
-        "title": "ServiceHealthCheckedEvent",
-        "type": "object"
+        "title": "ServiceHealthCheckedEvent"
       },
       "SessionEndedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "session_ended",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__16"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -5028,72 +5029,72 @@
           "requestId",
           "properties"
         ],
-        "title": "SessionEndedEvent",
-        "type": "object"
+        "title": "SessionEndedEvent"
       },
       "SessionStartedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "session_started",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__15"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -5104,8 +5105,7 @@
           "requestId",
           "properties"
         ],
-        "title": "SessionStartedEvent",
-        "type": "object"
+        "title": "SessionStartedEvent"
       },
       "StatusConnectedResponse": {
         "properties": {
@@ -5231,43 +5231,22 @@
         "type": "object"
       },
       "StockDirectUpdateRejectedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "stock_direct_update_rejected",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__4"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -5275,24 +5254,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "stock_direct_update_rejected",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__4"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -5303,8 +5304,7 @@
           "requestId",
           "properties"
         ],
-        "title": "StockDirectUpdateRejectedEvent",
-        "type": "object"
+        "title": "StockDirectUpdateRejectedEvent"
       },
       "StockRead": {
         "additionalProperties": false,
@@ -5587,68 +5587,69 @@
         "type": "object"
       },
       "TelemetryContractRejectedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "telemetry_contract_rejected",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__33"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -5659,72 +5660,72 @@
           "requestId",
           "properties"
         ],
-        "title": "TelemetryContractRejectedEvent",
-        "type": "object"
+        "title": "TelemetryContractRejectedEvent"
       },
       "TelemetryDeliveryFailedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
+          },
+          "sessionId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessionid"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
           },
           "event_type": {
+            "type": "string",
             "const": "telemetry_delivery_failed",
-            "title": "Event Type",
-            "type": "string"
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
           },
           "properties": {
             "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__34"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
-          },
-          "sessionId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Sessionid"
-          },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
-          "userId": {
-            "anyOf": [
-              {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Userid"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -5735,8 +5736,7 @@
           "requestId",
           "properties"
         ],
-        "title": "TelemetryDeliveryFailedEvent",
-        "type": "object"
+        "title": "TelemetryDeliveryFailedEvent"
       },
       "TelemetryError": {
         "properties": {
@@ -5873,43 +5873,22 @@
         "type": "object"
       },
       "WorkforcePeriodAggregatedEvent": {
-        "additionalProperties": false,
         "properties": {
           "eventId": {
+            "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-            "title": "Eventid",
-            "type": "string"
+            "title": "Eventid"
           },
-          "event_type": {
-            "const": "workforce_period_aggregated",
-            "title": "Event Type",
-            "type": "string"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__38"
-          },
-          "requestId": {
-            "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Requestid"
-          },
-          "schemaVersion": {
-            "const": "1.2.0",
-            "title": "Schemaversion",
-            "type": "string"
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "title": "Timestamp"
           },
           "sessionId": {
             "anyOf": [
               {
-                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
               },
               {
                 "type": "null"
@@ -5917,24 +5896,46 @@
             ],
             "title": "Sessionid"
           },
-          "timestamp": {
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
-            "title": "Timestamp",
-            "type": "string"
-          },
           "userId": {
             "anyOf": [
               {
-                "pattern": "^ps_[0-9a-f]{64}$",
-                "type": "string"
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
               },
               {
                 "type": "null"
               }
             ],
             "title": "Userid"
+          },
+          "event_type": {
+            "type": "string",
+            "const": "workforce_period_aggregated",
+            "title": "Event Type"
+          },
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.3.0",
+            "title": "Schemaversion"
+          },
+          "requestId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requestid"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/app__telemetry__schemas__TelemetryProperties__38"
           }
         },
+        "additionalProperties": false,
+        "type": "object",
         "required": [
           "eventId",
           "timestamp",
@@ -5945,8 +5946,7 @@
           "requestId",
           "properties"
         ],
-        "title": "WorkforcePeriodAggregatedEvent",
-        "type": "object"
+        "title": "WorkforcePeriodAggregatedEvent"
       },
       "app__telemetry__schemas__TelemetryProperties__1": {
         "additionalProperties": false,
@@ -7866,6 +7866,130 @@
         ],
         "title": "TelemetryProperties",
         "type": "object"
+      },
+      "FlowRequest": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "product_selected",
+              "order_started",
+              "activity",
+              "confirmation"
+            ],
+            "title": "Action"
+          },
+          "clinicId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Clinicid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Itemid"
+          },
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "inbound",
+                  "outbound"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Direction"
+          },
+          "flowId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^ps_[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flowid"
+          },
+          "flowToken": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 4096
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Flowtoken"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "action",
+          "clinicId",
+          "itemId"
+        ],
+        "title": "FlowRequest"
+      },
+      "FlowResponse": {
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "title": "Accepted"
+          },
+          "flowId": {
+            "type": "string",
+            "title": "Flowid"
+          },
+          "flowToken": {
+            "type": "string",
+            "title": "Flowtoken"
+          },
+          "expiresAt": {
+            "type": "string",
+            "title": "Expiresat"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "accepted",
+          "flowId",
+          "flowToken",
+          "expiresAt"
+        ],
+        "title": "FlowResponse"
+      },
+      "ReconciliationRead": {
+        "properties": {
+          "result": {
+            "type": "string",
+            "enum": [
+              "matched",
+              "mismatched",
+              "inconclusive"
+            ],
+            "title": "Result"
+          },
+          "telemetryAccepted": {
+            "type": "boolean",
+            "title": "Telemetryaccepted"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "result",
+          "telemetryAccepted"
+        ],
+        "title": "ReconciliationRead"
       }
     },
     "securitySchemes": {
@@ -10653,6 +10777,18 @@
         "summary": "Movement",
         "tags": [
           "inventory"
+        ],
+        "parameters": [
+          {
+            "name": "X-Inventory-Flow-Id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^ps_[0-9a-f]{64}$"
+            },
+            "description": "Optional UI flow correlation; never grants inventory permissions."
+          }
         ]
       }
     },
@@ -12363,6 +12499,237 @@
         "tags": [
           "telemetry"
         ]
+      }
+    },
+    "/telemetry/inventory-flow": {
+      "post": {
+        "tags": [
+          "telemetry"
+        ],
+        "summary": "Inventory Flow",
+        "operationId": "inventory_flow_telemetry_inventory_flow_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FlowRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlowResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request Entity Too Large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryError"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetryError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/inventory/items/{item_id}/clinics/{clinic_id}/reconciliation": {
+      "post": {
+        "tags": [
+          "inventory"
+        ],
+        "summary": "Reconcile",
+        "operationId": "reconcile_inventory_items__item_id__clinics__clinic_id__reconciliation_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "clinic_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Clinic Id"
+            }
+          },
+          {
+            "name": "lot_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Lot Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReconciliationRead"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

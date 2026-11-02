@@ -1,8 +1,11 @@
 """Durable authenticated inventory denials; never retain body, headers or tokens."""
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.routing import APIRoute
+from fastapi.exceptions import RequestValidationError
+from .direct_stock import attempt
+from app.telemetry.inventory_direct_stock_producer import capture_direct_stock
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -72,6 +75,16 @@ class InventoryRoute(APIRoute):
         async def audited(request):
             try:
                 return await handler(request)
+            except RequestValidationError as error:
+                try:
+                    detected = attempt(request, error, self.path)
+                    actor = getattr(request.state, "inventory_actor", None)
+                    if detected is not None and actor is not None:
+                        item_id, clinic_id, kind = detected
+                        capture_direct_stock(actor, item_id, clinic_id, kind, uuid4())
+                except Exception:
+                    pass
+                raise
             except HTTPException as error:
                 if error.status_code != 403:
                     raise

@@ -677,6 +677,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/telemetry/inventory-flow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Inventory Flow */
+        post: operations["inventory_flow_telemetry_inventory_flow_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/inventory/items/{item_id}/clinics/{clinic_id}/reconciliation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reconcile */
+        post: operations["reconcile_inventory_items__item_id__clinics__clinic_id__reconciliation_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -735,97 +769,97 @@ export interface components {
         AlertTriggeredEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "alert_triggered";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__24"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__24"];
         };
         /** ApiRequestCompletedEvent */
         ApiRequestCompletedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "api_request_completed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__20"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__20"];
         };
         /** ApplicationErrorObservedEvent */
         ApplicationErrorObservedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "application_error_observed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__21"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__21"];
         };
         /** AppointmentPeriodAggregatedEvent */
         AppointmentPeriodAggregatedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "appointment_period_aggregated";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__35"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__35"];
         };
         /** AssignmentHistoryResponse */
         AssignmentHistoryResponse: {
@@ -858,25 +892,25 @@ export interface components {
         AuditAccessedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "audit_accessed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__32"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__32"];
         };
         /** AuditEventResponse */
         AuditEventResponse: {
@@ -968,121 +1002,121 @@ export interface components {
         AuthenticationFailedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "authentication_failed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__13"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__13"];
         };
         /** AuthenticationSucceededEvent */
         AuthenticationSucceededEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "authentication_succeeded";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__14"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__14"];
         };
         /** AuthorizationDeniedEvent */
         AuthorizationDeniedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "authorization_denied";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__17"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__17"];
         };
         /** BillingPeriodAggregatedEvent */
         BillingPeriodAggregatedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "billing_period_aggregated";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__36"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__36"];
         };
         /** CatalogCacheObservedEvent */
         CatalogCacheObservedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "catalog_cache_observed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__22"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__22"];
         };
         /** CatalogListItem */
         CatalogListItem: {
@@ -1255,25 +1289,25 @@ export interface components {
         ClinicalWorkloadAggregatedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "clinical_workload_aggregated";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__39"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__39"];
         };
         /** ComplianceReviewCreate */
         ComplianceReviewCreate: {
@@ -1339,43 +1373,43 @@ export interface components {
         ContextResponse: {
             /** Contexttoken */
             contextToken: string;
-            /** Expiresat */
-            expiresAt: string;
+            /** Sessionid */
+            sessionId: string;
+            /** Userid */
+            userId: string;
             /** Jurisdiction */
             jurisdiction: ("US" | "UK") | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string;
-            /** Userid */
-            userId: string;
+            schemaVersion: "1.3.0";
+            /** Expiresat */
+            expiresAt: string;
         };
         /** DataIntegrityCheckedEvent */
         DataIntegrityCheckedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "data_integrity_checked";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__27"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__27"];
         };
         /** ErrorResponse */
         ErrorResponse: {
@@ -1388,49 +1422,49 @@ export interface components {
         ExperiencePeriodAggregatedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "experience_period_aggregated";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__37"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__37"];
         };
         /** FrontendTimingMeasuredEvent */
         FrontendTimingMeasuredEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "frontend_timing_measured";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__19"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__19"];
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1449,49 +1483,49 @@ export interface components {
         InboundOrderCompletedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "inbound_order_completed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__1"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__1"];
         };
         /** IncidentAssignedEvent */
         IncidentAssignedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "incident_assigned";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__30"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__30"];
         };
         /** IncidentAssignmentRequest */
         IncidentAssignmentRequest: {
@@ -1551,25 +1585,25 @@ export interface components {
         IncidentCreatedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "incident_created";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__28"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__28"];
         };
         /**
          * IncidentListItem
@@ -1728,25 +1762,25 @@ export interface components {
         IncidentTransitionedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "incident_transitioned";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__29"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__29"];
         };
         /** IncidentUpdate */
         IncidentUpdate: {
@@ -1765,145 +1799,145 @@ export interface components {
         InventoryAdjustmentCompletedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "inventory_adjustment_completed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__10"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__10"];
         };
         /** InventoryReconciliationFailedEvent */
         InventoryReconciliationFailedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "inventory_reconciliation_failed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__12"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__12"];
         };
         /** InventoryThresholdActivatedEvent */
         InventoryThresholdActivatedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "inventory_threshold_activated";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__5"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__5"];
         };
         /** InventoryThresholdClearedEvent */
         InventoryThresholdClearedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "inventory_threshold_cleared";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__11"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__11"];
         };
         /** InventoryValidationFailedEvent */
         InventoryValidationFailedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "inventory_validation_failed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__3"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__3"];
         };
         /** InventoryViewedEvent */
         InventoryViewedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "inventory_viewed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__6"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__6"];
         };
         /** ItemCreate */
         ItemCreate: {
@@ -1977,25 +2011,25 @@ export interface components {
         JobRunCompletedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "job_run_completed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__26"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__26"];
         };
         /** LotCreate */
         LotCreate: {
@@ -2114,25 +2148,25 @@ export interface components {
         ManagementMutationCompletedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "management_mutation_completed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__31"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__31"];
         };
         /** MovementCreate */
         MovementCreate: {
@@ -2237,49 +2271,49 @@ export interface components {
         NavigationViewedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "navigation_viewed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__18"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__18"];
         };
         /** NotificationDeliveryCompletedEvent */
         NotificationDeliveryCompletedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "notification_delivery_completed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__25"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__25"];
         };
         /** OpenIncidentsBySeverityResponse */
         OpenIncidentsBySeverityResponse: {
@@ -2299,97 +2333,97 @@ export interface components {
         OrderAbandonedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "order_abandoned";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__9"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__9"];
         };
         /** OrderStartedEvent */
         OrderStartedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "order_started";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__8"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__8"];
         };
         /** OutboundOrderCompletedEvent */
         OutboundOrderCompletedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "outbound_order_completed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__2"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__2"];
         };
         /** ProductSelectedEvent */
         ProductSelectedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "product_selected";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__7"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__7"];
         };
         /** ReasonRequest */
         ReasonRequest: {
@@ -2495,73 +2529,73 @@ export interface components {
         ServiceHealthCheckedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "service_health_checked";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__23"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__23"];
         };
         /** SessionEndedEvent */
         SessionEndedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "session_ended";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__16"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__16"];
         };
         /** SessionStartedEvent */
         SessionStartedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "session_started";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__15"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__15"];
         };
         /** StatusConnectedResponse */
         StatusConnectedResponse: {
@@ -2630,25 +2664,25 @@ export interface components {
         StockDirectUpdateRejectedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "stock_direct_update_rejected";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__4"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__4"];
         };
         /** StockRead */
         StockRead: {
@@ -2695,49 +2729,49 @@ export interface components {
         TelemetryContractRejectedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "telemetry_contract_rejected";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__33"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__33"];
         };
         /** TelemetryDeliveryFailedEvent */
         TelemetryDeliveryFailedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "telemetry_delivery_failed";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__34"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__34"];
         };
         /** TelemetryError */
         TelemetryError: {
@@ -2798,25 +2832,25 @@ export interface components {
         WorkforcePeriodAggregatedEvent: {
             /** Eventid */
             eventId: string;
+            /** Timestamp */
+            timestamp: string;
+            /** Sessionid */
+            sessionId: string | null;
+            /** Userid */
+            userId: string | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             event_type: "workforce_period_aggregated";
-            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__38"];
-            /** Requestid */
-            requestId: string | null;
             /**
              * Schemaversion
              * @constant
              */
-            schemaVersion: "1.2.0";
-            /** Sessionid */
-            sessionId: string | null;
-            /** Timestamp */
-            timestamp: string;
-            /** Userid */
-            userId: string | null;
+            schemaVersion: "1.3.0";
+            /** Requestid */
+            requestId: string | null;
+            properties: components["schemas"]["app__telemetry__schemas__TelemetryProperties__38"];
         };
         /** TelemetryProperties */
         app__telemetry__schemas__TelemetryProperties__1: {
@@ -3654,6 +3688,51 @@ export interface components {
              * @enum {string}
              */
             lastStep: "selection" | "validation" | "confirmation";
+        };
+        /** FlowRequest */
+        FlowRequest: {
+            /**
+             * Action
+             * @enum {string}
+             */
+            action: "product_selected" | "order_started" | "activity" | "confirmation";
+            /**
+             * Clinicid
+             * Format: uuid
+             */
+            clinicId: string;
+            /**
+             * Itemid
+             * Format: uuid
+             */
+            itemId: string;
+            /** Direction */
+            direction?: ("inbound" | "outbound") | null;
+            /** Flowid */
+            flowId?: string | null;
+            /** Flowtoken */
+            flowToken?: string | null;
+        };
+        /** FlowResponse */
+        FlowResponse: {
+            /** Accepted */
+            accepted: boolean;
+            /** Flowid */
+            flowId: string;
+            /** Flowtoken */
+            flowToken: string;
+            /** Expiresat */
+            expiresAt: string;
+        };
+        /** ReconciliationRead */
+        ReconciliationRead: {
+            /**
+             * Result
+             * @enum {string}
+             */
+            result: "matched" | "mismatched" | "inconclusive";
+            /** Telemetryaccepted */
+            telemetryAccepted: boolean;
         };
     };
     responses: never;
@@ -5513,7 +5592,10 @@ export interface operations {
     movement_inventory_movements_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Optional UI flow correlation; never grants inventory permissions. */
+                "X-Inventory-Flow-Id"?: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -6707,6 +6789,172 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+        };
+    };
+    inventory_flow_telemetry_inventory_flow_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FlowRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FlowResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TelemetryError"];
+                };
+            };
+        };
+    };
+    reconcile_inventory_items__item_id__clinics__clinic_id__reconciliation_post: {
+        parameters: {
+            query?: {
+                lot_id?: string | null;
+            };
+            header?: never;
+            path: {
+                item_id: string;
+                clinic_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReconciliationRead"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

@@ -9,7 +9,7 @@ from app.telemetry.schemas import TelemetryReceipt
 
 def event():
     return dict(eventId=str(uuid4()), timestamp=datetime.now(UTC).isoformat(), sessionId=None,
-                userId='ps_'+'a'*64, event_type='incident_created', schemaVersion='1.2.0', requestId=None,
+                userId='ps_'+'a'*64, event_type='incident_created', schemaVersion='1.3.0', requestId=None,
                 properties=dict(jurisdiction='US', environment='test', incidentId='ps_'+'b'*64, auditId='ps_'+'c'*64))
 
 

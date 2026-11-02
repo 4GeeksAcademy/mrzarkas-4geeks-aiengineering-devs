@@ -1,11 +1,12 @@
 from app.error_contracts import error_responses
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.catalogs.cache import catalog_cache
+from app.telemetry.request_producer import mark_authenticated_general_request
 from app.catalogs.schemas import CatalogResponse, CatalogValueResponse
 from app.auth.dependencies import Actor, require_capability
 from app.db.models.catalog import Catalog, CatalogValue
@@ -19,6 +20,7 @@ async def get_catalog(
     catalog_name: str,
     session: AsyncSession = Depends(get_session),
     actor: Actor = Depends(require_capability("catalog:read")),
+    request: Request = None,
 ) -> CatalogResponse:
     catalog = (
         await session.execute(
@@ -52,6 +54,9 @@ async def get_catalog(
     rows = await catalog_cache.read(key, 60, load, still_current)
     now = datetime.now(UTC)
     values = [CatalogValueResponse.model_validate(row["value"]) for row in rows if row["active"]]
-    return CatalogResponse(catalog_name=catalog.catalog_name, version=catalog.version, values=[
+    response = CatalogResponse(catalog_name=catalog.catalog_name, version=catalog.version, values=[
         value for value in values if value.effective_from <= now and (value.effective_to is None or value.effective_to >= now)
     ])
+
+    mark_authenticated_general_request(request, actor, "catalogs")
+    return response

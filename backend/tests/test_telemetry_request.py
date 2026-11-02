@@ -138,7 +138,8 @@ def test_real_four_read_routes_us_uk_and_denials(monkeypatch):
                         assert (await client.get(url,headers=auth)).status_code==expected
                     for url in ['/health','/status','/incidents','/management/audit-events']:
                         assert (await client.get(url,headers=headers)).status_code==200
-                    await drain();assert len(received)==before
+                    await drain();assert len(received)==before+2
+                    before=len(received)
                     async def broken(body):raise RuntimeError('Synthetic sink failure')
                     service.queue.sink=broken
                     assert (await client.get('/incidents/'+identity,headers=headers)).status_code==200

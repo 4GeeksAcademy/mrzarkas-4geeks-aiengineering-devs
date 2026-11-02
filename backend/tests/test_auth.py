@@ -25,6 +25,7 @@ from fastapi.routing import APIRoute
 def test_all_operations_have_explicit_contracts_and_documented_errors() -> None:
     expected = {
         "/telemetry/context": {"post"}, "/telemetry/events": {"post"},
+        "/telemetry/inventory-flow": {"post"},
         "/auth/tokens": {"post"}, "/catalogs/{catalog_name}": {"get"},
         "/compliance-reviews": {"post"}, "/compliance-reviews/{review_id}": {"get"},
         "/compliance-reviews/{review_id}/status": {"patch"},
@@ -60,9 +61,10 @@ def test_all_operations_have_explicit_contracts_and_documented_errors() -> None:
         "/inventory/items/{item_id}/audit": {"get"},
     })
     openapi = app.openapi()
+    expected["/inventory/items/{item_id}/clinics/{clinic_id}/reconciliation"] = {"post"}
     observed = {path: set(operations) for path, operations in openapi["paths"].items()}
     assert observed == expected
-    assert sum(map(len, observed.values())) == 46
+    assert sum(map(len, observed.values())) == 48
     routes = [route for route in app.routes if isinstance(route, APIRoute)]
     assert all(route.response_model is not None for route in routes)
     for route in routes:

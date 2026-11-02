@@ -88,8 +88,11 @@ def test_real_health_routes_keep_contracts_and_observed_outcomes(monkeypatch,cas
             expected=200 if case in ['health','connected'] else 503
             assert response.status_code==expected and 'x-request-id' not in response.headers
             assert response.json()==({'status':'ok'} if case=='health' else {'status':'ok','database':'connected'} if case=='connected' else {'status':'error','database':'unavailable'})
-            await service.queue.flush();assert len(received)==1
-            e=received[0];assert e['event_type']=='service_health_checked' and e['userId'] is None
+            await asyncio.gather(*service.tasks)
+            while service.queue.pending: await service.queue.flush()
+            assert len(received)==2
+            assert len([value for value in received if value['event_type']=='api_request_completed'])==1
+            e=next(value for value in received if value['event_type']=='service_health_checked');assert e['event_type']=='service_health_checked' and e['userId'] is None
             assert e['properties']['check']==('liveness' if case=='health' else 'database')
             assert e['properties']['outcome']==('ok' if expected==200 else 'timeout' if case=='timeout' else 'failed')
             assert e['properties']['jurisdiction'] is None and e['properties']['durationMs']>=0

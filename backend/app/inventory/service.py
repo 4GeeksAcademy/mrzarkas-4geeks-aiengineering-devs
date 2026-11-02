@@ -5,6 +5,7 @@ from app.reference_data.models import Clinic, Jurisdiction
 from .models import InventoryItem, InventoryClinicItem, InventoryLot, InventoryMovement, InventoryAudit
 from .policies import allow, scope
 from .schemas import ItemCreate, ItemRead, StockRead
+from .validation import InventoryValidationError
 
 
 async def flush(session):
@@ -43,19 +44,19 @@ async def clinic(session, actor, clinic_id, lock=False):
 async def config(session, item_id, clinic_id):
     value = await session.get(InventoryClinicItem, (item_id, clinic_id))
     if value is None:
-        raise HTTPException(409, "Configure the mandatory clinic reorder point first")
+        raise InventoryValidationError(409, "Configure the mandatory clinic reorder point first", "reference")
     return value
 
 
 async def lot(session, value, lot_id):
     if value.uses_lots != (lot_id is not None):
-        raise HTTPException(422, "Lot requirement does not match the item")
+        raise InventoryValidationError(422, "Lot requirement does not match the item", "lot")
     if lot_id is not None:
         found = await session.get(InventoryLot, lot_id)
         if found is None:
-            raise HTTPException(404, "Lot not found")
+            raise InventoryValidationError(404, "Lot not found", "lot")
         if found.item_id != value.id:
-            raise HTTPException(422, "Lot does not belong to the item")
+            raise InventoryValidationError(422, "Lot does not belong to the item", "lot")
 
 
 async def quantity(session, item_id, clinic_id=None, lot_id=None, filter_lot=False):
@@ -164,10 +165,10 @@ async def movement(session, actor, payload):
     else:
         factor = value.pack_size if payload.unit == "pack" else 1
         if payload.unit == "pack" and value.pack_label is None:
-            raise HTTPException(422, "Item has no pack presentation")
+            raise InventoryValidationError(422, "Item has no pack presentation", "unit")
         delta = payload.quantity * factor * (1 if payload.kind == "in" else -1)
     if previous + delta < 0:
-        raise HTTPException(409, "Insufficient stock")
+        raise InventoryValidationError(409, "Insufficient stock", "insufficient_stock")
     created = InventoryMovement(item_id=value.id, clinic_id=payload.clinic_id, lot_id=payload.lot_id,
         kind=payload.kind, delta=delta, previous_quantity=previous, counted_quantity=payload.counted_quantity,
         unit=value.unit, pack_size=value.pack_size, pack_label=value.pack_label, reason=payload.reason,

@@ -35,7 +35,7 @@ async function setup(options = {}) {
     if (url.endsWith('/context')) {
       const clinic = JSON.parse(init.body).clinicId;
       return response(200, { contextToken: 'synthetic-context', sessionId: '00000000-0000-4000-8000-000000000001',
-        userId: 'ps_'+'a'.repeat(64), jurisdiction: clinic === null ? null : 'US', schemaVersion: '1.2.0',
+        userId: 'ps_'+'a'.repeat(64), jurisdiction: clinic === null ? null : 'US', schemaVersion: '1.3.0',
         expiresAt: new Date(epoch + clock.time + 300000).toISOString() });
     }
     if (behaviour) return behaviour(url, init);
@@ -195,7 +195,7 @@ for (const [name, definition] of Object.entries(contract.definitions).filter(([n
   test(`schema parity: ${name} positive/required/extra/nullable/date`, () => {
     const properties = definition.allOf[1].properties.properties;
     const value = { eventId:uuidValue,timestamp:'2026-11-01T10:00:00Z',sessionId:null,userId:null,
-      event_type:name,schemaVersion:'1.2.0',requestId:null,
+      event_type:name,schemaVersion:'1.3.0',requestId:null,
       properties:Object.fromEntries(Object.entries(properties.properties).map(([key, child]) => [key,sample(child)])) };
     assert.equal(validate(definition,value,contract),true);
     for (const key of properties.required) {
@@ -210,7 +210,7 @@ for (const [name, definition] of Object.entries(contract.definitions).filter(([n
 
 test('nullable server types do not grant browser producer admission', () => {
   const catalogue = compileContract(contract);
-  assert.equal(catalogue.version, '1.2.0');
+  assert.equal(catalogue.version, '1.3.0');
   assert.equal(catalogue.general.size, 5);
   for (const name of ['authentication_succeeded','authentication_failed','authorization_denied',
     'api_request_completed','catalog_cache_observed','service_health_checked','data_integrity_checked',
@@ -218,7 +218,7 @@ test('nullable server types do not grant browser producer admission', () => {
     const definition = contract.definitions[name];
     const properties = definition.allOf[1].properties.properties;
     const value = { eventId:uuidValue,timestamp:'2026-11-01T10:00:00Z',sessionId:null,userId:null,
-      event_type:name,schemaVersion:'1.2.0',requestId:null,
+      event_type:name,schemaVersion:'1.3.0',requestId:null,
       properties:Object.fromEntries(Object.entries(properties.properties).map(([key,child]) => [key,sample(child)])) };
     value.properties.jurisdiction = null;
     assert.equal(validate(definition,value,contract),true);
@@ -291,4 +291,15 @@ test('reserved diagnostics wait behind normal flight without concurrent send and
 test('missing general context does not send or acquire context for diagnostics',async()=>{
   const {service,calls,clock}=await setup({connect:false});service.track('unknown',{});
   await clock.advance(20000);assert.equal(calls.length,0);assert.equal(service.diagnostics().diagnosticPending,0);service.destroy();
+});
+
+
+test('inventory audit requires 1.3.0 and remains server-only', () => {
+  const event = {eventId:uuidValue,timestamp:'2026-11-01T10:00:00Z',sessionId:null,
+    userId:'ps_'+'a'.repeat(64),event_type:'audit_accessed',schemaVersion:'1.3.0',requestId:null,
+    properties:{jurisdiction:'US',environment:'test',surface:'inventory'}};
+  assert.equal(validate(contract.definitions.audit_accessed,event,contract),true);
+  assert.equal(compileContract(contract).validEvent(event),false);
+  event.schemaVersion='1.2.0';
+  assert.equal(validate(contract.definitions.audit_accessed,event,contract),false);
 });

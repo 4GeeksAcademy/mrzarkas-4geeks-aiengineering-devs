@@ -173,3 +173,8 @@ class AccessDenialRead(EvidenceRead):
     jurisdiction_id: UUID | None
     jurisdiction_key: str | None
     occurred_at: datetime
+
+
+class ReconciliationRead(Schema):
+    result: Literal['matched', 'mismatched', 'inconclusive']
+    telemetryAccepted: bool

@@ -23,6 +23,9 @@ from app.telemetry.security_completion import SecurityCompletionMiddleware
 from app.telemetry.health_completion import HealthCompletionMiddleware
 from app.telemetry.diagnostic_completion import DiagnosticCompletionMiddleware
 from app.telemetry.health_cache_producer import mark_health
+from app.telemetry.request_producer import mark_general_request
+from app.telemetry.inventory_view_completion import InventoryViewCompletionMiddleware
+from app.telemetry.inventory_flow_router import router as inventory_flow_router
 
 
 class HealthResponse(BaseModel):
@@ -43,14 +46,19 @@ class StatusUnavailableResponse(BaseModel):
 async def lifespan(app):
     from app.telemetry import incident_producer
     from app.telemetry.integrity_producer import capture_startup_integrity
-    capture_startup_integrity(incident_producer.start())
+    from app.telemetry import inventory_abandonment_producer as abandonment
+    service = incident_producer.start()
+    capture_startup_integrity(service)
+    abandonment_task = abandonment.start(service)
     try:
         yield
     finally:
+        await abandonment.stop(abandonment_task)
         await incident_producer.stop()
 
 
 app = FastAPI(title="HealthCore API", lifespan=lifespan)
+app.add_middleware(InventoryViewCompletionMiddleware)
 app.add_middleware(AuditCompletionMiddleware)
 app.add_middleware(SecurityCompletionMiddleware)
 app.add_middleware(HealthCompletionMiddleware)
@@ -73,10 +81,12 @@ app.include_router(compliance_router)
 app.include_router(incidents_router)
 app.include_router(management_router)
 app.include_router(telemetry_router)
+app.include_router(inventory_flow_router)
 
 
 @app.get("/health", response_model=HealthResponse)
 def health(request: Request = None) -> HealthResponse:
+    mark_general_request(request, "health")
     mark_health(request, "liveness", "ok")
     return HealthResponse(status="ok")
 
@@ -93,6 +103,7 @@ def health(request: Request = None) -> HealthResponse:
 )
 async def status(request: Request = None) -> StatusConnectedResponse | JSONResponse:
     """Check connectivity without reading or creating application data."""
+    mark_general_request(request, "status")
     if engine is None:
         mark_health(request, "database", "failed")
         return JSONResponse(status_code=503, content={"status": "error", "database": "unavailable"})

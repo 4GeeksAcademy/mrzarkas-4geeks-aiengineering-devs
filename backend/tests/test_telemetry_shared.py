@@ -48,7 +48,7 @@ def clinic_database(monkeypatch):
 def envelope(ctx, region):
     return dict(eventId=str(uuid4()), timestamp=datetime.now(UTC).isoformat(),
                 sessionId=ctx['sessionId'], userId=ctx['userId'], event_type='navigation_viewed',
-                schemaVersion='1.2.0', requestId=None,
+                schemaVersion='1.3.0', requestId=None,
                 properties=dict(jurisdiction=region, environment='test', view='incident_detail'))
 
 

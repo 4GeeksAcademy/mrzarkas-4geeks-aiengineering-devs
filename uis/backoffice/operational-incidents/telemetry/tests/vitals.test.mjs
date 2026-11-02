@@ -50,11 +50,11 @@ test('invalid clinic activation never leaves a general fallback and stale contex
   const timers = { set: () => 1, clear() {} };
   const manager = createContexts({ fetcher: () => new Promise(resolve => pending.push(resolve)), timers,
     wallNow: () => Date.parse('2026-11-01T10:00:00Z'), endpoint:'http://localhost:8000/telemetry/events',
-    environment:'test',bearer:'synthetic',version:'1.2.0' });
+    environment:'test',bearer:'synthetic',version:'1.3.0' });
   const activation = manager.activate(null);
   assert.equal(await manager.activate('not-a-clinic'), null);
   pending[0]({ ok:true, json:async () => ({ contextToken:'synthetic', sessionId:'00000000-0000-4000-8000-000000000001',
-    userId:'ps_'+'a'.repeat(64),jurisdiction:null,schemaVersion:'1.2.0',expiresAt:'2026-11-01T10:05:00Z' }) });
+    userId:'ps_'+'a'.repeat(64),jurisdiction:null,schemaVersion:'1.3.0',expiresAt:'2026-11-01T10:05:00Z' }) });
   assert.equal(await activation, null); assert.equal(manager.current(), null); manager.stop();
 });
 

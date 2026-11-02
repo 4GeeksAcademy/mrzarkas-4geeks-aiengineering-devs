@@ -13,7 +13,7 @@ from pydantic import ValidationError
 def event(context):
     return {'eventId': str(ACTOR), 'timestamp': '2026-11-01T10:00:00Z',
             'sessionId': context['sessionId'], 'userId': context['userId'],
-            'event_type': 'navigation_viewed', 'schemaVersion': '1.2.0', 'requestId': None,
+            'event_type': 'navigation_viewed', 'schemaVersion': '1.3.0', 'requestId': None,
             'properties': {'jurisdiction': None, 'environment': 'test', 'view': 'management'}}
 
 
@@ -100,7 +100,7 @@ def sample(schema):
 def test_every_contract_model_checks_required_extras_nullable_and_dates(name):
     definition = CONTRACT['definitions'][name]['allOf'][1]['properties']['properties']
     value = {'eventId': str(ACTOR), 'timestamp': '2026-11-01T10:00:00Z', 'sessionId': None,
-             'userId': None, 'event_type': name, 'schemaVersion': '1.2.0', 'requestId': None,
+             'userId': None, 'event_type': name, 'schemaVersion': '1.3.0', 'requestId': None,
              'properties': {key: sample(schema) for key, schema in definition['properties'].items()}}
     model = EVENT_MODELS[name]
     model.model_validate(value)
@@ -153,7 +153,7 @@ def test_nullable_scope_does_not_grant_browser_producer_admission():
     added = {'authentication_succeeded', 'authentication_failed', 'authorization_denied',
              'api_request_completed', 'catalog_cache_observed', 'service_health_checked',
              'data_integrity_checked', 'telemetry_contract_rejected', 'telemetry_delivery_failed'}
-    assert VERSION == '1.2.0'
+    assert VERSION == '1.3.0'
     assert NULLABLE_EVENTS == GENERAL_EVENTS | added
     assert len(GENERAL_EVENTS) == 5
     assert not ({'audit_accessed', 'management_mutation_completed', 'incident_created'} & NULLABLE_EVENTS)
@@ -178,7 +178,7 @@ def test_general_server_contract_still_rejected_at_browser_ingress(telemetry, na
 def test_previous_schema_version_is_not_silently_normalized(telemetry):
     _, request = telemetry
     ctx = request('/telemetry/context', {'clinicId': None}).json()
-    assert ctx['schemaVersion'] == '1.2.0'
+    assert ctx['schemaVersion'] == '1.3.0'
     value = event(ctx); value['schemaVersion'] = '1.1.0'
     response = request('/telemetry/events', {'events': [value]}, {'X-Telemetry-Context': ctx['contextToken']})
     assert response.status_code == 422
