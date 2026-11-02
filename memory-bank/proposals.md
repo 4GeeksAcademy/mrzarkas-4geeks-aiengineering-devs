@@ -289,3 +289,24 @@ con motivo y aceptación del responsable de revisión.
 Las validaciones ejecutadas pasaron: 40 unitarias, 15 E2E, 64 backend y 74 de
 telemetría, además de build/tipos y comprobaciones locales Docker/Nginx. No se
 creó commit ni se desplegó o retiró el legado.
+
+## Propuesta: completar la accesibilidad manual de Inventory Manager UI
+
+**Fecha:** 2026-11-02.
+
+**Estado:** mejora pendiente registrada por petición expresa del desarrollador. La implementación funcional del inventario está terminada para desarrollo sintético; queda pendiente la aceptación integral de accesibilidad. Registrar esta propuesta no convierte una revisión `BLOCKED` en `PASS`, ni acredita conformidad WCAG o aptitud para piloto/producción.
+
+**Motivo:** las pruebas automatizadas, compilación y tipos pasan, pero no sustituyen los anuncios reales de un lector de pantalla ni la revisión manual de todas las vistas y estados. El desarrollador no consiguió activar VoiceOver; ese intento no demuestra un defecto de la interfaz.
+
+**Trabajo propuesto:**
+
+- Ejecutar VoiceOver u otro lector de pantalla compatible y registrar anuncios de campos, tablas, carga, vacío, errores, confirmaciones y resultados inciertos.
+- Completar zoom real al 200 % y 400 %, teclado, foco, diálogos y contraste en todas las vistas y roles autorizados. Ya se comprobó zoom real en conexión/catálogo y foco/validación nativa; no extrapolarlo al resto del módulo.
+- Corregir los defectos observados y repetir las pruebas afectadas.
+- Incorporar evidencia por criterio y repetir `validate-delivery` para cerrar INV-UI-TASK-018 y INV-UI-TASK-019 cuando se verifiquen sus condiciones.
+
+**Responsables propuestos:** desarrollador/Tecnología y QA con experiencia en accesibilidad; asignación pendiente.
+
+**Criterio de aceptación:** checklist ejecutado con herramienta/versión, vista, rol, resultado y evidencia observada; defectos resueltos; criterios aplicables de accesibilidad verificados. Sin atribuir PASS a comprobaciones no ejecutadas ni usar datos reales.
+
+**Referencias:** [checklist manual](specs/inventory-manager-ui/accessibility-review.md), [evidencia técnica](specs/inventory-manager-ui/plan.md) y [tareas018–019](specs/inventory-manager-ui/tasks.md). Las tareas conservan PARTIAL/BLOCKED como estado de su validación; la propuesta permite retomar el pendiente en una tarea futura, sin cambiar contratos, permisos o controles.
