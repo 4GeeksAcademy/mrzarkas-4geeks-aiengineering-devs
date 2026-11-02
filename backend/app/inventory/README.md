@@ -207,3 +207,7 @@ uv run python -m app.inventory.demo
 ```
 
 Creates three SYN-INV products, one lot and six opening movements in dev-us-clinic-01/dev-uk-clinic-01. Repeated runs do not reset balances or thresholds. Conflicting reserved product definitions roll back the transaction. No real data or PHI.
+
+## Local Compose validation — 2026-11-02
+
+Root Compose was built and started as isolated project `healthcore-inventory-validation`, preserving previous volumes. Migrations, seeds, repeated demo (6/0 openings), regional permissions, reorder and audited denials passed HTTP verification. Test image suite: 418 passed without skips on databases separate from the demo; temporary NullPool adapter for legacy tests. Validation API: `http://localhost:18080/docs`; website 13000 and backoffice 18081. Commands and temporary-environment limits: `memory-bank/specs/inventory-manager/plan.md`. Podman was repaired by restoring empty metadata with prior backups, without deleting data. Synthetic local environment only.

@@ -1,6 +1,6 @@
 # HealthCore Inventory Manager — Tasks de implementación
 
-**Estado:** INV-TASK-001–010 implementadas y verificadas en prototipo sintético; entrega local con bloqueo operativo de Podman.
+**Estado:** INV-TASK-001–010 implementadas y verificadas en prototipo sintético; entrega local y Compose aislado validados; bloqueo de Podman resuelto.
 **Versión:** 1.0 · **Fecha:** 2026-11-02
 **Regla:** ninguna tarea ejecutable se inicia antes de aprobación explícita del CTO del SPEC, PLAN y TASKS y de cerrar las decisiones de dominio que la bloqueen.
 
@@ -161,7 +161,7 @@ Las descripciones anteriores conservan el plan original y sus IDs; decisiones pe
 
 Pruebas: backend/tests/test_inventory.py y test_inventory_audit_policy.py. Comandos y condiciones en plan.md.
 
-Bloqueo operativo pendiente: Podman; la demostración funciona sobre PostgreSQL nativo aislado. Purga ejecutable/UI/producción no forman parte del cierre funcional aprobado.
+Bloqueo operativo de Podman resuelto: ocho metadatos vacíos restaurados con copias originales. Compose aislado completo validado y 418 pruebas superadas sin skips; demostración nativa conservada. Ver cierre operativo en plan.md. Purga ejecutable/UI/producción no forman parte del cierre funcional aprobado.
 
 ### Commits reales
 

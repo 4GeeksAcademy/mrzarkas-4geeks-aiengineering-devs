@@ -214,3 +214,7 @@ uv run python -m app.inventory.demo
 ```
 
 Crea tres productos SYN-INV, un lote y seis saldos iniciales mediante movimientos en las clínicas dev-us-clinic-01/dev-uk-clinic-01. Segunda ejecución no reinicia saldos ni umbrales. Si un código reservado coincide con un artículo incompatible, revierte la transacción. No utiliza datos reales ni PHI.
+
+## Validación local con Compose — 2026-11-02
+
+El Compose de la raíz se construyó y arrancó como proyecto aislado `healthcore-inventory-validation`, conservando volúmenes anteriores. Migraciones, seeds y demo repetida (6/0 aperturas), permisos regionales, reorden y denegaciones auditadas pasaron por HTTP. Suite en imagen test: 418 pruebas superadas sin omisiones, sobre bases separadas de la demostración; adaptador temporal NullPool para tests heredados. API de esta validación: `http://localhost:18080/docs`; web 13000 y backoffice 18081. Detalles, comandos y límites temporales en `memory-bank/specs/inventory-manager/plan.md`. Podman se reparó restaurando metadatos vacíos con copia previa, sin borrar datos. Sólo entorno sintético local.
